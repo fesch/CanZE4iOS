@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>list_VehicleState</key>
+    <array>
+    <string>Asleep, off (0:red)</string>
+    <string>Awake, off (1:green)</string>
+    <string>Ignition on (2:blue)</string>
+    <string>Starting (3:yellow)</string>
+    <string>Awake, on (4:cyan)</string>
+    <string>5</string>
+    <string>6</string>
+    <string>7</string>
+    </array>
+    <key>list_VehicleStatePh2</key>
+    <array>
+    <string>Asleep, off (0:red)</string>
+    <string>Awake, off (1:green)</string>
+    <string>Sleep mode pending (2:blue)</string>
+    <string>AutoACC (3:yellow)</string>
+    <string>4</string>
+    <string>Ignition on</string>
+    <string>Starting in process</string>
+    <string>Engine active</string>
+    <string>Autostart</string>
+    <string>Engine stop</string>
+    <string>10</string>
+    <string>11</string>
+    <string>12</string>
+    <string>13</string>
+    <string>14</string>
+    <string>15</string>
+    </array>
+    <key>list_ChargingStatus2</key>
+    <array>
+    <string>No charge (0:red)</string>
+    <string>Waiting (planned, 1:green)</string>
+    <string>Ended (2:blue)</string>
+    <string>In progress (3:yellow)</string>
+    <string>Failure (4:cyan)</string>
+    <string>Waiting (5:purple)</string>
+    <string>Flap open (6:black)</string>
+    <string>Unavailable (7:grey)</string>
+    </array>
+    <key>list_AuxStatus</key>
+    <array>
+    <string>None</string>
+    <string>1</string>
+    <string>2</string>
+    <string>Soon</string>
+    <string>4</string>
+    <string>Now</string>
+    <string>6</string>
+    <string>7</string>
+    </array>
+    <key>list_MainsCurrentType</key>
+    <array>
+    <string>Nok</string>
+    <string>AC mono</string>
+    <string>AC tri</string>
+    <string>DC</string>
+    <string>AC bi</string>
+    </array>
+    <key>list_CompletionStatus</key>
+    <array>
+    <string>Init</string>
+    <string>HF10</string>
+    <string>-</string>
+    <string>Mains Ground</string>
+    <string>-</string>
+    <string>Earth Current</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Ground</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leakage DC</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leakage LF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leakage DC+LF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leakage HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leakage DC+HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leakage LF+HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leakage DC+LF+HF</string>
+    </array>
+    <key>list_SupervisorState</key>
+    <array>
+    <string>Init</string>
+    <string>Wait</string>
+    <string>ClosingS2</string>
+    <string>InitType</string>
+    <string>InitLkg</string>
+    <string>InitChg</string>
+    <string>Charge</string>
+    <string>ZeroAmpMode</string>
+    <string>EndOfChg</string>
+    <string>OpeningS2</string>
+    <string>ReadyToSleep</string>
+    <string>EmergencyStop</string>
+    <string>InitChargeDF</string>
+    <string>OCPStop</string>
+    <string>WaitS2</string>
+    </array>
+    <key>list_SupervisorStatePh2</key>
+    <array>
+    <string>Init</string>
+    <string>StandByPowerOn</string>
+    <string>ClosingS2</string>
+    <string>InitType</string>
+    <string>Initlkg</string>
+    <string>StandByPowerOnSetup</string>
+    <string>Charge</string>
+    <string>ZeroAmpMode</string>
+    <string>EndOfCharge</string>
+    <string>OpeningRL</string>
+    <string>STestOK</string>
+    <string>-</string>
+    <string>STestWait</string>
+    <string>STestAct</string>
+    <string>WaitRLCHA</string>
+    <string>WaitRLContactorTri</string>
+    <string>OpeningCapaMC</string>
+    <string>-</string>
+    </array>
+    <key>list_ChargingStatus</key>
+    <array>
+    <string>No charge</string>
+    <string>Waiting (planned)</string>
+    <string>Ended</string>
+    <string>In progress</string>
+    <string>Failure</string>
+    <string>Waiting</string>
+    <string>Flap open</string>
+    <string>Unavailable</string>
+    </array>
+    <key>list_PlugStatus</key>
+    <array>
+    <string>Not connected</string>
+    <string>Connected</string>
+    </array>
+    <key>list_EVSEStatus</key>
+    <array>
+    <string>Ok</string>
+    <string>EVSEnotReady</string>
+    <string>EVSEShutdown</string>
+    <string>EVSE_UtilityInterruptEvent</string>
+    <string>EVSE_IsolationMonitoringActive</string>
+    <string>EVSE_EmergencyShutdown</string>
+    <string>EVSE_Malfunction</string>
+    <string>Reserved 8-C</string>
+    <string>Renegotiate</string>
+    </array>
+    <key>list_EVSEFailureStatus</key>
+    <array>
+    <string>Ok</string>
+    <string>OK_CertificateExpiresSoon</string>
+    <string>FAILED_CertificateExpired</string>
+    <string>FAILED_ContractCanceled</string>
+    <string>FAILED_CertificateRevoked</string>
+    <string>FAILED_CertificateNotAllowedAtThisEVSE</string>
+    <string>FAILED_NoCertificate Available</string>
+    <string>FAILED_WrongEnergyTransferMode</string>
+    <string>FAILED_WrongChargeParameter</string>
+    <string>FAILED_ChargingProfileInvalid</string>
+    <string>FAILED_ServiceIDInvalid</string>
+    <string>FAILED_UnknownSession</string>
+    <string>FAILED_ServiceSelectionInvalid</string>
+    <string>FAILED_TariffSelectionInvalid</string>
+    <string>FAILED_PaymentSelectionInvalid</string>
+    <string>FAILED_CertChainError</string>
+    <string>FAILED_ChallengeInvalid</string>
+    <string>FAILED_MeteringSignatureNotValid</string>
+    <string>FAILED_NoChargeServiceSelected</string>
+    <string>FAILED_SequenceError</string>
+    <string>FAILED_SignatureError</string>
+    <string>FAILED_NoCertificateAvailable</string>
+    <string>FAILED_PowerDeliveryNotApplied</string>
+    <string>FAILED</string>
+    <string>FAILED_ContactorError</string>
+    </array>
+    <key>list_EVReady</key>
+    <array>
+    <string>EV isn\'t ready to charge</string>
+    <string>EV is ready to charge</string>
+    </array>
+    <key>list_CPLCComStatus</key>
+    <array>
+    <string>No HLC communication is established</string>
+    <string>HLC communication is initializing</string>
+    <string>HLC communication is ready - secured mode</string>
+    <string>HLC communication is stopped</string>
+    <string>HLC communication error</string>
+    <string>HLC Communication is ready - not secured mode</string>
+    <string>Not used</string>
+    <string>Unavailable Value[initial value]</string>
+    <string>HLC Communication is not ready- TLS setup failed</string>
+    <string>HLC Communication is not ready- TLS timeout</string>
+    <string>HLC Communication is not ready- TLS not supported</string>
+    <string>HLC Communication is not ready- SDP timeout</string>
+    <string>HLC Communication is not ready- not supported ISO-2 version</string>
+    <string>HLC Communication is not ready- V2G setup timeout</string>
+    <string>HLC Communication is not ready- V2G failed</string>
+    </array>
+    <key>list_EVRequestState</key>
+    <array>
+    <string>No HLC Request</string>
+    <string>Communication and service setting request</string>
+    <string>Charge parameter discovery request</string>
+    <string>Cable Check request</string>
+    <string>Precharge request</string>
+    <string>Power delivery request</string>
+    <string>Current demand request</string>
+    <string>Metering receipt request</string>
+    <string>Welding detection request</string>
+    <string>Session stop request</string>
+    <string>Matching Reset</string>
+    <string>Charging Status request</string>
+    <string>AC BPT</string>
+    <string>DC BPT</string>
+    </array>
+    <key>list_EVSEState</key>
+    <array>
+    <string>No HLC communication is established</string>
+    <string>Communication and service setting is established</string>
+    <string>Charge parameter discovery response</string>
+    <string>CableCheck response</string>
+    <string>Precharge response</string>
+    <string>Power delivery response</string>
+    <string>Current demand response</string>
+    <string>Metering receipt response</string>
+    <string>Welding detection response</string>
+    <string>Session stop response with EVSE(station charging)</string>
+    <string>Charging Status response</string>
+    </array>
+    <key>list_EVSELimitReached</key>
+    <array>
+    <string>No</string>
+    <string>Yes</string>
+    </array>
+    <key>list_ChargingHistEnd</key>
+    <array>
+    <string>Full</string>
+    <string>Unpl c</string>
+    <string>Cut ch</string>
+    <string>Fail</string>
+    <string>Sched</string>
+    <string>Flt1</string>
+    <string>Flt22</string>
+    <string>Flt3</string>
+    <string>Flt4</string>
+    <string>Flt5</string>
+    <string>Flt6</string>
+    </array>
+    <key>list_ChargingHistTyp</key>
+    <array>
+    <string>Slow</string>
+    <string>Quick</string>
+    <string>Drop</string>
+    <string>Unknw</string>
+    <string>Sched</string>
+    </array>
+    <key>list_CoolingStatus</key>
+    <array>
+    <string>No</string>
+    <string>Cooling alone</string>
+    <string>Cooling coupled</string>
+    <string>Unavailable</string>
+    </array>
+    <key>list_ConditioningStatus</key>
+    <array>
+    <string>Blow req</string>
+    <string>Cool cond req</string>
+    <string>Heat cond req</string>
+    <string>Cond not req</string>
+    </array>
+    <key>list_ConditioningStatusPh2</key>
+    <array>
+    <string>NoRequest</string>
+    <string>CoolCabinCoupleByAir</string>
+    <string>CoolBattCoupleByAir</string>
+    <string>CoolBattAloneByAir</string>
+    <string>CoolCabinCouple</string>
+    </array>
+    <key>list_ClimateStatus</key>
+    <array>
+    <string>Unavailable</string>
+    <string>AC</string>
+    <string>AC deiceing</string>
+    <string> </string>
+    <string>Heat pump</string>
+    <string> </string>
+    <string>Demisting</string>
+    <string>Idle</string>
+    </array>
+    <key>list_ClimateStatusPh2</key>
+    <array>
+    <string>Unavailable</string>
+    <string>AC</string>
+    <string>AC deicing</string>
+    <string>AC to heat pump</string>
+    <string>Heat pump</string>
+    <string>Heat pump to AC</string>
+    <string>-</string>
+    <string>Idle mode</string>
+    </array>
+    <key>list_PtcRelay</key>
+    <array>
+    <string>On</string>
+    <string>Off</string>
+    </array>
+    <key>list_TireStatus</key>
+    <array>
+    <string>OK</string>
+    <string>No info</string>
+    <string>Over infl.</string>
+    <string>-</string>
+    <string>Flat</string>
+    <string>Flat</string>
+    <string>Under infl.</string>
+    <string>-</string>
+    </array>
+</dict>
+</plist>
+

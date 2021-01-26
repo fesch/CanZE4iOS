@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>list_TireStatus</key>
+    <array>
+    <string>OK</string>
+    <string>Немає інфо</string>
+    <string>Перекачана</string>
+    <string>-</string>
+    <string>Порожня</string>
+    <string>Порожня</string>
+    <string>Недокачана</string>
+    <string>-</string>
+    </array>
+    <key>list_PtcRelay</key>
+    <array>
+    <string>Увімк.</string>
+    <string>Вимк.</string>
+    </array>
+    <key>list_MainsCurrentType</key>
+    <array>
+    <string>Помилка</string>
+    <string>AC монофазна</string>
+    <string>AC трифазна</string>
+    <string>DC</string>
+    <string>AC двохфазна</string>
+    </array>
+    <key>list_ChargingStatus</key>
+    <array>
+    <string>Не заряджається</string>
+    <string>Очікування (заплановане)</string>
+    <string>Завершено</string>
+    <string>В процесі</string>
+    <string>Помилка</string>
+    <string>Очікування</string>
+    <string>Лючок відчинений</string>
+    <string>Недоступно</string>
+    </array>
+    <key>list_PlugStatus</key>
+    <array>
+    <string>Не підключено</string>
+    <string>Підключено</string>
+    </array>
+    <key>list_VehicleState</key>
+    <array>
+    <string>Спить, вимк. (0:червоний)</string>
+    <string>Не спить, вимк. (1:зелений)</string>
+    <string>Запалювання увімк. (2:синій)</string>
+    <string>Запускається (3:жовтий)</string>
+    <string>Не спить, увімк. (4:блакитний)</string>
+    <string>5</string>
+    <string>6</string>
+    <string>7</string>
+    </array>
+    <key>list_VehicleStatePh2</key>
+    <array>
+    <string>Спить, вимк. (0:червоний)</string>
+    <string>Не спить, вимк. (1:зелений)</string>
+    <string>Очікує режим сну (2:синій)</string>
+    <string>Живлення бортової мережі (3:жовтий)</string>
+    <string>4</string>
+    <string>Запалювання увімк.</string>
+    <string>Запускається</string>
+    <string>Мотор активний</string>
+    <string>Автозапуск</string>
+    <string>Зупинка мотора</string>
+    <string>10</string>
+    <string>11</string>
+    <string>12</string>
+    <string>13</string>
+    <string>14</string>
+    <string>15</string>
+    </array>
+    <key>list_ChargingStatus2</key>
+    <array>
+    <string>Не заряджається (0:червоний)</string>
+    <string>Очікування (заплановане, 1:зелений)</string>
+    <string>Завершено (2:синій)</string>
+    <string>В процесі (3:жовтий)</string>
+    <string>Помилка (4:блакитний)</string>
+    <string>Очікування (5:бузковий)</string>
+    <string>Лючок відчинений (6:чорний)</string>
+    <string>Недоступно (7:сірий)</string>
+    </array>
+    <key>list_AuxStatus</key>
+    <array>
+    <string>Немає</string>
+    <string>1</string>
+    <string>2</string>
+    <string>Скоро</string>
+    <string>4</string>
+    <string>Зараз</string>
+    <string>6</string>
+    <string>7</string>
+    </array>
+    <key>list_ChargingHistEnd</key>
+    <array>
+    <string>Повний</string>
+    <string>Вимкнено</string>
+    <string>Знеструмлено</string>
+    <string>Не вдалось</string>
+    <string>За графіком</string>
+    <string>Помилка 1</string>
+    <string>Помилка 22</string>
+    <string>Помилка 3</string>
+    <string>Помилка 4</string>
+    <string>Помилка 5</string>
+    <string>Помилка 6</string>
+    </array>
+    <key>list_ChargingHistTyp</key>
+    <array>
+    <string>Повіль.</string>
+    <string>Швидк.</string>
+    <string>Заміна</string>
+    <string>Невід.</string>
+    <string>План.</string>
+    </array>
+    <key>list_SupervisorState</key>
+    <array>
+    <string>Початок</string>
+    <string>Очікування</string>
+    <string>Замикання S2</string>
+    <string>Ініц. Типу</string>
+    <string>Ініц. Витоку</string>
+    <string>Ініц. Заряду</string>
+    <string>Зарядка</string>
+    <string>Режим нуля ампер</string>
+    <string>Кінець зарядки</string>
+    <string>Розімкнення S2</string>
+    <string>Готовність до сну</string>
+    <string>Аварійна зупинка</string>
+    <string>InitChargeDF</string>
+    <string>OCPStop</string>
+    <string>Очікування S2</string>
+    </array>
+    <key>list_SupervisorStatePh2</key>
+    <array>
+    <string>Початок</string>
+    <string>StandByPowerOn</string>
+    <string>Замикання S2</string>
+    <string>Ініц. Типу</string>
+    <string>Ініц. Витоку</string>
+    <string>StandByPowerOnSetup</string>
+    <string>Зарядка</string>
+    <string>Режим нуля ампер</string>
+    <string>Кінець зарядки</string>
+    <string>OpeningRL</string>
+    <string>STestOK</string>
+    <string>-</string>
+    <string>STestWait</string>
+    <string>STestAct</string>
+    <string>WaitRLCHA</string>
+    <string>WaitRLContactorTri</string>
+    <string>OpeningCapaMC</string>
+    <string>-</string>
+    </array>
+    <key>list_CoolingStatus</key>
+    <array>
+    <string>Ні</string>
+    <string>Лише охолодження</string>
+    <string>Об\'єднане охолодження</string>
+    <string>Недоступно</string>
+    </array>
+    <key>list_ConditioningStatus</key>
+    <array>
+    <string>Потрібна вентиляція</string>
+    <string>Потрібне охолодження</string>
+    <string>Потрібний підігрів</string>
+    <string>Кондиціонування непотрібне</string>
+    </array>
+    <key>list_ConditioningStatusPh2</key>
+    <array>
+    <string>Ні</string>
+    <string>Об\'єднане охолодження салону повітрям</string>
+    <string>Об\'єднане охолодження батареї повітрям</string>
+    <string>Лише охолодження батареї повітрям</string>
+    <string>Об\'єднане охолодження салону</string>
+    </array>
+    <key>list_ClimateStatus</key>
+    <array>
+    <string>Недступно</string>
+    <string>Кондиціонер</string>
+    <string>Кондиціонер (розмороження)</string>
+    <string> </string>
+    <string>Тепловий насос</string>
+    <string> </string>
+    <string>Розпотівання</string>
+    <string>Режим простою</string>
+    </array>
+    <key>list_ClimateStatusPh2</key>
+    <array>
+    <string>Недступно</string>
+    <string>Кондиціонер</string>
+    <string>Кондиціонер (розмороження)</string>
+    <string>Від кондиціонеру до теплового насосу</string>
+    <string>Тепловий насос</string>
+    <string>Від теплового насосу до кондиціонеру</string>
+    <string>-</string>
+    <string>Режим простою</string>
+    </array>
+    <key>list_CompletionStatus</key>
+    <array>
+    <string>Початок</string>
+    <string>ВЧ10</string>
+    <string>-</string>
+    <string>Проблема з заземленням</string>
+    <string>-</string>
+    <string>Струм у заземлення</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Проблема з масою</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Витік DC</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Витік НЧ</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Витік DC+НЧ</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Витік ВЧ</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Витік DC+ВЧ</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Витік НЧ+ВЧ</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Витік DC+НЧ+ВЧ</string>
+    </array>
+    <key>list_CPLCComStatus</key>
+    <array>
+    <string>Зв\'язок HLC не встановлено</string>
+    <string>Початок зв\'язку HLC</string>
+    <string>Зв\'язок HLC готовий - безпечний режим</string>
+    <string>Зв\'язок HLC зупинений</string>
+    <string>Помилка зв\'язку HLCr</string>
+    <string>Зв\'язок HLC готовий - небезпечний режим</string>
+    <string>Не використовуєтся</string>
+    <string>Недоступне значення[початкове значення]</string>
+    <string>Зв\'язок HLC не готовий - помикла встановлення TLS</string>
+    <string>Зв\'язок HLC не готовий - таймаут TLS</string>
+    <string>Зв\'язок HLC не готовий - TLS не підтримується</string>
+    <string>Зв\'язок HLC не готовий - таймаут SDP</string>
+    <string>Зв\'язок HLC не готовий - версія ISO-2 не підтримується</string>
+    <string>Зв\'язок HLC не готовий - таймаут встановлення V2G</string>
+    <string>Зв\'язок HLC не готовий - помилка V2G</string>
+    </array>
+    <key>list_EVReady</key>
+    <array>
+    <string>ЕМ не готовий до зарядки</string>
+    <string>ЕМ готовий до зарядки</string>
+    </array>
+    <key>list_EVRequestState</key>
+    <array>
+    <string>Нема запиту по HLC</string>
+    <string>Запит налаштунків зв\'язку та сервісів</string>
+    <string>Запит знаходження параметрів зарядки</string>
+    <string>Запит перевірки кабелю</string>
+    <string>Запит попередьної зарядки</string>
+    <string>Запит підключення потужності</string>
+    <string>Запит замовлення струму</string>
+    <string>Запит показів лічильника</string>
+    <string>Запит перевірки сплавлення контактів</string>
+    <string>Запит зупинки сесії</string>
+    <string>Скидання парування</string>
+    <string>Запит стану зарядки</string>
+    <string>AC BPT</string>
+    <string>DC BPT</string>
+    </array>
+    <key>list_EVSEState</key>
+    <array>
+    <string>Зв\'язок HLC не встановлено</string>
+    <string>Встановлені налаштунки зв\'язку та сервісів</string>
+    <string>Відповідь знаходження параметрів зарядки</string>
+    <string>Відповідь перевірки кабеля</string>
+    <string>Відповідь попередньої зарядки</string>
+    <string>Відповідь підключення потужності</string>
+    <string>Відповідь замовлення струму</string>
+    <string>Відповідь показів лічильника</string>
+    <string>Відповідь перевірки сплавлення контактів</string>
+    <string>Відповідь зупкинки сесії</string>
+    <string>Відповідь стану зарядки</string>
+    </array>
+    <key>list_EVSELimitReached</key>
+    <array>
+    <string>Ні</string>
+    <string>Так</string>
+    </array>
+    <key>list_EVSEFailureStatus</key>
+    <array>
+    <string>Нема помилки</string>
+    <string>Витікає строк дії сертифікату</string>
+    <string>ПОМИЛКА Строк дії сертифікату витік</string>
+    <string>ПОМИЛКА Договір скасований</string>
+    <string>ПОМИЛКА Сертифікат відкликаний</string>
+    <string>ПОМИЛКА Сертифікат недозволений на цій станції</string>
+    <string>ПОМИЛКА Брак сертифікату</string>
+    <string>ПОМИЛКА Неправильний режим передачі енергії</string>
+    <string>ПОМИЛКА Неправильний параметр зарядки</string>
+    <string>ПОМИЛКА Неправильний профіль зарядки</string>
+    <string>ПОМИЛКА Неправильний ідентифікатор сервісу</string>
+    <string>ПОМИЛКА Невідома сесія</string>
+    <string>ПОМИЛКА Неправильний вибір сервісу</string>
+    <string>ПОМИЛКА Неправильний вибір тарифу</string>
+    <string>ПОМИЛКА Неправильний вибір оплати</string>
+    <string>ПОМИЛКА Помилка у ланцюгу сертифікатів</string>
+    <string>ПОМИЛКА Неправильна відповідь</string>
+    <string>ПОМИЛКА Невірний підис показників лічильнику</string>
+    <string>ПОМИЛКА Не обрано сервіс зарядки</string>
+    <string>ПОМИЛКА Помилка коду послідовності</string>
+    <string>ПОМИЛКА Помилка підпису</string>
+    <string>ПОМИЛКА Брак сертифікату</string>
+    <string>ПОМИЛКА Не застосовано підключення потужності</string>
+    <string>ПОМИЛКА</string>
+    <string>ПОМИЛКА Помилка контактору</string>
+    </array>
+    <key>list_EVSEStatus</key>
+    <array>
+    <string>Ок</string>
+    <string>Станція не готова</string>
+    <string>Станція вимикається</string>
+    <string>Перерва роботи електромережі</string>
+    <string>Триває моніторинг ізоляції</string>
+    <string>Аварійне вимкнення</string>
+    <string>Несправність</string>
+    <string>Зарезервовано 8-C</string>
+    <string>Потрібне повторне встановлення зв\'язку</string>
+    </array>
+</dict>
+</plist>
+

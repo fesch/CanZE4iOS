@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>list_VehicleState</key>
+    <array>
+    <string>En sommeil, arrêt (0 : rouge)</string>
+    <string>En éveil, arrêt (1 : vert)</string>
+    <string>Moteur actif (2 : bleu)</string>
+    <string>Démarrage (3 : jaune)</string>
+    <string>En éveil, marche (4 : cyan)</string>
+    <string>5</string>
+    <string>6</string>
+    <string>7</string>
+    </array>
+    <key>list_ChargingStatus2</key>
+    <array>
+    <string>Pas en charge (0 : rouge)</string>
+    <string>En attente (planifié, 1 : vert)</string>
+    <string>Terminé (2 : bleu)</string>
+    <string>En cours (3 : jaune)</string>
+    <string>Défaut (4 : cyan)</string>
+    <string>En attente (5 : violet)</string>
+    <string>Trappe ouverte (6 : noir)</string>
+    <string>Indisponible (7 : gris)</string>
+    </array>
+    <key>list_AuxStatus</key>
+    <array>
+    <string>Pas nécessaire</string>
+    <string>1</string>
+    <string>2</string>
+    <string>À prévoir bientôt</string>
+    <string>4</string>
+    <string>À faire</string>
+    <string>6</string>
+    <string>7</string>
+    </array>
+    <key>list_MainsCurrentType</key>
+    <array>
+    <string>Erreur</string>
+    <string>AC mono</string>
+    <string>AC tri</string>
+    <string>DC</string>
+    <string>AC bi</string>
+    </array>
+    <key>list_CompletionStatus</key>
+    <array>
+    <string>Init</string>
+    <string>HF10</string>
+    <string>-</string>
+    <string>Déf. masse réseau</string>
+    <string>-</string>
+    <string>Déf. cour. terre</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Déf. de masse</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Fuite rés. DC</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Fuite rés. BF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Fuite rés. DC+BF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Fuite rés. HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Fuite rés. DC+HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Fuite rés. BF+HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Fuite rés. DC+BF+HF</string>
+    </array>
+    <key>list_SupervisorState</key>
+    <array>
+    <string>Init</string>
+    <string>Attente</string>
+    <string>FermetureS2</string>
+    <string>InitType</string>
+    <string>InitLkg</string>
+    <string>InitChg</string>
+    <string>Charge</string>
+    <string>ModeZéroAmp</string>
+    <string>FinDeCharge</string>
+    <string>OuvertureS2</string>
+    <string>ReadyToSleep</string>
+    <string>ArrêtUrgence</string>
+    <string>InitChargeDF</string>
+    <string>OCPStop</string>
+    <string>AttenteS2</string>
+    </array>
+    <key>list_ChargingStatus</key>
+    <array>
+    <string>Pas en charge</string>
+    <string>En attente (planifiée)</string>
+    <string>Terminée</string>
+    <string>En cours</string>
+    <string>Erreur</string>
+    <string>En attente</string>
+    <string>Trappe ouverte</string>
+    <string>Indisponible</string>
+    </array>
+    <key>list_PlugStatus</key>
+    <array>
+    <string>Déconnectée</string>
+    <string>Connectée</string>
+    </array>
+    <key>list_ChargingHistEnd</key>
+    <array>
+    <string>Chargé</string>
+    <string>Câble débranché</string>
+    <string>Réseau</string>
+    <string>Défaut</string>
+    <string>Plan.</string>
+    <string>Flt1</string>
+    <string>Flt22</string>
+    <string>Flt3</string>
+    <string>Flt4</string>
+    <string>Flt5</string>
+    <string>Flt6</string>
+    </array>
+    <key>list_ChargingHistTyp</key>
+    <array>
+    <string>Lente</string>
+    <string>Rap.</string>
+    <string>Échge</string>
+    <string>Inc.</string>
+    <string>Plan.</string>
+    </array>
+    <key>list_CoolingStatus</key>
+    <array>
+    <string>Aucun</string>
+    <string>Refroidissement uniquement</string>
+    <string>Refroidissement couplé</string>
+    <string>Indisponible</string>
+    </array>
+    <key>list_ConditioningStatus</key>
+    <array>
+    <string>Demande de ventilation</string>
+    <string>Refroidissement demandé</string>
+    <string>Chauffage demandé</string>
+    <string>Conditionnement non requis</string>
+    </array>
+    <key>list_ClimateStatus</key>
+    <array>
+    <string>Indisponible</string>
+    <string>A/C</string>
+    <string>A/C dégivrage</string>
+    <string>Pompe à chaleur</string>
+    <string>Dégivrage</string>
+    <string>Ralenti</string>
+    </array>
+    <key>list_PtcRelay</key>
+    <array>
+    <string>Marche</string>
+    <string>Arrêt</string>
+    </array>
+    <key>list_TireStatus</key>
+    <array>
+    <string>OK</string>
+    <string>Pas d’infos</string>
+    <string>Surgonflé</string>
+    <string>-</string>
+    <string>À plat</string>
+    <string>À plat</string>
+    <string>Sous gonflé</string>
+    <string>-</string>
+    </array>
+</dict>
+</plist>
+

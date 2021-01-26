@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>list_VehicleState</key>
+    <array>
+    <string>Schlafmodus (0:rot)</string>
+    <string>Motor aus (1:grün)</string>
+    <string>Zündung (2:blau)</string>
+    <string>Motor anlassen (3:gelb)</string>
+    <string>Motor ein (4:zyan)</string>
+    <string>5</string>
+    <string>6</string>
+    <string>7</string>
+    </array>
+    <key>list_VehicleStatePh2</key>
+    <array>
+    <string>Schlafmodus (0:rot)</string>
+    <string>Motor aus (1:grün)</string>
+    <string>Schlafmodus bevorstehend (2:blau)</string>
+    <string>AutoACC (3:yellow)</string>
+    <string>4</string>
+    <string>Zündung ein</string>
+    <string>Starten</string>
+    <string>Motor ein</string>
+    <string>Autostart</string>
+    <string>Motor stop</string>
+    <string>10</string>
+    <string>11</string>
+    <string>12</string>
+    <string>13</string>
+    <string>14</string>
+    <string>15</string>
+    </array>
+    <key>list_ChargingStatus2</key>
+    <array>
+    <string>kein Laden (0:rot)</string>
+    <string>warten geplant (1:grün)</string>
+    <string>beendet (2:blau)</string>
+    <string>aktiv (3:gelb)</string>
+    <string>Fehler (4:zyan)</string>
+    <string>warten (5:lila)</string>
+    <string>Ladeklappe offen (6:schwarz)</string>
+    <string>nicht verfügbar (7:grau)</string>
+    </array>
+    <key>list_AuxStatus</key>
+    <array>
+    <string>kein</string>
+    <string>1</string>
+    <string>2</string>
+    <string>bald</string>
+    <string>4</string>
+    <string>jetzt</string>
+    <string>6</string>
+    <string>7</string>
+    </array>
+    <key>list_MainsCurrentType</key>
+    <array>
+    <string>Nok</string>
+    <string>AC mono</string>
+    <string>AC tri</string>
+    <string>DC</string>
+    <string>AC bi</string>
+    </array>
+    <key>list_CompletionStatus</key>
+    <array>
+    <string>Init</string>
+    <string>HF10</string>
+    <string>-</string>
+    <string>AC Erdungswiderstand</string>
+    <string>-</string>
+    <string>Erdungsstrom</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Erdungswiderstand</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leckstrom DC</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leckstrom LF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leckstrom DC+LF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leckstrom HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leckstrom DC+HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leckstrom LF+HF</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>-</string>
+    <string>Leckstrom DC+LF+HF</string>
+    </array>
+    <key>list_SupervisorState</key>
+    <array>
+    <string>Init</string>
+    <string>Wait</string>
+    <string>ClosingS2</string>
+    <string>InitType</string>
+    <string>InitLkg</string>
+    <string>InitChg</string>
+    <string>Charge</string>
+    <string>ZeroAmpMode</string>
+    <string>EndOfChg</string>
+    <string>OpeningS2</string>
+    <string>ReadyToSleep</string>
+    <string>EmergencyStop</string>
+    <string>InitChargeDF</string>
+    <string>OCPStop</string>
+    <string>WaitS2</string>
+    </array>
+    <key>list_SupervisorStatePh2</key>
+    <array>
+    <string>Init</string>
+    <string>StandByPowerOn</string>
+    <string>ClosingS2</string>
+    <string>InitType</string>
+    <string>Initlkg</string>
+    <string>StandByPowerOnSetup</string>
+    <string>Charge</string>
+    <string>ZeroAmpMode</string>
+    <string>EndOfCharge</string>
+    <string>OpeningRL</string>
+    <string>STestOK</string>
+    <string>-</string>
+    <string>STestWait</string>
+    <string>STestAct</string>
+    <string>WaitRLCHA</string>
+    <string>WaitRLContactorTri</string>
+    <string>OpeningCapaMC</string>
+    <string>-</string>
+    </array>
+    <key>list_ChargingStatus</key>
+    <array>
+    <string>kein Laden</string>
+    <string>warten geplant</string>
+    <string>beendet</string>
+    <string>aktiv</string>
+    <string>Fehler</string>
+    <string>warten</string>
+    <string>Ladeklappe offen</string>
+    <string>nicht verfügbar</string>
+    </array>
+    <key>list_PlugStatus</key>
+    <array>
+    <string>Nicht verbunden</string>
+    <string>Verbunden</string>
+    </array>
+    <key>list_EVSELimitReached</key>
+    <array>
+    <string>Nein</string>
+    <string>Ja</string>
+    </array>
+    <key>list_ChargingHistEnd</key>
+    <array>
+    <string>Voll</string>
+    <string>Unpl c</string>
+    <string>Cut ch</string>
+    <string>Fail</string>
+    <string>Sched</string>
+    <string>Flt1</string>
+    <string>Flt22</string>
+    <string>Flt3</string>
+    <string>Flt4</string>
+    <string>Flt5</string>
+    <string>Flt6</string>
+    </array>
+    <key>list_ChargingHistTyp</key>
+    <array>
+    <string>Slow</string>
+    <string>Quick</string>
+    <string>Drop</string>
+    <string>Unknw</string>
+    <string>Sched</string>
+    </array>
+    <key>list_CoolingStatus</key>
+    <array>
+    <string>Nein</string>
+    <string>Nur kühlen</string>
+    <string>Kühlung kombiniert</string>
+    <string>Nicht verfügbar</string>
+    </array>
+    <key>list_ConditioningStatus</key>
+    <array>
+    <string>Lüften erforderlich</string>
+    <string>Kühlen erforderlich</string>
+    <string>Heizen erforderlich</string>
+    <string>keine Aktion erforderlich</string>
+    </array>
+    <key>list_ConditioningStatusPh2</key>
+    <array>
+    <string>NoRequest</string>
+    <string>CoolCabinCoupleByAir</string>
+    <string>CoolBattCoupleByAir</string>
+    <string>CoolBattAloneByAir</string>
+    <string>CoolCabinCouple</string>
+    </array>
+    <key>list_ClimateStatus</key>
+    <array>
+    <string>Nicht verfügbar</string>
+    <string>Klimatisierung</string>
+    <string>Entfroster</string>
+    <string> </string>
+    <string>Wärmepumpe</string>
+    <string> </string>
+    <string>Antischeibenbeschlag</string>
+    <string>Inaktiv</string>
+    </array>
+    <key>list_ClimateStatusPh2</key>
+    <array>
+    <string>Nicht verfügbar</string>
+    <string>Klimatisierung</string>
+    <string>Entfroster</string>
+    <string>Klimatisierung zu Wärmepumpe</string>
+    <string>Wärmepumpe</string>
+    <string>Wärmepumpe zu Klimatisierung</string>
+    <string>-</string>
+    <string>Inaktiv</string>
+    </array>
+    <key>list_PtcRelay</key>
+    <array>
+    <string>Ein</string>
+    <string>Aus</string>
+    </array>
+</dict>
+</plist>
+
