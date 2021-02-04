@@ -26,82 +26,12 @@ class SettingsViewController: CanZeViewController {
     let titleSeparator = "$$$"
     var lastSelectedIndexPath: IndexPath!
 
-    /*
-         @IBAction func btnBleStandard(sender: UIBarButtonItem) {
-             let ac = UIAlertController(title: "_supported ble devices", message: "_select yours", preferredStyle: .actionSheet)
-
-             let actionLelink = UIAlertAction(title: "LELink", style: .default) { _ in
-                 self.ud.setValue("LELink", forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
-                 self.ud.setValue("7A4984CB-7607-37D8-337E-7CA5AC17C9B0", forKey: AppSettings.SETTINGS_DEVICE_BLE_IDENTIFIER_UUID)
-                 self.ud.setValue("FFE0", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
-                 self.ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
-                 self.ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
-                 self.ud.synchronize()
-                 self.loadSettings()
-                 self.organizeSettings()
-                 self.settingsTableView.reloadData()
-
-     //            self.startAutoInit()
-             }
-
-             let actionVgate = UIAlertAction(title: "Vgate iCar Pro", style: .default) { _ in
-                 self.ud.setValue("Vgate iCar Pro", forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
-                 self.ud.setValue("D63109B1-C246-911F-F180-CAE0377D718D", forKey: AppSettings.SETTINGS_DEVICE_BLE_IDENTIFIER_UUID)
-                 self.ud.setValue("E7810A71-73AE-499D-8C15-FAA9AEF0C3F2", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
-                 self.ud.setValue("BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
-                 self.ud.setValue("BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
-                 self.ud.synchronize()
-                 self.loadSettings()
-                 self.organizeSettings()
-                 self.settingsTableView.reloadData()
-
-     //            self.startAutoInit()
-             }
-
-             /*
-              let a3 = UIAlertAction(title: "Kimood", style: .default) { _ in
-                  self.ud.setValue("OBDII", forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
-                  self.ud.setValue("9F8DFDE2-FBE9-F71C-B744-E774EB120742", forKey: AppSettings.SETTINGS_DEVICE_BLE_IDENTIFIER_UUID)
-                  self.ud.setValue("FFF0", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
-                  self.ud.setValue("FFF2", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
-                  self.ud.setValue("FFF1", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
-                  self.ud.synchronize()
-                  self.loadSettings()
-                  self.organizeSettings()
-                  self.settingsTableView.reloadData()
-              }
-              */
-
-     //        let actionCancel = UIAlertAction(title: "cancel", style: .cancel) { _ in
-     //        }
-
-             ac.addAction(actionLelink)
-             ac.addAction(actionVgate)
-             // ac.addAction(a3)
-     //        ac.addAction(actionCancel)
-
-             if UIDevice.isPad {
-                 // This will turn the Action Sheet into a popover
-                 ac.modalPresentationStyle = .automatic
-                 ac.isModalInPresentation = true
-                 let popPresenter = ac.popoverPresentationController
-                 popPresenter!.sourceView = settingsTableView.superview
-                 popPresenter!.sourceRect = CGRect(x: 0, y: 0, width: settingsTableView.frame.width, height: settingsTableView.frame.height * 0.5)
-             }
-
-             present(ac, animated: true, completion: nil)
-         }
-          */
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
 
         title = NSLocalizedString("title_activity_settings", comment: "")
-
-//        NotificationCenter.default.addObserver(self, selector: #selector(ricevuto(notification:)), name: Notification.Name("ricevuto"), object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(ricevuto2(notification:)), name: Notification.Name("ricevuto2"), object: nil)
 
         pickerView.alpha = 0.0
         textFieldView.alpha = 0.0
@@ -136,8 +66,8 @@ class SettingsViewController: CanZeViewController {
         pickerView.center = view.center
         pickerView.alpha = 0.0
         picker.delegate = self
-        btnPickerDone.backgroundColor = UIColor.red.withAlphaComponent(0.5)
-        btnPickerCancel.backgroundColor = UIColor.orange.withAlphaComponent(0.5)
+        btnPickerDone.backgroundColor = .lightGray
+        btnPickerCancel.backgroundColor = .lightGray
     }
 
     func showPicker() {
@@ -179,10 +109,10 @@ class SettingsViewController: CanZeViewController {
             AppSettings.CAR_X10PH2,
             AppSettings.CAR_TWINGO,
             AppSettings.CAR_TWIZY,
-        ], intValue: AppSettings.shared.car)
+        ], intValue: Globals.shared.car)
         settingsArray.append(s)
 
-        s = Setting(tag: AppSettings.SETTINGS_CAR_USE_MILES, type: .SWITCH, title: NSLocalizedString("label_DistanceUnit", comment: ""), subTitle: AppSettings.shared.milesMode ? NSLocalizedString("label_Miles", comment: "") : NSLocalizedString("label_Kilometers", comment: ""), boolValue: AppSettings.shared.milesMode)
+        s = Setting(tag: AppSettings.SETTINGS_CAR_USE_MILES, type: .SWITCH, title: NSLocalizedString("label_DistanceUnit", comment: ""), subTitle: Globals.shared.milesMode ? NSLocalizedString("label_Miles", comment: "") : NSLocalizedString("label_Kilometers", comment: ""), boolValue: Globals.shared.milesMode)
         settingsArray.append(s)
 
         settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
@@ -199,7 +129,7 @@ class SettingsViewController: CanZeViewController {
             AppSettings.DEVICE_TYPE.ELM327.rawValue,
             AppSettings.DEVICE_TYPE.CANSEE.rawValue,
             AppSettings.DEVICE_TYPE.HTTP.rawValue,
-        ], intValue: AppSettings.shared.deviceType.rawValue)
+        ], intValue: Globals.shared.deviceType.rawValue)
         settingsArray.append(s)
 
         s = Setting(tag: AppSettings.SETTINGS_DEVICE_CONNECTION, type: .PICKER, title: "_connection", listTitles: [
@@ -210,32 +140,32 @@ class SettingsViewController: CanZeViewController {
             AppSettings.DEVICE_CONNECTION.BLE.rawValue,
             AppSettings.DEVICE_CONNECTION.WIFI.rawValue,
             AppSettings.DEVICE_CONNECTION.HTTP.rawValue,
-        ], intValue: AppSettings.shared.deviceConnection.rawValue)
+        ], intValue: Globals.shared.deviceConnection.rawValue)
         settingsArray.append(s)
 
-        if AppSettings.shared.deviceConnection == .WIFI {
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString("label_DeviceAddress", comment: ""), stringValue: AppSettings.shared.deviceWifiAddress, placeholder: "192.168.0.10")
+        if Globals.shared.deviceConnection == .WIFI {
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString("label_DeviceAddress", comment: ""), stringValue: Globals.shared.deviceWifiAddress, placeholder: "192.168.0.10")
             settingsArray.append(s)
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_PORT, type: .TEXTFIELD, title: "_device port:", stringValue: AppSettings.shared.deviceWifiPort, placeholder: "35000")
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_PORT, type: .TEXTFIELD, title: "_device port:", stringValue: Globals.shared.deviceWifiPort, placeholder: "35000")
             settingsArray.append(s)
 
-        } else if AppSettings.shared.deviceConnection == .BLE {
+        } else if Globals.shared.deviceConnection == .BLE {
             s = Setting(tag: AppSettings.SETTINGS_DEVICE_BLE_NAME, type: .PICKER, title: "_name", listTitles: [
                 "Vgate iCar Pro",
                 "LELink",
             ], listValues: [
                 AppSettings.DEVICE_BLE_NAME.VGATE.rawValue,
                 AppSettings.DEVICE_BLE_NAME.LELINK.rawValue,
-            ], intValue: AppSettings.shared.deviceBleName.rawValue)
+            ], intValue: Globals.shared.deviceBleName.rawValue)
             settingsArray.append(s)
 
-        } else if AppSettings.shared.deviceConnection == .HTTP {
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS, type: .TEXTFIELD, title: "_http address", stringValue: AppSettings.shared.deviceHttpAddress)
+        } else if Globals.shared.deviceConnection == .HTTP {
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS, type: .TEXTFIELD, title: "_http address", stringValue: Globals.shared.deviceHttpAddress)
             settingsArray.append(s)
         }
 
-        if AppSettings.shared.car != AppSettings.CAR_X10PH2 {
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS, type: .SWITCH, title: NSLocalizedString("label_AltFields", comment: ""), boolValue: AppSettings.shared.useIsoTpFields)
+        if Globals.shared.car != AppSettings.CAR_X10PH2 {
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS, type: .SWITCH, title: NSLocalizedString("label_AltFields", comment: ""), boolValue: Globals.shared.useIsoTpFields)
             settingsArray.append(s)
         }
 
@@ -243,7 +173,7 @@ class SettingsViewController: CanZeViewController {
     }
 
     @IBAction func btnOBDTest() {
-        if AppSettings.shared.deviceType == .ELM327, !AppSettings.shared.deviceIsConnected {
+        if Globals.shared.deviceType == .ELM327, !Globals.shared.deviceIsConnected {
             view.hideAllToasts()
             view.makeToast("_please connect")
             return
@@ -251,27 +181,27 @@ class SettingsViewController: CanZeViewController {
         view.hideAllToasts()
         view.makeToast("starting test")
 
-        NotificationCenter.default.addObserver(self, selector: #selector(fineOBDTest), name: Notification.Name("fineCoda2"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(endOBDTest), name: Notification.Name("endQueue2"), object: nil)
 
-        coda2 = []
+        queue2 = []
         if Utils.isPh2() {
             addField(sid: "7ec.5003.0", intervalMs: 2000) // open EVC
         }
         addField(sid: Sid.SoC, intervalMs: 5000)
         addField(sid: Sid.BatterySerial, intervalMs: 5000)
-        iniziaCoda2()
+        startQueue2()
     }
 
-    @objc func fineOBDTest() {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name("fineCoda2"), object: nil)
+    @objc func endOBDTest() {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name("endQueue2"), object: nil)
 
         let sid1 = Sid.SoC
         let v1 = fieldResultsDouble[sid1]
-        let f1 = Fields.getInstance.getBySID(sid: sid1)
+        let f1 = Fields.getInstance.getBySID(sid1)
 
         let sid2 = Sid.BatterySerial
         let v2 = fieldResultsString[sid2]
-        let f2 = Fields.getInstance.getBySID(sid: sid2)
+        let f2 = Fields.getInstance.getBySID(sid2)
 
         if f1 != nil, v1 != nil, f2 != nil, v2 != nil {
             view.hideAllToasts()
@@ -299,40 +229,43 @@ class SettingsViewController: CanZeViewController {
             ud.synchronize()
         case AppSettings.SETTINGS_DEVICE_CONNECTION:
 
-            AppSettings.shared.deviceConnection = AppSettings.DEVICE_CONNECTION(rawValue: value as! Int) ?? .NONE
+            Globals.shared.deviceConnection = AppSettings.DEVICE_CONNECTION(rawValue: value as! Int) ?? .NONE
 
-            ud.setValue(AppSettings.shared.deviceConnection.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+            ud.setValue(Globals.shared.deviceConnection.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
             ud.synchronize()
 
             disconnect(showToast: false)
 
         case AppSettings.SETTINGS_DEVICE_TYPE:
 
-            AppSettings.shared.deviceType = AppSettings.DEVICE_TYPE(rawValue: value as! Int) ?? .NONE
+            Globals.shared.deviceType = AppSettings.DEVICE_TYPE(rawValue: value as! Int) ?? .NONE
 
-            ud.setValue(AppSettings.shared.deviceType.rawValue, forKey: AppSettings.SETTINGS_DEVICE_TYPE)
+            ud.setValue(Globals.shared.deviceType.rawValue, forKey: AppSettings.SETTINGS_DEVICE_TYPE)
 
-            if AppSettings.shared.deviceType == .HTTP { // http gw is only supported via http
+            if Globals.shared.deviceType == .HTTP { // http gw is only supported via http
                 ud.setValue(AppSettings.DEVICE_CONNECTION.HTTP.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
             }
-            if AppSettings.shared.deviceType == .CANSEE { // cansee is only supported with wifi
+            if Globals.shared.deviceType == .CANSEE { // cansee is only supported with wifi
                 ud.setValue(AppSettings.DEVICE_CONNECTION.WIFI.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
             }
             ud.synchronize()
 
         case AppSettings.SETTINGS_DEVICE_BLE_NAME:
 
-            AppSettings.shared.deviceBleName = AppSettings.DEVICE_BLE_NAME(rawValue: value as! Int) ?? .NONE
+            Globals.shared.deviceBleName = AppSettings.DEVICE_BLE_NAME(rawValue: value as! Int) ?? .NONE
 
-            ud.setValue(AppSettings.shared.deviceBleName.rawValue, forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
+            ud.setValue(Globals.shared.deviceBleName.rawValue, forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
 
-            if AppSettings.shared.deviceBleName == .VGATE {
-                ud.setValue("D63109B1-C246-911F-F180-CAE0377D718D", forKey: AppSettings.SETTINGS_DEVICE_BLE_IDENTIFIER_UUID)
+            if Globals.shared.deviceBleName == .VGATE {
+//                ud.setValue("D63109B1-C246-911F-F180-CAE0377D718D", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
+                ud.setValue("IOS-Vlink", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME)
+                ud.setValue("C77D5F27-9FF8-837E-B370-1A4FAF0DAEDB", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
                 ud.setValue("E7810A71-73AE-499D-8C15-FAA9AEF0C3F2", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
                 ud.setValue("BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
                 ud.setValue("BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
-            } else if AppSettings.shared.deviceBleName == .LELINK {
-                ud.setValue("7A4984CB-7607-37D8-337E-7CA5AC17C9B0", forKey: AppSettings.SETTINGS_DEVICE_BLE_IDENTIFIER_UUID)
+            } else if Globals.shared.deviceBleName == .LELINK {
+                ud.setValue("OBDBLE", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME)
+                ud.setValue("7A4984CB-7607-37D8-337E-7CA5AC17C9B0", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
                 ud.setValue("FFE0", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
                 ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
                 ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
@@ -347,8 +280,8 @@ class SettingsViewController: CanZeViewController {
         }
 
         disconnect(showToast: false)
-        AppSettings.shared.deviceIsConnected = false
-        AppSettings.shared.deviceIsInitialized = false
+        Globals.shared.deviceIsConnected = false
+        Globals.shared.deviceIsInitialized = false
         NotificationCenter.default.post(name: Notification.Name("deviceDisconnected"), object: nil)
 
         loadSettings()
@@ -401,8 +334,8 @@ class SettingsViewController: CanZeViewController {
         textField.text = ""
 
         disconnect(showToast: false)
-        AppSettings.shared.deviceIsConnected = false
-        AppSettings.shared.deviceIsInitialized = false
+        Globals.shared.deviceIsConnected = false
+        Globals.shared.deviceIsInitialized = false
         NotificationCenter.default.post(name: Notification.Name("deviceDisconnected"), object: nil)
 
         loadSettings()
@@ -529,6 +462,11 @@ extension SettingsViewController: UITableViewDelegate {
         switch setting.type {
         case .PICKER:
 
+            disconnect(showToast: false)
+            Globals.shared.deviceIsConnected = false
+            Globals.shared.deviceIsInitialized = false
+            NotificationCenter.default.post(name: Notification.Name("deviceDisconnected"), object: nil)
+
             pickerTitles = setting.listTitles
             pickerValues = setting.listValues
             picker.selectRow(0, inComponent: 0, animated: false)
@@ -557,27 +495,23 @@ extension SettingsViewController: UITableViewDelegate {
                 }
             }
 
+        case .TEXTFIELD:
             disconnect(showToast: false)
-            AppSettings.shared.deviceIsConnected = false
-            AppSettings.shared.deviceIsInitialized = false
+            Globals.shared.deviceIsConnected = false
+            Globals.shared.deviceIsInitialized = false
             NotificationCenter.default.post(name: Notification.Name("deviceDisconnected"), object: nil)
 
-        case .TEXTFIELD:
             let vBG = UIView(frame: view.frame)
             vBG.backgroundColor = UIColor.black.withAlphaComponent(0.75)
             vBG.tag = vBG_TAG
             view.insertSubview(vBG, belowSubview: textFieldView)
+
             textFieldView.center = view.center
             textFieldView.alpha = 1.0
             textField.text = setting.stringValue
             textField.placeholder = setting.placeholder
-            btnTextFieldDone.backgroundColor = UIColor.red.withAlphaComponent(0.5)
-            btnTextFieldCancel.backgroundColor = UIColor.orange.withAlphaComponent(0.5)
-
-            disconnect(showToast: false)
-            AppSettings.shared.deviceIsConnected = false
-            AppSettings.shared.deviceIsInitialized = false
-            NotificationCenter.default.post(name: Notification.Name("deviceDisconnected"), object: nil)
+            btnTextFieldDone.backgroundColor = .lightGray
+            btnTextFieldCancel.backgroundColor = .lightGray
 
         case .SWITCH:
 

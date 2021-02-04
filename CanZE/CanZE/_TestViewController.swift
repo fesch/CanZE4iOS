@@ -26,7 +26,7 @@ class TestViewController: UIViewController {
 
     var blePhase: BlePhase = .DISCOVER
 
-    var arraySequenze: [Sequenza] = []
+    var arraySequenze: [Sequence] = []
 
     @IBOutlet var seg: UISegmentedControl!
     @IBOutlet var tf: UITextField!
@@ -36,6 +36,7 @@ class TestViewController: UIViewController {
     @IBOutlet var picker: UIPickerView!
     @IBOutlet var btn_PickerCancel: UIButton!
     @IBOutlet var btn_PickerDone: UIButton!
+    var tmpPickerIndex = 0
 
     let ud = UserDefaults.standard
 
@@ -47,7 +48,6 @@ class TestViewController: UIViewController {
     var selectedReadCharacteristic: CBCharacteristic!
     var timeoutTimerBle: Timer!
 
-    var tmpPickerIndex = 0
     var peripheralsArray: [BlePeripheral]!
     var servicesArray: [CBService]!
     var characteristicArray: [CBCharacteristic]!
@@ -61,15 +61,15 @@ class TestViewController: UIViewController {
     let test: [String] = ["atz", "ate0", "ats0", "atsp6", "atat1", "atcaf0", "atsh7e4", "atfcsh7e4", "03222006", "atcra699", "atma", "atar", "!?"] // , "!atz!ate0!ats0!atsp6!atat1"]
     var indiceTest = 0
 
-    // coda
+    // queue
     let autoInitElm327: [String] = ["ate0", "ats0", "ath0", "atl0", "atal", "atcaf0", "atfcsh77b", "atfcsd300000", "atfcsm1", "atsp6"]
-    var coda: [String] = []
+    var queue: [String] = []
     var timeoutTimer: Timer!
     var lastRxString = ""
     var lastId = -1
 
-    // coda2
-    var coda2: [Sequenza] = []
+    // queue2
+    var queue2: [Sequence] = []
     var indiceCmd = 0
 
     var fieldResult: [String: Double] = [:]
@@ -79,13 +79,13 @@ class TestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(ricevuto(notification:)), name: Notification.Name("ricevuto"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ricevuto2(notification:)), name: Notification.Name("ricevuto2"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(received(notification:)), name: Notification.Name("received"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(received2(notification:)), name: Notification.Name("received2"), object: nil)
 
         if seg.selectedSegmentIndex == 0 || seg.selectedSegmentIndex == 1 {
-            AppSettings.shared.deviceType = .ELM327
+            Globals.shared.deviceType = .ELM327
         } else if seg.selectedSegmentIndex == 2 || seg.selectedSegmentIndex == 3 {
-            AppSettings.shared.deviceType = .CANSEE
+            Globals.shared.deviceType = .CANSEE
         }
 
         title = "TEST !"
@@ -147,21 +147,19 @@ class TestViewController: UIViewController {
             // ELM327 BLE
             blePhase = .DISCOVER
             pickerPhase = .PERIPHERAL
-            AppSettings.shared.deviceType = .ELM327
-            AppSettings.shared.deviceConnection = .BLE
+            Globals.shared.deviceType = .ELM327
+            Globals.shared.deviceConnection = .BLE
             connectBle()
         case 1:
             // ELM327 WIFI
-            AppSettings.shared.deviceType = .ELM327
-            AppSettings.shared.deviceConnection = .WIFI
+            Globals.shared.deviceType = .ELM327
+            Globals.shared.deviceConnection = .WIFI
             connectWifi()
         case 2:
             // CanSee BLE
-            // TODO:
             break
         case 3:
             // CanSee WIFI
-            // TODO:
             break
         default:
             break
@@ -180,11 +178,9 @@ class TestViewController: UIViewController {
             disconnectWifi()
         case 2:
             // CanSee BLE
-            // TODO:
             break
         case 3:
             // CanSee WIFI
-            // TODO:
             break
         default:
             break
@@ -192,7 +188,7 @@ class TestViewController: UIViewController {
     }
 
     func write(s: String) {
-        switch AppSettings.shared.deviceConnection {
+        switch Globals.shared.deviceConnection {
         case .BLE:
             writeBle(s: s)
         case .WIFI:
@@ -200,7 +196,7 @@ class TestViewController: UIViewController {
         case .HTTP:
             writeHttp(s: s)
         default:
-            debug(s: "can't find device connection")
+            debug("can't find device connection")
         }
     }
 
@@ -215,11 +211,9 @@ class TestViewController: UIViewController {
             writeWifi(s: s)
         case 2:
             // CanSee BLE
-            // TODO:
             break
         case 3:
             // CanSee WIFI
-            // TODO:
             break
         default:
             break
@@ -239,6 +233,7 @@ class TestViewController: UIViewController {
                     // timeout
                     self.centralManager.stopScan()
                     timer.invalidate()
+                    self.view.hideAllToasts()
                     self.view.makeToast("can't connect to ble device: TIMEOUT")
                 }
             })
@@ -263,15 +258,15 @@ class TestViewController: UIViewController {
             if data != nil {
                 if selectedWriteCharacteristic.properties.contains(.write) {
                     selectedPeripheral.blePeripheral.writeValue(data!, for: selectedWriteCharacteristic, type: .withResponse)
-                    debug(s: "> \(s)")
+                    debug("> \(s)")
                 } else if selectedWriteCharacteristic.properties.contains(.writeWithoutResponse) {
                     selectedPeripheral.blePeripheral.writeValue(data!, for: selectedWriteCharacteristic, type: .withoutResponse)
-                    debug(s: "> \(s)")
+                    debug("> \(s)")
                 } else {
-                    debug(s: "can't write to characteristic")
+                    debug("can't write to characteristic")
                 }
             } else {
-                debug(s: "data is nil")
+                debug("data is nil")
             }
         }
     }
@@ -280,7 +275,7 @@ class TestViewController: UIViewController {
     // ELM327 WIFI
     // ELM327 WIFI
     func connectWifi() {
-        if AppSettings.shared.deviceWifiAddress == "" || AppSettings.shared.deviceWifiPort == "" {
+        if Globals.shared.deviceWifiAddress == "" || Globals.shared.deviceWifiPort == "" {
             view.hideAllToasts()
             view.makeToast("_Please configure")
             return
@@ -290,8 +285,8 @@ class TestViewController: UIViewController {
         var writeStream: Unmanaged<CFWriteStream>?
 
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault,
-                                           AppSettings.shared.deviceWifiAddress as CFString,
-                                           UInt32(AppSettings.shared.deviceWifiPort)!,
+                                           Globals.shared.deviceWifiAddress as CFString,
+                                           UInt32(Globals.shared.deviceWifiPort)!,
                                            &readStream,
                                            &writeStream)
 
@@ -325,6 +320,7 @@ class TestViewController: UIViewController {
                 self.timeoutTimerWifi.invalidate()
                 self.timeoutTimerWifi = nil
                 self.disconnectWifi()
+                self.view.hideAllToasts()
                 self.view.makeToast("TIMEOUT")
             }
 
@@ -334,7 +330,6 @@ class TestViewController: UIViewController {
     }
 
     func disconnectWifi() {
-        // TODO:
         if inputStream != nil {
             inputStream.close()
             inputStream.remove(from: RunLoop.current, forMode: .default)
@@ -350,16 +345,15 @@ class TestViewController: UIViewController {
     }
 
     func writeWifi(s: String) {
-        // TODO:
         if outputStream != nil {
             let s2 = s.appending("\r")
             let data = s2.data(using: .utf8)!
             data.withUnsafeBytes {
                 guard let pointer = $0.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-                    debug(s: "Error")
+                    debug("Error")
                     return
                 }
-                debug(s: "> \(s)")
+                debug("> \(s)")
                 outputStream.write(pointer, maxLength: data.count)
             }
         }
@@ -371,7 +365,7 @@ class TestViewController: UIViewController {
         if dic != nil, dic?.keys != nil {
             for k in dic!.keys {
                 let ss = dic![k] as! String
-                NotificationCenter.default.post(name: Notification.Name("ricevuto"), object: ["tag": ss])
+                NotificationCenter.default.post(name: Notification.Name("received"), object: ["tag": ss])
             }
         }
     }
@@ -402,10 +396,10 @@ class TestViewController: UIViewController {
     // http
 
     func writeHttp(s: String) {
-        var request = URLRequest(url: URL(string: "\(AppSettings.shared.deviceHttpAddress)\(s)")!, timeoutInterval: 5)
+        var request = URLRequest(url: URL(string: "\(Globals.shared.deviceHttpAddress)\(s)")!, timeoutInterval: 5)
         request.httpMethod = "GET"
 
-        debug(s: "> \(s)")
+        debug("> \(s)")
 
         let task = URLSession.shared.dataTask(with: request) { data, _, error in
             guard let data = data else {
@@ -421,9 +415,9 @@ class TestViewController: UIViewController {
                     reply3 = "ERROR"
                 }
                 let dic = ["tag": reply3]
-                NotificationCenter.default.post(name: Notification.Name("ricevuto2"), object: dic)
+                NotificationCenter.default.post(name: Notification.Name("received2"), object: dic)
             } else {
-                self.debug(s: reply!)
+                self.debug(reply!)
             }
         }
         task.resume()
@@ -432,11 +426,11 @@ class TestViewController: UIViewController {
     // BTN
 
     @IBAction func btnAutoInit() {
-        coda = []
+        queue = []
         for s in autoInitElm327 {
-            coda.append(s)
+            queue.append(s)
         }
-        processaCoda()
+        processQueue()
     }
 
     @IBAction func btnSaveBleConnectionParams() {
@@ -445,11 +439,12 @@ class TestViewController: UIViewController {
 //        ud.setValue(selectedReadCharacteristic.uuid.uuidString, forKey: "selectedReadCharacteristic.uuid.uuidString")
 //        ud.setValue(selectedWriteCharacteristic.uuid.uuidString, forKey: "selectedWriteCharacteristic.uuid.uuidString")
 
-        // ud.setValue(AppSettings.shared.deviceBlePeripheralName, forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
-        ud.setValue(AppSettings.shared.deviceBlePeripheralIdentifierUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_IDENTIFIER_UUID)
-        ud.setValue(AppSettings.shared.deviceBleServiceUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
-        ud.setValue(AppSettings.shared.deviceBleReadCharacteristicUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
-        ud.setValue(AppSettings.shared.deviceBleWriteCharacteristicUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
+        ud.setValue(Globals.shared.deviceBleName.rawValue, forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
+        ud.setValue(Globals.shared.deviceBlePeripheralName, forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME)
+        ud.setValue(Globals.shared.deviceBlePeripheralUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
+        ud.setValue(Globals.shared.deviceBleServiceUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
+        ud.setValue(Globals.shared.deviceBleReadCharacteristicUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
+        ud.setValue(Globals.shared.deviceBleWriteCharacteristicUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
 
         ud.synchronize()
     }
@@ -460,16 +455,17 @@ class TestViewController: UIViewController {
         //        selectedReadCharacteristic_uuid_uuidString = ud.string(forKey: "selectedReadCharacteristic.uuid.uuidString") ?? ""
         //        selectedWriteCharacteristic_uuid_uuidString = ud.string(forKey: "selectedWriteCharacteristic.uuid.uuidString") ?? ""
 
-        //  AppSettings.shared.deviceBlePeripheralName = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME) ?? ""
-        AppSettings.shared.deviceBlePeripheralIdentifierUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_IDENTIFIER_UUID) ?? ""
-        AppSettings.shared.deviceBleServiceUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID) ?? ""
-        AppSettings.shared.deviceBleReadCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID) ?? ""
-        AppSettings.shared.deviceBleWriteCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID) ?? ""
+        Globals.shared.deviceBleName = AppSettings.DEVICE_BLE_NAME(rawValue: ud.value(forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME) as? Int ?? 0) ?? .NONE
+        Globals.shared.deviceBlePeripheralName = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME) ?? ""
+        Globals.shared.deviceBlePeripheralUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID) ?? ""
+        Globals.shared.deviceBleServiceUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID) ?? ""
+        Globals.shared.deviceBleReadCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID) ?? ""
+        Globals.shared.deviceBleWriteCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID) ?? ""
 
         blePhase = .DISCOVERED
-        AppSettings.shared.deviceConnection = .BLE
-        AppSettings.shared.deviceType = .ELM327
-        if AppSettings.shared.deviceBlePeripheralIdentifierUuid != "" {
+        Globals.shared.deviceConnection = .BLE
+        Globals.shared.deviceType = .ELM327
+        if Globals.shared.deviceBlePeripheralName != "" {
             connectBle()
         } else {
             print("non configurato")
@@ -478,21 +474,19 @@ class TestViewController: UIViewController {
 
     @IBAction func btnTest() {
         tf.resignFirstResponder()
-        // TODO:
         if indiceTest > test.count - 1 {
             indiceTest = 0
         }
         let s = test[indiceTest]
         write_(s: s)
 
-        debug(s: s)
+        debug(s)
 
         indiceTest += 1
     }
 
     @IBAction func btnSend() {
         tf.resignFirstResponder()
-        // TODO:
         if tf.text != nil {
             write_(s: tf.text!)
         }
@@ -503,29 +497,29 @@ class TestViewController: UIViewController {
     @IBAction func requestIsoTpFrame() {
         if true { // TEST TEST TEST
 //            lastId = -1
-            coda = []
+            queue = []
             if Utils.isPh2() {
                 addField(sid: "7ec.5003.0", intervalMs: 2000) // open EVC
             }
 
-            addField(sid: Sid.MaxCharge, intervalMs: 5000)
+//            addField(sid: Sid.MaxCharge, intervalMs: 5000)
             addField(sid: Sid.UserSoC, intervalMs: 5000)
             addField(sid: Sid.RealSoC, intervalMs: 5000)
-            addField(sid: Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
-            addField(sid: Sid.RangeEstimate, intervalMs: 5000)
+//            addField(sid: Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
+//            addField(sid: Sid.RangeEstimate, intervalMs: 5000)
             addField(sid: Sid.DcPowerIn, intervalMs: 5000) // virtual virtual virtual
-            addField(sid: Sid.AvailableChargingPower, intervalMs: 5000)
-            addField(sid: Sid.HvTemp, intervalMs: 5000)
+//            addField(sid: Sid.AvailableChargingPower, intervalMs: 5000)
+//            addField(sid: Sid.HvTemp, intervalMs: 5000)
 
-            addField(sid: Sid.BatterySerial, intervalMs: 99999) // 7bb.6162.16      2ff
-            addField(sid: Sid.Total_kWh, intervalMs: 99999) // 7bb.6161.120         1ff
-            addField(sid: Sid.Counter_Full, intervalMs: 99999) //                   ff
-            addField(sid: Sid.Counter_Partial, intervalMs: 99999) //                ff
+//            addField(sid: Sid.BatterySerial, intervalMs: 99999) // 7bb.6162.16      2ff
+//            addField(sid: Sid.Total_kWh, intervalMs: 99999) // 7bb.6161.120         1ff
+//            addField(sid: Sid.Counter_Full, intervalMs: 99999) //                   ff
+//            addField(sid: Sid.Counter_Partial, intervalMs: 99999) //                ff
 
-            iniziaCoda2()
+            startQueue2()
 
         } else {
-            let field = Fields.getInstance.getBySID(sid: Sid.UserSoC)
+            let field = Fields.getInstance.getBySID(Sid.UserSoC)
 
             //  print("\(field?.from ?? -1) \(field?.to ?? -1)")
 
@@ -562,43 +556,43 @@ class TestViewController: UIViewController {
             for s in arr {
                 let nn = Notification.Name("a")
                 let no = Notification(name: nn, object: ["sid": s.a1, "tag": s.a2], userInfo: nil)
-                ricevuto2(notification: no)
+                received2(notification: no)
                 /*
-                                let field = Fields.getInstance.getBySID(sid: s.a1)
+                                let field = Fields.getInstance.getBySID(s.a1)
 
                                 if field != nil, s.a2 != "" {
                                     print("\(field?.sid ?? "?") \(field?.name ?? "?")")
                                     tv.text += "\n\(field?.sid ?? "?") \(field?.name ?? "?")"
 
-                                    if AppSettings.shared.deviceType == AppSettings.DEVICE_TYPE_ELM327 {
+                                    if Globals.shared.deviceType == AppSettings.DEVICE_TYPE_ELM327 {
                                         field?.strVal = decodeIsoTp(elmResponse2: s.a2) // ""
                                         if field!.strVal.hasPrefix("7f") {
-                                            debug(s: "errore 7f")
+                                            debug( "error 7f")
                                         } else if field!.strVal == "" {
-                                            debug(s: "empty")
+                                            debug( "empty")
                                         } else {
                                             let binString = getAsBinaryString(data: field!.strVal)
                                             onMessageCompleteEventField(binString_: binString, field: field!)
                                             if field!.isString() || field!.isHexString() {
-                                                debug(s: "\(field!.strVal)")
+                                                debug( "\(field!.strVal)")
                                             } else {
-                                                debug(s: "\(String(format: "%.\(field!.decimals!)f", field!.getValue()))")
+                                                debug( "\(String(format: "%.\(field!.decimals!)f", field!.getValue()))")
                                             }
                                         }
-                                    } else if AppSettings.shared.deviceType == AppSettings.DEVICE_TYPE_CANSEE {
+                                    } else if Globals.shared.deviceType == AppSettings.DEVICE_TYPE_CANSEE {
                                         let binString = getAsBinaryString(data: s.a2)
                                         onMessageCompleteEventField(binString_: binString, field: field!)
 
                                         if field!.isString() || field!.isHexString() {
-                                            debug(s: "\(field!.strVal)")
+                                            debug( "\(field!.strVal)")
                                         } else {
-                                            debug(s: " \(String(format: "%.\(field!.decimals!)f", field!.getValue()))")
+                                            debug( " \(String(format: "%.\(field!.decimals!)f", field!.getValue()))")
                                         }
                                     } else {
-                                        debug(s: "device ?")
+                                        debug( "device ?")
                                     }
                                 } else {
-                                    debug(s: "field \(s.a1) not found")
+                                    debug( "field \(s.a1) not found")
                                 }
                  */
             }
@@ -606,7 +600,7 @@ class TestViewController: UIViewController {
     }
 
     func addField(sid: String, intervalMs: Int) {
-        let field = Fields.getInstance.getBySID(sid: sid)
+        let field = Fields.getInstance.getBySID(sid)
         if field != nil {
             if field!.responseId != "999999" {
                 //  addField(field:field, intervalMs: intervalMs)
@@ -636,30 +630,30 @@ class TestViewController: UIViewController {
         if field.virtual {
 //            var r = calcolaVirtual(field)
 //            let dic = ["tag":r]
-//            NotificationCenter.default.post(name: Notification.Name("ricevuto2"), object: dic)
+//            NotificationCenter.default.post(name: Notification.Name("received2"), object: dic)
 
-            let virtualField = Fields.getInstance.getBySID(sid: field.sid) as! VirtualField
+            let virtualField = Fields.getInstance.getBySID(field.sid) as! VirtualField
             let fields = virtualField.getFields()
             for f in fields {
                 if f.responseId != "999999" {
                     requestIsoTpFrame(frame2: (f.frame)!, field: f)
                 }
             }
-            let seq = coda2.first
+            let seq = queue2.last
             seq?.sidVirtual = field.sid
             return
         }
 
-        let seq = Sequenza()
+        let seq = Sequence()
 //        seq.frame = frame
         seq.field = field
 
         if lastId != frame.fromId {
-            if AppSettings.shared.deviceConnection == .HTTP {
+            if Globals.shared.deviceConnection == .HTTP {
                 // i7ec,222002,622002
                 let s = "?command=i\(String(format: "%02x", frame.fromId)),\(frame.getRequestId()),\(field.responseId ?? "")"
                 seq.cmd.append(s)
-                coda2.append(seq)
+                queue2.append(seq)
                 return
 
             } else {
@@ -747,7 +741,7 @@ class TestViewController: UIViewController {
             }
         }
 
-        coda2.append(seq)
+        queue2.append(seq)
     }
 
     func decodeIsoTp(elmResponse2: String) -> String { // TEST
@@ -804,7 +798,7 @@ class TestViewController: UIViewController {
             let framesToReceive = len / 7 // read this as ((len - 6 [remaining characters]) + 6 [offset to / 7, so 0->0, 1-7->7, etc]) / 7
             // get all remaining 0x2 (NEXT) frames
 
-            // coda.append(framesToReceive)
+            // queue.append(framesToReceive)
 
             // TEST
             // TEST
@@ -964,7 +958,7 @@ class TestViewController: UIViewController {
 //            result = String(x!, radix: 2)
             var d = data
             if d.count % 2 != 0 {
-                d = "0"+d
+                d = "0" + d
             }
             result = d.hexaToBinary
             while result.count % 8 != 0 {
@@ -983,9 +977,9 @@ class TestViewController: UIViewController {
         print(seg.selectedSegmentIndex)
 
         if seg.selectedSegmentIndex == 0 || seg.selectedSegmentIndex == 1 {
-            AppSettings.shared.deviceType = .ELM327
+            Globals.shared.deviceType = .ELM327
         } else if seg.selectedSegmentIndex == 2 || seg.selectedSegmentIndex == 3 {
-            AppSettings.shared.deviceType = .CANSEE
+            Globals.shared.deviceType = .CANSEE
         }
     }
 
@@ -1042,8 +1036,9 @@ class TestViewController: UIViewController {
             if peripheralsArray.count > tmpPickerIndex {
                 centralManager.stopScan()
                 selectedPeripheral = peripheralsArray[tmpPickerIndex]
-                AppSettings.shared.deviceBlePeripheralIdentifierUuid = selectedPeripheral.blePeripheral.identifier.uuidString
-                debug(s: "selected peripheral \(selectedPeripheral.blePeripheral.name ?? "?")")
+                Globals.shared.deviceBlePeripheralName = selectedPeripheral.blePeripheral.name ?? ""
+                Globals.shared.deviceBlePeripheralUuid = selectedPeripheral.blePeripheral.identifier.uuidString
+                debug("selected peripheral \(selectedPeripheral.blePeripheral.name ?? "?")")
                 selectedPeripheral.blePeripheral.delegate = self
                 centralManager.connect(selectedPeripheral.blePeripheral)
                 btn_PickerDone.setTitle("select service", for: .normal)
@@ -1052,8 +1047,8 @@ class TestViewController: UIViewController {
             if servicesArray.count > tmpPickerIndex {
                 pickerPhase = .WRITE_CHARACTERISTIC
                 selectedService = servicesArray[tmpPickerIndex]
-                AppSettings.shared.deviceBleServiceUuid = selectedService.uuid.uuidString
-                debug(s: "selected service \(selectedService.uuid)")
+                Globals.shared.deviceBleServiceUuid = selectedService.uuid.uuidString
+                debug("selected service \(selectedService.uuid)")
                 characteristicArray = []
                 selectedPeripheral.blePeripheral.discoverCharacteristics([selectedService.uuid], for: selectedService)
                 btn_PickerDone.setTitle("select WRITE characteristic", for: .normal)
@@ -1061,8 +1056,8 @@ class TestViewController: UIViewController {
         } else if pickerPhase == .WRITE_CHARACTERISTIC {
             if characteristicArray.count > tmpPickerIndex {
                 selectedWriteCharacteristic = characteristicArray[tmpPickerIndex]
-                AppSettings.shared.deviceBleWriteCharacteristicUuid = selectedWriteCharacteristic.uuid.uuidString
-                debug(s: "selected write characteristic \(selectedWriteCharacteristic.uuid)")
+                Globals.shared.deviceBleWriteCharacteristicUuid = selectedWriteCharacteristic.uuid.uuidString
+                debug("selected write characteristic \(selectedWriteCharacteristic.uuid)")
                 // peripheral.discoverDescriptors(for: characteristics)
                 btn_PickerDone.setTitle("select NOTIFY characteristic", for: .normal)
                 pickerPhase = .READ_CHARACTERISTIC
@@ -1074,8 +1069,8 @@ class TestViewController: UIViewController {
             if characteristicArray.count > tmpPickerIndex {
                 pickerPhase = .PERIPHERAL
                 selectedReadCharacteristic = characteristicArray[tmpPickerIndex]
-                AppSettings.shared.deviceBleReadCharacteristicUuid = selectedReadCharacteristic.uuid.uuidString
-                debug(s: "selected notify characteristic \(selectedReadCharacteristic.uuid)")
+                Globals.shared.deviceBleReadCharacteristicUuid = selectedReadCharacteristic.uuid.uuidString
+                debug("selected notify characteristic \(selectedReadCharacteristic.uuid)")
                 if selectedReadCharacteristic.properties.contains(.notify) {
                     for c in selectedService.characteristics! {
                         selectedPeripheral.blePeripheral.setNotifyValue(false, for: c)
@@ -1091,21 +1086,21 @@ class TestViewController: UIViewController {
 
     // CODA
 
-    func initCoda() {
+    func initQueue() {
         arraySequenze = []
     }
 
-    func processaCoda() {
-        if coda.count == 0 {
-            print("FINITO")
+    func processQueue() {
+        if queue.count == 0 {
+            print("END")
             deviceIsInitialized = true
             return
         }
 
-        if AppSettings.shared.deviceConnection == .BLE {
-            writeBle(s: coda.first!)
-        } else if AppSettings.shared.deviceConnection == .WIFI {
-            writeWifi(s: coda.first!)
+        if Globals.shared.deviceConnection == .BLE {
+            writeBle(s: queue.first!)
+        } else if Globals.shared.deviceConnection == .WIFI {
+            writeWifi(s: queue.first!)
         } else {
             print("unknown connection type ???")
             return
@@ -1115,59 +1110,59 @@ class TestViewController: UIViewController {
             timeoutTimer.invalidate()
         }
         timeoutTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
-            print("coda timeout !!!")
+            print("queue timeout !!!")
             timer.invalidate()
             return
         }
     }
 
-    func continuaCoda() {
+    func continueQueue() {
         // next step, after delay
-        if coda.count > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // Change n to the desired number of seconds
-                self.coda.remove(at: 0)
-                self.processaCoda()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // Change n to the desired number of seconds
+            if self.queue.count > 0 {
+                self.queue.remove(at: 0)
+                self.processQueue()
             }
         }
     }
 
-    @objc func ricevuto(notification: Notification) {
-        if coda.count > 0 {
+    @objc func received(notification: Notification) {
+        if queue.count > 0 {
             if timeoutTimer != nil, timeoutTimer.isValid {
                 timeoutTimer.invalidate()
-                continuaCoda()
+                continueQueue()
             }
-        } else if coda2.count > 0 {
-            NotificationCenter.default.post(name: Notification.Name("ricevuto2"), object: notification.object)
+        } else if queue2.count > 0 {
+            NotificationCenter.default.post(name: Notification.Name("received2"), object: notification.object)
         } else {
             let dic = notification.object as! [String: Any]
             let ss = dic["tag"] as! String
-            debug(s: "< '\(ss)' \(ss.count)")
+            debug("< '\(ss)' \(ss.count)")
         }
     }
 
-    func iniziaCoda2() {
+    func startQueue2() {
         // TEST
         // if !deviceIsInitialized {
-        // debug(s: "device not Initialized")
+        // debug( "device not Initialized")
         // return
         // }
         // TEST
         indiceCmd = 0
-        processaCoda2()
+        processQueue2()
     }
 
-    func processaCoda2() {
-        if coda2.count == 0 {
-            print("FINITO coda2")
+    func processQueue2() {
+        if queue2.count == 0 {
+            print("END queue2")
             return
         }
 
-        let seq = coda2.first! as Sequenza
+        let seq = queue2.first! as Sequence
         if indiceCmd >= seq.cmd.count {
-            coda2.removeFirst()
-            print("FINITO cmd")
-            iniziaCoda2()
+            queue2.removeFirst()
+            print("END cmd")
+            startQueue2()
             return
         }
         let cmd = seq.cmd[indiceCmd]
@@ -1178,22 +1173,22 @@ class TestViewController: UIViewController {
         }
         timeoutTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
             timer.invalidate()
-            self.debug(s: "coda2 timeout !!!")
+            self.debug("queue2 timeout !!!")
             self.view.hideAllToasts()
             self.view.makeToast("TIMEOUT")
             return
         }
     }
 
-    func continuaCoda2() {
+    func continueQueue2() {
         // next step, after delay
         indiceCmd += 1
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // Change n to the desired number of seconds
-            self.processaCoda2()
+            self.processQueue2()
         }
     }
 
-    func debug(s: String) {
+    func debug(_ s: String) {
         print(s)
         DispatchQueue.main.async {
             self.tv.text += "\n\(s)"
@@ -1201,15 +1196,15 @@ class TestViewController: UIViewController {
         }
     }
 
-    @objc func ricevuto2(notification: Notification) {
+    @objc func received2(notification: Notification) {
         let dic = notification.object as! [String: Any]
-        let risposta = dic["tag"] as! String
+        let reply = dic["tag"] as! String
 
-        debug(s: "< '\(risposta)' \(risposta.count)")
+        debug("< '\(reply)' \(reply.count)")
 
         // TEST
         var sid = ""
-        let seq = coda2.first
+        let seq = queue2.first
         if dic["sid"] != nil {
             sid = dic["sid"] as! String
         } else {
@@ -1217,33 +1212,33 @@ class TestViewController: UIViewController {
         }
         // TEST
 
-        let field = Fields.getInstance.getBySID(sid: sid)
+        let field = Fields.getInstance.getBySID(sid)
 
-        if risposta.contains("ERROR") {
+        if reply.contains("ERROR") {
             // do nothing
-            debug(s: "ERROR")
-        } else if risposta == "OK" {
+            debug("ERROR")
+        } else if reply == "OK" {
             // do nothing
-        } else if risposta == "" {
-            debug(s: "empty")
+        } else if reply == "" {
+            debug("empty")
         } else if field != nil {
-            if AppSettings.shared.deviceType == .ELM327 {
-                field?.strVal = decodeIsoTp(elmResponse2: risposta) // ""
+            if Globals.shared.deviceType == .ELM327 {
+                field?.strVal = decodeIsoTp(elmResponse2: reply) // ""
             } else {
                 // http, cansee
-                field?.strVal = risposta
+                field?.strVal = reply
             }
 
 //            print("\(field?.sid ?? "?") \(field?.name ?? "?")")
 //            tv.text += "\n\(field?.sid ?? "?") \(field?.name ?? "?")"
 
             if field!.strVal.hasPrefix("7f") {
-                debug(s: "errore 7f")
+                debug("error 7f")
             } else if field!.strVal == "" {
-                debug(s: "empty")
+                debug("empty")
             } else {
                 let binString = getAsBinaryString(data: field!.strVal)
-                debug(s: binString)
+                debug(binString)
                 onMessageCompleteEventField(binString_: binString, field: field!)
 
                 if seq?.sidVirtual != nil {
@@ -1276,20 +1271,20 @@ class TestViewController: UIViewController {
                 }
 
                 if field!.isString() || field!.isHexString() {
-                    debug(s: "\(field!.strVal)")
+                    debug("\(field!.strVal)")
                 } else {
-                    debug(s: "\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
+                    debug("\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
                     fieldResult[field!.sid] = field!.getValue()
                 }
             }
 
         } else {
-            debug(s: "field \(seq?.field.sid ?? "?") not found")
+            debug("field \(seq?.field.sid ?? "?") not found")
         }
 
-        if coda2.count > 0, timeoutTimer != nil, timeoutTimer.isValid {
+        if queue2.count > 0, timeoutTimer != nil, timeoutTimer.isValid {
             timeoutTimer.invalidate()
-            continuaCoda2()
+            continueQueue2()
         }
     }
 }

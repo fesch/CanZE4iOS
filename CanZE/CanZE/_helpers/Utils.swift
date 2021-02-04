@@ -30,19 +30,19 @@ struct Utils {
     }
 
     static func isPh2() -> Bool {
-        return AppSettings.shared.car == AppSettings.CAR_X10PH2
+        return Globals.shared.car == AppSettings.CAR_X10PH2
     }
     static func isTwingo() -> Bool {
-        return AppSettings.shared.car == AppSettings.CAR_TWINGO
+        return Globals.shared.car == AppSettings.CAR_TWINGO
     }
     static func isTwizy() -> Bool {
-        return AppSettings.shared.car == AppSettings.CAR_TWIZY
+        return Globals.shared.car == AppSettings.CAR_TWIZY
     }
 
     static func isZOE() -> Bool {
-        return AppSettings.shared.car == AppSettings.CAR_ZOE_Q90
-            || AppSettings.shared.car == AppSettings.CAR_ZOE_Q210
-            || AppSettings.shared.car == AppSettings.CAR_ZOE_R90
-            || AppSettings.shared.car == AppSettings.CAR_ZOE_R240
+        return Globals.shared.car == AppSettings.CAR_ZOE_Q90
+            || Globals.shared.car == AppSettings.CAR_ZOE_Q210
+            || Globals.shared.car == AppSettings.CAR_ZOE_R90
+            || Globals.shared.car == AppSettings.CAR_ZOE_R240
     }
 }

@@ -9,6 +9,8 @@ import UIKit
 
 class NavigationController: UINavigationController {
 
+    var log: Logger!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

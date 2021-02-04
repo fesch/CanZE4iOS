@@ -8,6 +8,7 @@
 import Foundation
 
 class Device {
+    /*
     let INTERVAL_ASAP = 0 // follows frame rate
     let INTERVAL_ASAPFAST = -1 // truly as fast as possible
     let INTERVAL_ONCE = -2 // one shot
@@ -61,4 +62,5 @@ class Device {
     var lastInitProblem = ""
     
     var type = ""
+ */
 }

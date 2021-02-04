@@ -16,7 +16,7 @@ struct Ecus {
         if assetName == "" {
             fillFromAsset(assetName: getDefaultAssetName())
         } else {
-            fillFromAsset(assetName: assetName)
+            fillFromAsset(assetName: "_assets/\(Utils.getAssetPrefix())\(assetName)")
         }
     }
 
@@ -38,7 +38,7 @@ struct Ecus {
 //                    print(campi.count)
                     fillOneLine(line_: riga)
                 }
-              //  print("loaded ecus: \(ecus.count)")
+                //  print("loaded ecus: \(ecus.count)")
             } catch {
                 print(error.localizedDescription)
             }
@@ -58,21 +58,21 @@ struct Ecus {
         if tokens.count == 10 {
             // Create a new field object and fill his  data
             let ecu = Ecu(
-                name: trim(s: tokens[0]), // name
-                renaultId: Int(trim(s: tokens[1])), // Renault ID
-                networks: trim(s: tokens[2]), // Network
-                fromId: Int(trim(s: tokens[3]), radix: 16), // From ID
-                toId: Int(trim(s: tokens[4]), radix: 16), // To ID
-                mnemonic: trim(s: tokens[5]), // Mnemonic
-                aliases: trim(s: tokens[6]), // Aliasses, semicolon separated
-                getDtcs: trim(s: tokens[7]), // GetDtc responseIDs, semicolon separated
-                startDiag: trim(s: tokens[8]), // startDiag
-                sessionRequired: trim(s: tokens[9]) == "1", // Session required
+                name: tokens[0].trim(), // name
+                renaultId: Int(tokens[1].trim()), // Renault ID
+                networks: tokens[2].trim(), // Network
+                fromId: Int(tokens[3].trim(), radix: 16), // From ID
+                toId: Int(tokens[4].trim(), radix: 16), // To ID
+                mnemonic: tokens[5].trim(), // Mnemonic
+                aliases: tokens[6].trim(), // Aliases, semicolon separated
+                getDtcs: tokens[7].trim(), // GetDtc responseIDs, semicolon separated
+                startDiag: tokens[8].trim(), // start Diagnostic sessioncommand
+                sessionRequired: tokens[9].trim() == "1", // Session required
                 fields: nil
             )
             // add the field to the list of available fields
             ecus.append(ecu)
-            //   print("ecu: \(trim(s: tokens[5]))")
+            //   print("ecu: \( tokens[5]))")
         }
     }
 
@@ -94,7 +94,7 @@ struct Ecus {
         return Ecu()
     }
 
-    func trim(s: String) -> String {
-        return s.trimmingCharacters(in: .whitespacesAndNewlines)
+    func getAllEcus() -> [Ecu] {
+        return ecus
     }
 }

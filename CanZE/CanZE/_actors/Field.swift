@@ -73,15 +73,11 @@ class Field {
      */
 
     func isIsoTp() -> Bool {
-        if trim(s: responseId).count > 0 {
+        if responseId.trim().count > 0 {
             return true
         } else {
             return false
         }
-    }
-
-    func trim(s: String) -> String {
-        return s.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     func getValue() -> Double {
@@ -91,7 +87,7 @@ class Field {
             // This is a tricky one. If we are in miles mode, in a virtual field the sources for that
             // field have already been corrected, so this should not be done twice. I.O.W. virtual
             // field values are, by definition already properly corrected.
-            if AppSettings.shared.milesMode { // & !virtual {
+            if Globals.shared.milesMode { // & !virtual {
                 if unit.lowercased().hasPrefix("km") {
                     val = round(val / 1.609344 * 10.0) / 10.0
                 } else if unit.lowercased().hasSuffix("km") {
@@ -107,7 +103,7 @@ class Field {
     func calculatedValue(value: Double) {
         var value2 = value
         // inverted conversion.
-        if AppSettings.shared.milesMode { // } & !virtual) {
+        if Globals.shared.milesMode { // } & !virtual) {
             if unit.lowercased().hasPrefix("km") {
                 value2 = value * 1.609344
             } else if unit.lowercased().hasSuffix("km") {
@@ -131,7 +127,7 @@ class Field {
 //    }
 
     func getUnit() -> String {
-        if AppSettings.shared.milesMode {
+        if Globals.shared.milesMode {
             return (unit + "").replacingOccurrences(of: "km", with: "mi")
         } else {
             return unit

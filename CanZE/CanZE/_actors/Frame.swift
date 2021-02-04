@@ -7,27 +7,38 @@
 
 import Foundation
 
-struct Frame {
+class Frame {
     var fromId: Int!
-    var responseId: String! = nil
+    var responseId: String!
     var sendingEcu: Ecu!
     var fields: [Field] = []
     var queriedFields: [Field] = []
-//    var containingFrame: Frame!
+    var containingFrame: Frame!
 
     var interval: Int! // in ms
     var lastRequest = 0 // long
 
+    init(fromId: Int, responseId: String?, sendingEcu: Ecu, fields: [Field], queriedFields: [Field], interval: Int, lastRequest: Int, containingFrame: Frame?) {
+        self.fromId = fromId
+        self.responseId = responseId
+        self.sendingEcu = sendingEcu
+        self.fields = fields
+        self.queriedFields = queriedFields
+        self.interval = interval
+        self.lastRequest = lastRequest
+        self.containingFrame = containingFrame
+    }
+
     func getToIdHexLSB() -> String {
         if isExtended() {
-            return String(format: "%06x", getToId() & 0xFFFFFF)
+            return String(format: "%06x", getToId() & 0xffffff)
         } else {
-            return String(format: "%03x", getToId() & 0xFFFFFF)
+            return String(format: "%03x", getToId() & 0xffffff)
         }
     }
 
     func getToIdHexMSB() -> String {
-        return String(format: "%02x", (getToId() & 0x1F000000) >> 24)
+        return String(format: "%02x", (getToId() & 0x1f000000) >> 24)
     }
 
     func isExtended() -> Bool {
@@ -58,5 +69,19 @@ struct Frame {
             ss.append(c)
         }
         return ss
+    }
+
+    func getAllFields() -> [Field] {
+        return fields
+    }
+
+    func isIsoTp() -> Bool {
+        // if (this.responseId == null) return false;
+        // return !responseId.trim().isEmpty();
+        return (fromId >= 0x700 && fromId != 0x801) // All 29 bits and the VFC is considered ISOTP too
+    }
+
+    func getFromIdHex() -> String {
+        return String(format: isExtended() ? "%08x" : "%03x", fromId)
     }
 }

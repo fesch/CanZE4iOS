@@ -8,6 +8,7 @@
 import Foundation
 
 class ELM327: Device {
+   /*
     // define the Timeout we may wait to get an answer
     let DEFAULT_TIMEOUT = 500
     let MINIMUM_TIMEOUT = 100
@@ -24,7 +25,7 @@ class ELM327: Device {
     
     
     
-    /*
+    / *
      
      protected boolean initDevice(int toughness, int retries) {
          if (initDevice(toughness)) return true;

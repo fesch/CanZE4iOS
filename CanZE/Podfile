@@ -8,7 +8,9 @@ target 'CanZE' do
   # Pods for CanZE4iOS
 
   pod 'Charts'
-  pod 'Firebase'
   pod 'Toast-Swift', '~> 5.0.1'
+  
+  pod 'Firebase/Crashlytics'
+  pod 'Firebase/Analytics'
 
 end

@@ -49,7 +49,7 @@ struct Fields {
 //        } else if assetName.starts(with: "/") {
 //            fillFromFile(assetName)
         } else {
-            fillFromAsset(assetName: assetName)
+            fillFromAsset(assetName: "_assets/\(Utils.getAssetPrefix())\(assetName)")
             //// if (assetName.startsWith("VFC")) {
             ////    addVirtualFields();
             //// }
@@ -58,7 +58,7 @@ struct Fields {
 
     func getDefaultAssetName() -> String {
         var p = "_assets/" + Utils.getAssetPrefix()
-        if Utils.isZOE(), AppSettings.shared.useIsoTpFields {
+        if Utils.isZOE(), Globals.shared.useIsoTpFields {
             p += "_FieldsAlt.csv"
         } else {
             p += "_Fields.csv"
@@ -95,31 +95,31 @@ struct Fields {
         }
         let tokens = line.components(separatedBy: ",")
         if tokens.count > FIELD_OPTIONS {
-            let frameId = Int(trim(s: tokens[FIELD_ID]), radix: 16)
-            var frame = Frames.getInstance.getById(id: frameId!)
+            let frameId = Int(tokens[FIELD_ID].trim(), radix: 16)
+            let frame = Frames.getInstance.getById(id: frameId!)
             if frame == nil {
                 print("(frame does not exist: \(tokens[FIELD_ID]))")
             } else {
                 if frameId! < 0x800 || frameId! > 0x8ff {
-                    let options = Int(trim(s: tokens[FIELD_OPTIONS]), radix: 16)
+                    let options = Int(tokens[FIELD_OPTIONS].trim(), radix: 16)
                     // ensure this field matches the selected car
-                    if (options! & AppSettings.shared.car) != 0, !trim(s: tokens[FIELD_RESPONSE_ID]).starts(with: "7") || trim(s: tokens[FIELD_RESPONSE_ID]).lowercased().starts(with: "7e") {
+                    if (options! & Globals.shared.car) != 0, !tokens[FIELD_RESPONSE_ID].trim().starts(with: "7") || tokens[FIELD_RESPONSE_ID].trim().lowercased().starts(with: "7e") {
                         // Create a new field object and fill his  data
                         // MainActivity.debug(tokens[FIELD_SID] + " " + tokens[FIELD_ID] + "." + tokens[FIELD_FROM] + "." + tokens[FIELD_RESPONSE_ID])
 
                         // 658.33,18DAF1DB,24,39,.01,0,2,%,229003,629003,ff,Battery SOH(Zxx_sohe_avg)
 
                         let field = Field(
-                            sid: trim(s: tokens[FIELD_SID]),
+                            sid: tokens[FIELD_SID].trim(),
                             frame: frame,
-                            from: Int(trim(s: tokens[FIELD_FROM])),
-                            to: Int(trim(s: tokens[FIELD_TO])),
-                            resolution: Double(trim(s: tokens[FIELD_RESOLUTION])),
-                            offset: Int64(trim(s: tokens[FIELD_OFFSET])),
-                            decimals: Int(trim(s: tokens[FIELD_DECIMALS])),
-                            unit: trim(s: tokens[FIELD_UNIT]),
+                            from: Int(tokens[FIELD_FROM].trim()),
+                            to: Int(tokens[FIELD_TO].trim()),
+                            resolution: Double(tokens[FIELD_RESOLUTION].trim()),
+                            offset: Int64(tokens[FIELD_OFFSET].trim()),
+                            decimals: Int(tokens[FIELD_DECIMALS].trim()),
+                            unit: tokens[FIELD_UNIT].trim(),
 
-                            responseId: trim(s: tokens[FIELD_RESPONSE_ID]),
+                            responseId: tokens[FIELD_RESPONSE_ID].trim(),
                             options: options,
                             name: (tokens.count > FIELD_NAME) ? tokens[FIELD_NAME] : "",
                             list: (tokens.count > FIELD_LIST) ? tokens[FIELD_LIST] : ""
@@ -135,7 +135,7 @@ struct Fields {
                         if field.isIsoTp() {
                             var subFrame = Frames.getInstance.getById(id: frameId!, responseId: field.responseId)
                             if subFrame == nil {
-                                subFrame = Frame(fromId: frame?.fromId, responseId: field.responseId, sendingEcu: frame?.sendingEcu, fields: [], queriedFields: [], interval: frame?.interval, lastRequest: 0) // TODO: manca containingFrame
+                                subFrame = Frame(fromId: frame!.fromId, responseId: field.responseId, sendingEcu: frame!.sendingEcu, fields: [], queriedFields: [], interval: frame!.interval, lastRequest: 0, containingFrame: frame)
                                 Frames.getInstance.frames.append(subFrame!)
                             }
                             subFrame?.fields.append(field)
@@ -153,7 +153,7 @@ struct Fields {
                     }
 
                 } else {
-                    addVirtualField(id: trim(s: tokens[FIELD_RESPONSE_ID]))
+                    addVirtualField(id: tokens[FIELD_RESPONSE_ID].trim())
                 }
             }
         }
@@ -164,7 +164,7 @@ struct Fields {
         addVirtualFieldUsage()
         addVirtualFieldUsageLpf()
         addVirtualFieldFrictionTorque()
-        // addVirtualFieldFrictionPower()
+        addVirtualFieldFrictionPower()
         addVirtualFieldElecBrakeTorque()
         addVirtualFieldTotalPositiveTorque()
         addVirtualFieldTotalNegativeTorque()
@@ -222,7 +222,7 @@ struct Fields {
         var allOk = true
 
         for sid in dependantSids.components(separatedBy: ";") {
-            let field = getBySID(sid: sid)
+            let field = getBySID(sid)
             if field != nil {
                 if field?.responseId != "999999" {
                     dependantFields[sid] = field
@@ -246,7 +246,7 @@ struct Fields {
             if virtualField.responseId != nil {
                 var subFrame = Frames.getInstance.getById(id: 0x800, responseId: virtualField.responseId)
                 if subFrame == nil {
-                    subFrame = Frame(fromId: frame?.fromId, responseId: virtualField.responseId, sendingEcu: frame?.sendingEcu, fields: [], queriedFields: [], interval: frame?.interval, lastRequest: 0)
+                    subFrame = Frame(fromId: frame!.fromId, responseId: virtualField.responseId, sendingEcu: frame!.sendingEcu, fields: [], queriedFields: [], interval: frame!.interval, lastRequest: 0, containingFrame: frame)
                     Frames.getInstance.frames.append(subFrame!)
                 }
                 subFrame?.fields.append(virtualField)
@@ -255,7 +255,7 @@ struct Fields {
                 fields.append(virtualField)
                 fieldsBySid[virtualField.sid] = virtualField
             } else {
-                var subFrame = Frame(fromId: frame?.fromId, responseId: virtualField.responseId, sendingEcu: frame?.sendingEcu, fields: [], queriedFields: [], interval: frame?.interval, lastRequest: 0)
+                let subFrame = Frame(fromId: frame!.fromId, responseId: virtualField.responseId, sendingEcu: frame!.sendingEcu, fields: [], queriedFields: [], interval: frame!.interval, lastRequest: 0, containingFrame: frame)
                 Frames.getInstance.frames.append(subFrame)
                 subFrame.fields.append(virtualField)
                 virtualField.frame = subFrame
@@ -295,7 +295,7 @@ struct Fields {
     }
 
     mutating func addVirtualFieldFrictionTorque() {
-        if AppSettings.shared.useIsoTpFields || Utils.isPh2() {
+        if Globals.shared.useIsoTpFields || Utils.isPh2() {
             addVirtualFieldCommon(virtualId: "6101", decimals: nil, unit: "Nm", dependantSids: Sid.HydraulicTorqueRequest) /* , new VirtualFieldAction() {
                  @Override
                  public double updateValue(HashMap<String, Field> dependantFields) {
@@ -328,7 +328,7 @@ struct Fields {
     }
 
     mutating func addVirtualFieldElecBrakeTorque() {
-        if AppSettings.shared.useIsoTpFields || Utils.isPh2() {
+        if Globals.shared.useIsoTpFields || Utils.isPh2() {
             addVirtualFieldCommon(virtualId: "610a", decimals: nil, unit: "Nm", dependantSids: Sid.PEBTorque) /* , new VirtualFieldAction() {
                  @Override
                  public double updateValue(HashMap<String, Field> dependantFields) {
@@ -357,7 +357,7 @@ struct Fields {
     }
 
     mutating func addVirtualFieldTotalPositiveTorque() {
-        if AppSettings.shared.useIsoTpFields || Utils.isPh2() {
+        if Globals.shared.useIsoTpFields || Utils.isPh2() {
             addVirtualFieldCommon(virtualId: "610b", decimals: nil, unit: "Nm", dependantSids: Sid.PEBTorque) /* , new VirtualFieldAction() {
                  @Override
                  public double updateValue(HashMap<String, Field> dependantFields) {
@@ -383,7 +383,7 @@ struct Fields {
     }
 
     mutating func addVirtualFieldTotalNegativeTorque() {
-        if AppSettings.shared.useIsoTpFields || Utils.isPh2() {
+        if Globals.shared.useIsoTpFields || Utils.isPh2() {
             addVirtualFieldCommon(virtualId: "610c", decimals: nil, unit: "Nm", dependantSids: Sid.PEBTorque + ";" + Sid.HydraulicTorqueRequest) /* , new VirtualFieldAction() {
                  @Override
                  public double updateValue(HashMap<String, Field> dependantFields) {
@@ -411,12 +411,15 @@ struct Fields {
         }
     }
 
-    /*
-     func  addVirtualFieldFrictionPower() {
-         final String SID_DriverBrakeWheel_Torque_Request = "130.44"; //UBP braking wheel torque the driver wants
-         final String SID_ElecBrakeWheelsTorqueApplied = "1f8.28"; //10ms
-         final String SID_ElecEngineRPM = "1f8.40"; //10ms
+    mutating func addVirtualFieldFrictionPower() {
+        // TODO:
 
+        let SID_DriverBrakeWheel_Torque_Request = "130.44" // UBP braking wheel torque the driver wants
+        let SID_ElecBrakeWheelsTorqueApplied = "1f8.28" // 10ms
+        let SID_ElecEngineRPM = "1f8.40" // 10ms
+
+        addVirtualFieldCommon(virtualId: "6102", decimals: nil, unit: "kW", dependantSids: SID_DriverBrakeWheel_Torque_Request + ";" + SID_ElecBrakeWheelsTorqueApplied + ";" + SID_ElecEngineRPM)
+        /*
          addVirtualFieldCommon("6102", "kW", SID_DriverBrakeWheel_Torque_Request + ";" + SID_ElecBrakeWheelsTorqueApplied + ";" + SID_ElecEngineRPM, new VirtualFieldAction() {
              @Override
              public double updateValue(HashMap<String, Field> dependantFields) {
@@ -430,8 +433,9 @@ struct Fields {
                  //return (dependantFields.get(SID_DriverBrakeWheel_Torque_Request).getValue() - dependantFields.get(SID_ElecBrakeWheelsTorqueApplied).getValue()) * dependantFields.get(SID_ElecEngineRPM).getValue() / MainActivity.reduction;
              }
          });
-     }
-     */
+         */
+    }
+
     mutating func addVirtualFieldDcPowerIn() {
         // positive = charging, negative = discharging. Unusable for consumption graphs
         addVirtualFieldCommon(virtualId: "6103", decimals: nil, unit: "kW", dependantSids: Sid.TractionBatteryVoltage + ";" + Sid.TractionBatteryCurrent) /* , new VirtualFieldAction() {
@@ -505,7 +509,7 @@ struct Fields {
                  }
              });*/
 
-        } else if AppSettings.shared.useIsoTpFields {
+        } else if Globals.shared.useIsoTpFields {
             addVirtualFieldCommon(virtualId: "6105", decimals: nil, unit: "°C", dependantSids: Sid.OH_ClimTempDisplay) // , new VirtualFieldAction() {
             /* @Override
                  public double updateValue(HashMap<String, Field> dependantFields) {
@@ -670,7 +674,7 @@ struct Fields {
     }
 
     mutating func addVirtualFieldPilotAmp() {
-        if AppSettings.shared.useIsoTpFields || Utils.isPh2() {
+        if Globals.shared.useIsoTpFields || Utils.isPh2() {
             addVirtualFieldCommon(virtualId: "610d", decimals: nil, unit: "A", dependantSids: Sid.ACPilotDutyCycle) // , new VirtualFieldAction() {
             /* @Override
                  public double updateValue(HashMap<String, Field> dependantFields) {
@@ -701,7 +705,7 @@ struct Fields {
              locationManager = (LocationManager) MainActivity.getInstance().getBaseContext().getSystemService(Context.LOCATION_SERVICE);
              locationListener = new MyLocationListener();
          }*/
-        var gpsField = getBySID(sid: "800.610e.24")
+        var gpsField = getBySID("800.610e.24")
         if gpsField == nil {
             let frame = Frames.getInstance.getById(id: 0x800)
             gpsField = Field(sid: "", frame: frame, from: 24, to: 31, resolution: 1, offset: 0, decimals: 0, unit: "coord", responseId: "610e", options: 0xaff, name: "GPS", list: "")
@@ -730,11 +734,7 @@ struct Fields {
           */
     }
 
-    func getBySID(sid: String) -> Field? {
+    func getBySID(_ sid: String) -> Field? {
         return fieldsBySid[sid.lowercased()]
-    }
-
-    func trim(s: String) -> String {
-        return s.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

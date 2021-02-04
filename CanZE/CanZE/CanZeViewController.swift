@@ -14,40 +14,26 @@ class CanZeViewController: UIViewController {
     let vBG_TAG = 99999
 
     // WIFI
-    var inputStream: InputStream!
-    var outputStream: OutputStream!
     let maxReadLength = 4096
     var timeoutTimerWifi: Timer!
 
     // BLE
     var centralManager: CBCentralManager!
-    var peripheralsDic: [String: BlePeripheral]!
-//    var peripheralsArray: [BlePeripheral]!
-    var selectedPeripheral: BlePeripheral!
-    var servicesArray: [CBService]!
-    var selectedService: CBService!
-    var characteristicArray: [CBCharacteristic]!
-    var selectedWriteCharacteristic: CBCharacteristic!
-    var selectedReadCharacteristic: CBCharacteristic!
     var timeoutTimerBle: Timer!
 
     // init elm327
     let autoInitElm327: [String] = ["ate0", "ats0", "ath0", "atl0", "atal", "atcaf0", "atfcsh77b", "atfcsd300000", "atfcsm1", "atsp6"]
 
-    // coda
-    var coda: [String] = []
+    var timeoutTimer: Timer!
+
+    // queue
+    var queue: [String] = []
+    var queueInit: [String] = []
+    var queue2: [Sequence] = []
+    var indiceCmd = 0
     var lastRxString = ""
     var lastId = -1
 
-    var timeoutTimer: Timer!
-
-    // coda2
-    var coda2: [Sequenza] = []
-    var indiceCmd = 0
-
-    var codaInit: [String] = []
-
-    // setup ble device
     var pickerTitles: [String]? = []
     var pickerValues: [Any]? = []
 
@@ -70,20 +56,17 @@ class CanZeViewController: UIViewController {
     var fieldResultsDouble: [String: Double] = [:]
     var fieldResultsString: [String: String] = [:]
 
-//    var alertController: UIAlertController!
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        peripheralsDic = [:]
-        // peripheralsArray = []
+        Globals.shared.peripheralsDic = [:]
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if AppSettings.shared.deviceIsConnected {
+        if Globals.shared.deviceIsConnected {
             deviceConnected()
         } else {
             deviceDisconnected()
@@ -97,14 +80,29 @@ class CanZeViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(deviceConnected), name: Notification.Name("deviceConnected"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(deviceDisconnected), name: Notification.Name("deviceDisconnected"), object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(ricevuto(notification:)), name: Notification.Name("ricevuto"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(received(notification:)), name: Notification.Name("received"), object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(ricevuto2(notification:)), name: Notification.Name("ricevuto2"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(received2(notification:)), name: Notification.Name("received2"), object: nil)
+
+        let vBG = view.viewWithTag(vBG_TAG)
+        if vBG != nil {
+            vBG?.removeFromSuperview()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        coda2 = []
+        queue2 = []
+
+        if timeoutTimer != nil, timeoutTimer.isValid {
+            timeoutTimer.invalidate()
+        }
+        if timeoutTimerBle != nil, timeoutTimerBle.isValid {
+            timeoutTimerBle.invalidate()
+        }
+        if timeoutTimerWifi != nil, timeoutTimerWifi.isValid {
+            timeoutTimerWifi.invalidate()
+        }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -113,8 +111,8 @@ class CanZeViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: Notification.Name("deviceConnected"), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("deviceDisconnected"), object: nil)
 
-        NotificationCenter.default.removeObserver(self, name: Notification.Name("ricevuto"), object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name("ricevuto2"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name("received"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name("received2"), object: nil)
     }
 
     @objc func deviceConnected() {
@@ -139,62 +137,71 @@ class CanZeViewController: UIViewController {
         }
     }
 
-    func debug(s: String) {
+    func debug(_ s: String) {
         print(s)
+        Globals.shared.logger.add(s: s)
     }
 
     @IBAction func btnConnect() {
-        if AppSettings.shared.deviceIsConnected {
+        if Globals.shared.deviceIsConnected {
             disconnect(showToast: true)
             deviceDisconnected()
         } else {
-//            connect()
             startAutoInit()
         }
     }
 
     func startAutoInit() {
         disconnect(showToast: false)
-        // view.makeToast("_auto init")
         NotificationCenter.default.addObserver(self, selector: #selector(connected), name: Notification.Name("connected"), object: nil)
         connect()
     }
 
     @objc func connected() {
-        AppSettings.shared.deviceIsConnected = true
+        Globals.shared.deviceIsConnected = true
         NotificationCenter.default.post(name: Notification.Name("deviceConnected"), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("connected"), object: nil)
-        if AppSettings.shared.deviceType == .ELM327 {
+        if Globals.shared.deviceType == .ELM327 {
             NotificationCenter.default.addObserver(self, selector: #selector(autoInit), name: Notification.Name("autoInit"), object: nil)
             initDeviceELM327()
         } else {
+            let vBG = view.viewWithTag(vBG_TAG)
+            if vBG != nil {
+                vBG?.removeFromSuperview()
+            }
             view.hideAllToasts()
             view.makeToast("connected")
         }
     }
 
     func initDeviceELM327() {
-        codaInit = []
+        queueInit = []
         for s in autoInitElm327 {
-            codaInit.append(s)
+            queueInit.append(s)
         }
-        processaCodaInit()
+        processQueueInit()
     }
 
     @objc func autoInit() {
-        AppSettings.shared.deviceIsInitialized = true
+        Globals.shared.deviceIsInitialized = true
         NotificationCenter.default.removeObserver(self, name: Notification.Name("autoInit"), object: nil)
+
+        let vBG = view.viewWithTag(vBG_TAG)
+        if vBG != nil {
+            vBG?.removeFromSuperview()
+        }
+
         view.makeToast("connected and initialized")
     }
 
     func deviceIsConnectable() -> Bool {
         var connectable = false
-        if AppSettings.shared.deviceType == .ELM327 || AppSettings.shared.deviceType == .CANSEE || AppSettings.shared.deviceType == .HTTP {
-            if AppSettings.shared.deviceConnection == .BLE, AppSettings.shared.deviceBlePeripheralIdentifierUuid != "", AppSettings.shared.deviceBleServiceUuid != "", AppSettings.shared.deviceBleReadCharacteristicUuid != "", AppSettings.shared.deviceBleWriteCharacteristicUuid != "" {
+        if Globals.shared.deviceType == .ELM327 || Globals.shared.deviceType == .CANSEE || Globals.shared.deviceType == .HTTP {
+            if Globals.shared.deviceConnection == .BLE, Globals.shared.deviceBlePeripheralName != "", Globals.shared.deviceBlePeripheralUuid != "", Globals.shared.deviceBleServiceUuid != "", Globals.shared.deviceBleReadCharacteristicUuid != "", Globals.shared.deviceBleWriteCharacteristicUuid != "" {
                 connectable = true
-            } else if AppSettings.shared.deviceConnection == .WIFI, AppSettings.shared.deviceWifiAddress != "", AppSettings.shared.deviceWifiPort != "" {
+            } else if Globals.shared.deviceConnection == .WIFI, Globals.shared.deviceWifiAddress != "", Globals.shared.deviceWifiPort != "" {
                 connectable = true
-            } else if AppSettings.shared.deviceConnection == .HTTP, AppSettings.shared.deviceHttpAddress != "" {
+            } else if Globals.shared.deviceConnection == .HTTP, Globals.shared.deviceHttpAddress != "" {
                 connectable = true
             }
         }
@@ -202,9 +209,9 @@ class CanZeViewController: UIViewController {
     }
 
     func loadSettings() {
-        AppSettings.shared.car = AppSettings.CAR_NONE
-        AppSettings.shared.car = ud.integer(forKey: AppSettings.SETTINGS_CAR)
-        switch AppSettings.shared.car {
+        Globals.shared.car = AppSettings.CAR_NONE
+        Globals.shared.car = ud.integer(forKey: AppSettings.SETTINGS_CAR)
+        switch Globals.shared.car {
         case AppSettings.CAR_TWINGO:
             print("CAR_TWINGO")
         case AppSettings.CAR_TWIZY:
@@ -223,30 +230,32 @@ class CanZeViewController: UIViewController {
             print("unknown")
         }
 
-        AppSettings.shared.deviceConnection = AppSettings.DEVICE_CONNECTION(rawValue: ud.value(forKey: AppSettings.SETTINGS_DEVICE_CONNECTION) as? Int ?? 0) ?? .NONE
+        Globals.shared.deviceConnection = AppSettings.DEVICE_CONNECTION(rawValue: ud.value(forKey: AppSettings.SETTINGS_DEVICE_CONNECTION) as? Int ?? 0) ?? .NONE
 
-        AppSettings.shared.deviceWifiAddress = ud.string(forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS) ?? "192.168.0.10"
-        AppSettings.shared.deviceWifiPort = ud.string(forKey: AppSettings.SETTINGS_DEVICE_WIFI_PORT) ?? "35000"
-        ud.setValue(AppSettings.shared.deviceWifiAddress, forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
-        ud.setValue(AppSettings.shared.deviceWifiPort, forKey: AppSettings.SETTINGS_DEVICE_WIFI_PORT)
+        Globals.shared.deviceWifiAddress = ud.string(forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS) ?? "192.168.0.10"
+        Globals.shared.deviceWifiPort = ud.string(forKey: AppSettings.SETTINGS_DEVICE_WIFI_PORT) ?? "35000"
+        ud.setValue(Globals.shared.deviceWifiAddress, forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+        ud.setValue(Globals.shared.deviceWifiPort, forKey: AppSettings.SETTINGS_DEVICE_WIFI_PORT)
         ud.synchronize()
 
-        AppSettings.shared.deviceBleName = AppSettings.DEVICE_BLE_NAME(rawValue: ud.value(forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME) as? Int ?? 0) ?? .NONE
-        AppSettings.shared.deviceBlePeripheralIdentifierUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_IDENTIFIER_UUID) ?? ""
-        AppSettings.shared.deviceBleServiceUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID) ?? ""
-        AppSettings.shared.deviceBleReadCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID) ?? ""
-        AppSettings.shared.deviceBleWriteCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID) ?? ""
-        AppSettings.shared.deviceHttpAddress = ud.string(forKey: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS) ?? ""
+        Globals.shared.deviceBleName = AppSettings.DEVICE_BLE_NAME(rawValue: ud.value(forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME) as? Int ?? 0) ?? .NONE
+        Globals.shared.deviceBlePeripheralName = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME) ?? ""
+        Globals.shared.deviceBlePeripheralUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID) ?? ""
+        Globals.shared.deviceBleServiceUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID) ?? ""
+        Globals.shared.deviceBleReadCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID) ?? ""
+        Globals.shared.deviceBleWriteCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID) ?? ""
 
-        switch AppSettings.shared.deviceConnection {
+        Globals.shared.deviceHttpAddress = ud.string(forKey: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS) ?? ""
+
+        switch Globals.shared.deviceConnection {
         case .WIFI:
             print("DEVICE_CONNECTION_WIFI")
-            print(AppSettings.shared.deviceWifiAddress)
-            print(AppSettings.shared.deviceWifiPort)
+            print(Globals.shared.deviceWifiAddress)
+            print(Globals.shared.deviceWifiPort)
         case .BLE:
             print("DEVICE_CONNECTION_BLE")
 
-            switch AppSettings.shared.deviceBleName {
+            switch Globals.shared.deviceBleName {
             case .VGATE:
                 print("VGATE")
             case .LELINK:
@@ -254,19 +263,20 @@ class CanZeViewController: UIViewController {
             default:
                 print("unknown")
             }
-            print(AppSettings.shared.deviceBlePeripheralIdentifierUuid)
-            print(AppSettings.shared.deviceBleServiceUuid)
-            print(AppSettings.shared.deviceBleReadCharacteristicUuid)
-            print(AppSettings.shared.deviceBleWriteCharacteristicUuid)
+            print(Globals.shared.deviceBlePeripheralName)
+            print(Globals.shared.deviceBlePeripheralUuid)
+            print(Globals.shared.deviceBleServiceUuid)
+            print(Globals.shared.deviceBleReadCharacteristicUuid)
+            print(Globals.shared.deviceBleWriteCharacteristicUuid)
         case .HTTP:
             print("DEVICE_CONNECTION_HTTP")
-            print(AppSettings.shared.deviceHttpAddress)
+            print(Globals.shared.deviceHttpAddress)
         default:
             print("unknown")
         }
 
-        AppSettings.shared.deviceType = AppSettings.DEVICE_TYPE(rawValue: ud.value(forKey: AppSettings.SETTINGS_DEVICE_TYPE) as? Int ?? 0) ?? .NONE
-        switch AppSettings.shared.deviceType {
+        Globals.shared.deviceType = AppSettings.DEVICE_TYPE(rawValue: ud.value(forKey: AppSettings.SETTINGS_DEVICE_TYPE) as? Int ?? 0) ?? .NONE
+        switch Globals.shared.deviceType {
         case .ELM327:
             print("DEVICE_TYPE_ELM327")
         case .CANSEE:
@@ -278,80 +288,53 @@ class CanZeViewController: UIViewController {
         }
 
         /*
-         AppSettings.shareds.safeDrivingMode = true
+         Globals.shareds.safeDrivingMode = true
                  if ud.exists(key: AppSettings.SETTING_SECURITY_SAFE_MODE) {
-         AppSettings.shared.safeDrivingMode = ud.bool(forKey: AppSettings.SETTING_SECURITY_SAFE_MODE)
+         Globals.shared.safeDrivingMode = ud.bool(forKey: AppSettings.SETTING_SECURITY_SAFE_MODE)
+                 }
+         */
+
+        Globals.shared.milesMode = false
+        if ud.exists(key: AppSettings.SETTINGS_CAR_USE_MILES) {
+            Globals.shared.milesMode = ud.bool(forKey: AppSettings.SETTINGS_CAR_USE_MILES)
+        }
+        print("SETTINGS_CAR_USE_MILES \(Globals.shared.milesMode)")
+
+        Globals.shared.useIsoTpFields = true
+        if ud.exists(key: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS) {
+            Globals.shared.useIsoTpFields = ud.bool(forKey: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS)
+        }
+        if Globals.shared.car == AppSettings.CAR_X10PH2 { // Ph2 car has no IsoTp Fields
+            Globals.shared.useIsoTpFields = false
+        }
+        print("SETTINGS_DEVICE_USE_ISOTP_FIELDS \(Globals.shared.useIsoTpFields)")
+
+        /*
+         Globals.shared.dataExportMode = false
+                 if ud.exists(key: SETTING_LOGGING_USE_SD_CARD) {
+         Globals.shared.dataExportMode = ud.bool(forKey: SETTING_LOGGING_USE_SD_CARD)
                  }
 
-         AppSettings.shared.bluetoothBackgroundMode = false
-                 if ud.exists(key: AppSettings.SETTING_DEVICE_USE_BACKGROUND_MODE) {
-         AppSettings.shared.bluetoothBackgroundMode = ud.bool(forKey: AppSettings.SETTING_DEVICE_USE_BACKGROUND_MODE)
+         Globals.shared.debugLogMode = false
+                 if ud.exists(key: SETTING_LOGGING_DEBUG_LOG) {
+         Globals.shared.debugLogMode = ud.bool(forKey: SETTING_LOGGING_DEBUG_LOG)
+                 }
+
+         Globals.shared.fieldLogMode = false
+                 if ud.exists(key: SETTING_LOGGING_FIELDS_LOG) {
+         Globals.shared.fieldLogMode = ud.bool(forKey: SETTING_LOGGING_FIELDS_LOG)
+                 }
+
+         Globals.shared.toastLevel = TOAST_ELM
+                 if ud.exists(key: SETTING_DISPLAY_TOAST_LEVEL) {
+         Globals.shared.toastLevel = ud.integer(forKey: SETTING_DISPLAY_TOAST_LEVEL)
                  }
 
          */
 
-        AppSettings.shared.milesMode = false
-        if ud.exists(key: AppSettings.SETTINGS_CAR_USE_MILES) {
-            AppSettings.shared.milesMode = ud.bool(forKey: AppSettings.SETTINGS_CAR_USE_MILES)
-        }
-        print("SETTINGS_CAR_USE_MILES \(AppSettings.shared.milesMode)")
-
-        AppSettings.shared.useIsoTpFields = true
-        if ud.exists(key: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS) {
-            AppSettings.shared.useIsoTpFields = ud.bool(forKey: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS)
-        }
-        if AppSettings.shared.car == AppSettings.CAR_X10PH2 { // Ph2 car has no IsoTp Fields
-            AppSettings.shared.useIsoTpFields = false
-        }
-        print("SETTINGS_DEVICE_USE_ISOTP_FIELDS \(AppSettings.shared.useIsoTpFields)")
-
-        /*
-         AppSettings.shared.dataExportMode = false
-                 if ud.exists(key: SETTING_LOGGING_USE_SD_CARD) {
-         AppSettings.shared.dataExportMode = ud.bool(forKey: SETTING_LOGGING_USE_SD_CARD)
-                 }
-
-         AppSettings.shared.debugLogMode = false
-                 if ud.exists(key: SETTING_LOGGING_DEBUG_LOG) {
-         AppSettings.shared.debugLogMode = ud.bool(forKey: SETTING_LOGGING_DEBUG_LOG)
-                 }
-
-         AppSettings.shared.fieldLogMode = false
-                 if ud.exists(key: SETTING_LOGGING_FIELDS_LOG) {
-         AppSettings.shared.fieldLogMode = ud.bool(forKey: SETTING_LOGGING_FIELDS_LOG)
-                 }
-
-         AppSettings.shared.toastLevel = TOAST_ELM
-                 if ud.exists(key: SETTING_DISPLAY_TOAST_LEVEL) {
-         AppSettings.shared.toastLevel = ud.integer(forKey: SETTING_DISPLAY_TOAST_LEVEL)
-                 }
-
-         //        if bluetoothDeviceName != nil && !bluetoothDeviceName.isEmpty() && bluetoothDeviceName.length() > 4
-         //        BluetoothManager.getInstance().setDummyMode(bluetoothDeviceName.subString(0, 4).compareTo("HTTP") == 0)
-
-                 /* TODO:
-                  if device != None {
-                      // initialise the connection
-                      device.initConnection()
-
-                      // register application wide fields
-                      // registerApplicationFields() // now done in Fields.load
-                  }
-                   */
-
-                 // after loading PREFERENCES we may have new values for "dataExportMode"
-                 // TODO: dataExportMode = dataLogger.activate(dataExportMode)
-                  */
-
         Ecus.getInstance.load(assetName: "")
         Frames.getInstance.load(assetName: "")
         Fields.getInstance.load(assetName: "")
-
-        // auto connect ? TODO
-        // auto init ? TODO
-
-//        let field = Fields.getInstance.getBySID(sid: "7ec.5003.0")
-//        print(field?.sid)
     }
 
     func connect() {
@@ -362,20 +345,31 @@ class CanZeViewController: UIViewController {
         }
 
         print("connecting")
+
+        let vBG = UIView(frame: view.frame)
+        vBG.backgroundColor = UIColor.black.withAlphaComponent(0.75)
+        vBG.tag = vBG_TAG
+        view.addSubview(vBG)
+
         view.hideAllToasts()
         view.makeToast("_connecting, wait for initialize")
-        if AppSettings.shared.deviceIsConnected {
+
+        if Globals.shared.deviceIsConnected {
             disconnect(showToast: false)
         }
-        switch AppSettings.shared.deviceConnection {
+        switch Globals.shared.deviceConnection {
         case .BLE:
             connectBle()
         case .WIFI:
             connectWifi()
         case .HTTP:
-            AppSettings.shared.deviceIsConnected = true
-            AppSettings.shared.deviceIsInitialized = true
+            Globals.shared.deviceIsConnected = true
+            Globals.shared.deviceIsInitialized = true
             deviceConnected()
+            let vBG = view.viewWithTag(vBG_TAG)
+            if vBG != nil {
+                vBG?.removeFromSuperview()
+            }
             view.hideAllToasts()
             view.makeToast("connected")
             return
@@ -383,10 +377,14 @@ class CanZeViewController: UIViewController {
             break
         }
 
-        if AppSettings.shared.deviceType == .CANSEE {
+        if Globals.shared.deviceType == .CANSEE {
+            Globals.shared.deviceIsConnected = true
+            Globals.shared.deviceIsInitialized = true
             deviceConnected()
-            AppSettings.shared.deviceIsConnected = true
-            AppSettings.shared.deviceIsInitialized = true
+            let vBG = view.viewWithTag(vBG_TAG)
+            if vBG != nil {
+                vBG?.removeFromSuperview()
+            }
             view.hideAllToasts()
             view.makeToast("connected")
         }
@@ -395,10 +393,12 @@ class CanZeViewController: UIViewController {
     func disconnect(showToast: Bool) {
         print("disconnecting")
         if showToast {
-            view.hideAllToasts()
-            view.makeToast("_disconnecting")
+            DispatchQueue.main.async {
+                self.view.hideAllToasts()
+                self.view.makeToast("_disconnecting")
+            }
         }
-        switch AppSettings.shared.deviceConnection {
+        switch Globals.shared.deviceConnection {
         case .BLE:
             disconnectBle()
         case .WIFI:
@@ -406,50 +406,53 @@ class CanZeViewController: UIViewController {
         default:
             break
         }
-        AppSettings.shared.deviceIsConnected = false
-        AppSettings.shared.deviceIsInitialized = false
+        Globals.shared.deviceIsConnected = false
+        Globals.shared.deviceIsInitialized = false
         deviceDisconnected()
         fieldResultsDouble = [:]
         fieldResultsString = [:]
+
+        let vBG = view.viewWithTag(vBG_TAG)
+        if vBG != nil {
+            vBG?.removeFromSuperview()
+        }
     }
 
-    // gestione coda
-    func processaCoda() {
-        if !AppSettings.shared.deviceIsConnected {
+    func processQueue() {
+        if !Globals.shared.deviceIsConnected {
             print("can't continue, device not connected")
             return
         }
 
-        if coda.count == 0 {
-            print("FINITO")
-            NotificationCenter.default.post(name: Notification.Name("fineCoda"), object: nil)
+        if queue.count == 0 {
+            print("END")
+            NotificationCenter.default.post(name: Notification.Name("endQueue"), object: nil)
             return
         }
 
-        write(s: coda.first!)
+        write(s: queue.first!)
 
         if timeoutTimer != nil, timeoutTimer.isValid {
             timeoutTimer.invalidate()
         }
         timeoutTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
-            print("coda timeout !!!")
+            print("queue timeout !!!")
             timer.invalidate()
             return
         }
     }
 
-    func continuaCoda() {
-        // next step, after delay
-        if coda.count > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // Change `x.xxx` to the desired number of seconds.
-                self.coda.remove(at: 0)
-                self.processaCoda()
+    func continueQueue() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            if self.queue.count > 0 {
+                self.queue.remove(at: 0)
+                self.processQueue()
             }
         }
     }
 
     func write(s: String) {
-        switch AppSettings.shared.deviceConnection {
+        switch Globals.shared.deviceConnection {
         case .BLE:
             writeBle(s: s)
         case .WIFI:
@@ -462,26 +465,111 @@ class CanZeViewController: UIViewController {
         }
     }
 
-    // TEST
+    func addFrame(frame: Frame) {
+        if frame.isIsoTp() {
+            requestIsoTpFrame(frame2: frame, field: nil, virtual: nil)
+        } else {
+//                if (MainActivity.altFieldsMode) MainActivity.toast(MainActivity.TOAST_NONE, "Free frame in ISOTP mode:" + frame.getRID()); // MainActivity.debug("********* free frame in alt mode ********: " + frame.getRID());
+            requestFreeFrame(frame: frame)
+        }
+    }
 
     func addField(sid: String, intervalMs: Int) {
-        let field = Fields.getInstance.getBySID(sid: sid)
+        let field = Fields.getInstance.getBySID(sid)
         if field != nil {
             if field!.responseId != "999999" {
-                //  addField(field:field, intervalMs: intervalMs)
-                //   print("sid \(field?.from ?? -1)")
-                requestIsoTpFrame(frame2: (field?.frame)!, field: field!)
+                if field!.virtual {
+                    let virtualField = Fields.getInstance.getBySID(field!.sid) as! VirtualField
+                    let fields = virtualField.getFields()
+                    for f in fields {
+                        if f.responseId != "999999" {
+                            requestIsoTpFrame(frame2: (f.frame)!, field: f, virtual: field!.sid)
+                        }
+                    }
+                } else {
+                    requestIsoTpFrame(frame2: (field?.frame)!, field: field!, virtual: nil)
+                }
             }
-        } else {
+//        } else {
 //            MainActivity.debug(this.getClass().getSimpleName() + " (CanzeActivity): SID " + sid + " does not exist in class Fields");
 //            MainActivity.toast(MainActivity.TOAST_NONE, String.format(Locale.getDefault(), MainActivity.getStringSingle(R.string.format_NoSid), this.getClass().getSimpleName(), sid));
         }
     }
 
-    func requestIsoTpFrame(frame2: Frame, field: Field) {
+    func requestFreeFrame(frame: Frame) {
+        //  var command = ""
+        switch Globals.shared.deviceType {
+        case .ELM327:
+
+            // TODO:
+
+            //  var hexData = ""
+
+            // ensure the ATCRA filter is reset in the next NON free frame request
+//                 lastCommandWasFreeFrame = true
+
+            // EML needs the filter to be 3 hex symbols and contains the from CAN id of the ECU.
+            // getFromIdHex returns 3 chars for 11 bit id, and 8 bits for a 29 bit id
+            let emlFilter = frame.getFromIdHex()
+
+//                 MainActivity.debug("ELM327: requestFreeFrame: atcra" + emlFilter);
+//                 if (!initCommandExpectOk("atcra" + emlFilter))
+//                     return new Message(frame, "-E-Problem sending atcra command", true);
+
+            let seq = Sequence()
+            seq.cmd.append("atcra\(emlFilter)")
+
+            // sendAndWaitForAnswer("atcra" + emlFilter, 400);
+            // atma     (wait for one answer line)
+//                 generalTimeout = (int) (frame.getInterval() * intervalMultiplicator + 50);
+//                 if (generalTimeout < MINIMUM_TIMEOUT) generalTimeout = MINIMUM_TIMEOUT;
+//                 MainActivity.debug("ELM327: requestFreeFrame > TIMEOUT = " + generalTimeout);
+
+            // 10 ms plus repeat time timeout, do not wait until empty, do not count lines, add \r to command
+//                 hexData = sendAndWaitForAnswer("atma", frame.getInterval() + 10);
+            seq.cmd.append("atma\(frame.interval + 10)")
+            seq.cmd.append("x")
+
+            queue2.append(seq)
+
+                // MainActivity.debug("ELM327: requestFreeFrame > hexData = [" + hexData + "]");
+                 // the dongle starts babbling now. sendAndWaitForAnswer should stop at the first full line
+                 // ensure any running operation is stopped
+                 // sending a return might restart the last command. Bad plan.
+                // sendNoWait("x");
+                 // let it settle down, the ELM should indicate STOPPED then prompt >
+//                 flushWithTimeout(100, '>');
+//                 generalTimeout = DEFAULT_TIMEOUT;
+
+                 // atar     (clear filter)
+                 // AM has suggested the atar might not be neccesary as it might only influence cra filters and they are always set
+                 // however, make sure proper flushing is done
+                 // if cra does influence ISO-TP requests, an small optimization might be to only sending an atar when switching from free
+                 // frames to isotp frames.
+                 // if (!initCommandExpectOk("atar")) someThingWrong |= true;
+
+//                 hexData = hexData.trim();
+//                 if (hexData.equals(""))
+//                     return new Message(frame, "-E-data empty", true);
+//                 else
+//                     return new Message(frame, hexData, false);
+
+//             */
+
+        case .HTTP, .CANSEE:
+            let seq = Sequence()
+            seq.cmd.append("g" + frame.getFromIdHex())
+            queue2.append(seq)
+        default:
+            print("device unknown")
+        }
+        addFrame(frame: frame)
+    }
+
+    func requestIsoTpFrame(frame2: Frame, field: Field?, virtual: String?) {
         // TEST
         // TEST
-        var frame = frame2
+        let frame = frame2
         if frame.sendingEcu.fromId == 0x18DAF1DA, frame.responseId == "5003" {
             let ecu = Ecus.getInstance.getByFromId(fromId: 0x18DAF1D2)
             frame.sendingEcu = ecu
@@ -490,55 +578,37 @@ class CanZeViewController: UIViewController {
         // TEST
         // TEST
 
-        // print("\(frame.sendingEcu.name ?? "") \(frame.responseId ?? "")")
+        let seq = Sequence()
 
-        if field.virtual {
-//            var r = calcolaVirtual(field)
-//            let dic = ["tag":r]
-//            NotificationCenter.default.post(name: Notification.Name("ricevuto2"), object: dic)
+        if virtual != nil {
+            seq.sidVirtual = virtual
+        }
 
-            let virtualField = Fields.getInstance.getBySID(sid: field.sid) as! VirtualField
-            let fields = virtualField.getFields()
-            for f in fields {
-                if f.responseId != "999999" {
-                    requestIsoTpFrame(frame2: (f.frame)!, field: f)
-                }
-            }
-            let seq = coda2.first
-            seq?.sidVirtual = field.sid
+        seq.frame = frame
+        seq.field = field
+
+        if Globals.shared.deviceType == .HTTP {
+            let s = "?command=i\(String(format: "%02x", frame.fromId)),\(frame.getRequestId()),\(frame.responseId ?? "")"
+            seq.cmd.append(s)
+            queue2.append(seq)
             return
         }
 
-        let seq = Sequenza()
-        seq.field = field
-
         if lastId != frame.fromId {
-            if AppSettings.shared.deviceConnection == .HTTP {
-                let s = "?command=i\(String(format: "%02x", frame.fromId)),\(frame.getRequestId()),\(field.responseId ?? "")"
-                seq.cmd.append(s)
-                coda2.append(seq)
-                return
-
+            if frame.isExtended() {
+                seq.cmd.append("atsp7")
             } else {
-                if frame.isExtended() {
-                    seq.cmd.append("atsp7")
-                } else {
-                    seq.cmd.append("atsp6")
-                }
-                seq.cmd.append("atcp\(frame.getToIdHexMSB())") // atcp18
-                seq.cmd.append("atsh\(frame.getToIdHexLSB())") // atshdad2f1
-                seq.cmd.append("atcra\(String(format: "%02x", frame.fromId))") // 18daf1d2
-                seq.cmd.append("atfcsh\(String(format: "%02x", frame.getToId()))") // 18dad2f1
+                seq.cmd.append("atsp6")
             }
-
+            seq.cmd.append("atcp\(frame.getToIdHexMSB())") // atcp18
+            seq.cmd.append("atsh\(frame.getToIdHexLSB())") // atshdad2f1
+            seq.cmd.append("atcra\(String(format: "%02x", frame.fromId))") // 18daf1d2
+            seq.cmd.append("atfcsh\(String(format: "%02x", frame.getToId()))") // 18dad2f1
             lastId = frame.fromId
         }
 
-        // elm327.java
-
         // ISOTP outgoing starts here
         let outgoingLength = frame.getRequestId().count
-//        var elmResponse = ""
         var elmCommand = ""
         if outgoingLength <= 14 {
             // SINGLE transfers up to 7 bytes. If we ever implement extended addressing (which is
@@ -547,7 +617,6 @@ class CanZeViewController: UIViewController {
             elmCommand = "0\(outgoingLength / 2)\(frame.getRequestId())" // 021003
             seq.cmd.append(elmCommand)
             // send SING frame.
-            // elmResponse = sendAndWaitForAnswer(elmCommand, 0, false).replace("\r", "")
         } else {
             var startIndex = 0
             var endIndex = 12
@@ -604,7 +673,7 @@ class CanZeViewController: UIViewController {
             }
         }
 
-        coda2.append(seq)
+        queue2.append(seq)
     }
 
     func decodeIsoTp(elmResponse2: String) -> String { // TEST
@@ -661,7 +730,7 @@ class CanZeViewController: UIViewController {
             let framesToReceive = len / 7 // read this as ((len - 6 [remaining characters]) + 6 [offset to / 7, so 0->0, 1-7->7, etc]) / 7
             // get all remaining 0x2 (NEXT) frames
 
-            // coda.append(framesToReceive)
+            // queue.append(framesToReceive)
 
             // TEST
             // TEST
@@ -688,34 +757,6 @@ class CanZeViewController: UIViewController {
             }
             hexData = fin
 
-            // TEST
-            // TEST
-            // TEST
-
-        /*
-            // split into lines with hex data
-            let hexDataLines = lines0x1.components(separatedBy: "[\\r]+")
-            var next = 1
-            for hexDataLine_ in hexDataLines {
-                // ignore empty lines
-                var hexDataLine = hexDataLine_
-                hexDataLine = hexDataLine.trimmingCharacters(in: .whitespaces)
-                if hexDataLine.count > 2 {
-                    // check the proper sequence
-                    if hexDataLine.hasPrefix(String(format: "2%01X", next)) {
-                        // cut off the first byte (type + sequence) and add to the result
-                        hexData += hexDataLine.subString(from: 2)
-                    } else {
-                        //  return new Message(frame, "-E-ISOTP rx out of sequence:" + hexDataLine, true);
-                    }
-                    if next == 15 {
-                        next = 0
-                    } else {
-                        next += 1
-                    }
-                }
-            }
-         */
         default: // a NEXT, FLOWCONTROL should not be received. Neither should any other string (such as NO DATA)
             // flushWithTimeout(400, '>');
             // return new Message(frame, "-E-ISOTP rx unexpected 1st nibble of 1st frame:" + elmResponse, true);
@@ -741,7 +782,7 @@ class CanZeViewController: UIViewController {
             // print(hexData.lowercased())
         }
 
-        debug(s: "decodeIsoTp \(hexData.lowercased())")
+        debug("decodeIsoTp \(hexData.lowercased())")
 
         return hexData.lowercased()
     }
@@ -769,9 +810,10 @@ class CanZeViewController: UIViewController {
                 var i = 0
                 while i < binString.count {
                     let n = "0" + binString.subString(from: i, to: i + 8)
-                    let nn = Int(n, radix: 2)
-                    let c = UnicodeScalar(nn!)
-                    let s = String(format: "%02X", c as! CVarArg)
+                    let nn = Int(n, radix: 2)!
+                    let c = UnicodeScalar(nn)
+                    let s = String(c!)
+                    // let s = String(format: "%02X", c as! CVarArg)
                     tmpVal.append(s)
                     i += 8
                 }
@@ -786,8 +828,6 @@ class CanZeViewController: UIViewController {
                 } else {
                     val = Int("0" + binString, radix: 2)!
                 }
-                // MainActivity.debug("Value of " + field.getFromIdHex() + "." + field.getResponseId() + "." + field.getFrom()+" = "+val);
-                // MainActivity.debug("Fields: onMessageCompleteEvent > "+field.getSID()+" = "+val);
 
                 // update the value of the field. This triggers updating all of all listeners of that field
                 field.value = Double(val)
@@ -811,44 +851,31 @@ class CanZeViewController: UIViewController {
         //  field.updateLastRequest();
     }
 
-    var error = false
     func getAsBinaryString(data: String) -> String {
-        // 629001266f
-        // 0110001010010000000000010010011001101111
-
         var result = ""
-
-        if !error {
-//            let x = Int64(data, radix: 16)            // max data length:16 chars
-//            result = String(x!, radix: 2)
-            var d = data
-            if d.count % 2 != 0 {
-                d = "0" + d
-            }
-            result = d.hexaToBinary
-            while result.count % 8 != 0 {
-                result = "0" + result
-            }
-            // print(result)
+        var data2 = data
+        if data2.count % 2 != 0 {
+            data2 = "0" + data2
         }
+        result = data2.hexaToBinary
         return result
     }
-
-    // TEST
 
     // ELM327 BLE
     // ELM327 BLE
     // ELM327 BLE
     func connectBle() {
-        peripheralsDic = [:]
+        Globals.shared.peripheralsDic = [:]
         // peripheralsArray = []
-        selectedPeripheral = nil
+        Globals.shared.selectedPeripheral = nil
         if blePhase == .DISCOVERED {
             timeoutTimerBle = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false, block: { timer in
-                if self.selectedPeripheral == nil {
+                if Globals.shared.selectedPeripheral == nil {
                     // timeout
                     self.centralManager.stopScan()
                     timer.invalidate()
+                    self.disconnect(showToast: false)
+                    self.view.hideAllToasts()
                     self.view.makeToast("can't connect to ble device: TIMEOUT")
                 }
             })
@@ -857,31 +884,33 @@ class CanZeViewController: UIViewController {
     }
 
     func disconnectBle() {
-        if selectedPeripheral != nil, selectedPeripheral.blePeripheral != nil {
-            centralManager.cancelPeripheralConnection(selectedPeripheral.blePeripheral)
-            selectedPeripheral.blePeripheral = nil
-            selectedService = nil
-            selectedReadCharacteristic = nil
-            selectedWriteCharacteristic = nil
+        if Globals.shared.selectedPeripheral != nil, Globals.shared.selectedPeripheral.blePeripheral != nil {
+            if centralManager != nil {
+                centralManager.cancelPeripheralConnection(Globals.shared.selectedPeripheral.blePeripheral)
+            }
+            Globals.shared.selectedPeripheral.blePeripheral = nil
+            Globals.shared.selectedService = nil
+            Globals.shared.selectedReadCharacteristic = nil
+            Globals.shared.selectedWriteCharacteristic = nil
         }
     }
 
     func writeBle(s: String) {
-        if selectedWriteCharacteristic != nil {
+        if Globals.shared.selectedWriteCharacteristic != nil {
             let ss = s.appending("\r")
             let data = ss.data(using: .utf8)
             if data != nil {
-                if selectedWriteCharacteristic.properties.contains(.write) {
-                    selectedPeripheral.blePeripheral.writeValue(data!, for: selectedWriteCharacteristic, type: .withResponse)
-                    debug(s: "> \(s)")
-                } else if selectedWriteCharacteristic.properties.contains(.writeWithoutResponse) {
-                    selectedPeripheral.blePeripheral.writeValue(data!, for: selectedWriteCharacteristic, type: .withoutResponse)
-                    debug(s: "> \(s)")
+                if Globals.shared.selectedWriteCharacteristic.properties.contains(.write) {
+                    Globals.shared.selectedPeripheral.blePeripheral.writeValue(data!, for: Globals.shared.selectedWriteCharacteristic, type: .withResponse)
+                    debug("> \(s)")
+                } else if Globals.shared.selectedWriteCharacteristic.properties.contains(.writeWithoutResponse) {
+                    Globals.shared.selectedPeripheral.blePeripheral.writeValue(data!, for: Globals.shared.selectedWriteCharacteristic, type: .withoutResponse)
+                    debug("> \(s)")
                 } else {
-                    debug(s: "can't write to characteristic")
+                    debug("can't write to characteristic")
                 }
             } else {
-                debug(s: "data is nil")
+                debug("data is nil")
             }
         }
     }
@@ -894,38 +923,41 @@ class CanZeViewController: UIViewController {
         var writeStream: Unmanaged<CFWriteStream>?
 
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault,
-                                           AppSettings.shared.deviceWifiAddress as CFString,
-                                           UInt32(AppSettings.shared.deviceWifiPort)!,
+                                           Globals.shared.deviceWifiAddress as CFString,
+                                           UInt32(Globals.shared.deviceWifiPort)!,
                                            &readStream,
                                            &writeStream)
 
-        inputStream = readStream!.takeRetainedValue()
-        outputStream = writeStream!.takeRetainedValue()
+        Globals.shared.inputStream = readStream!.takeRetainedValue()
+        Globals.shared.outputStream = writeStream!.takeRetainedValue()
 
-        inputStream.delegate = self
-        outputStream.delegate = self
+        Globals.shared.inputStream.delegate = self
+        Globals.shared.outputStream.delegate = self
 
-        inputStream.schedule(in: RunLoop.current, forMode: .default)
-        outputStream.schedule(in: RunLoop.current, forMode: .default)
+        Globals.shared.inputStream.schedule(in: RunLoop.current, forMode: .default)
+        Globals.shared.outputStream.schedule(in: RunLoop.current, forMode: .default)
 
-        inputStream.open()
-        outputStream.open()
+        Globals.shared.inputStream.open()
+        Globals.shared.outputStream.open()
 
-        print("inputStream \(decodeStatus(status: inputStream.streamStatus))")
-        print("outputStream \(decodeStatus(status: outputStream.streamStatus))")
+        print("inputStream \(decodeStatus(status: Globals.shared.inputStream.streamStatus))")
+        print("outputStream \(decodeStatus(status: Globals.shared.outputStream.streamStatus))")
 
         var contatore = 5
+        #if targetEnvironment(simulator)
+            contatore = 500000
+        #endif
         timeoutTimerWifi = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { _ in
             print(contatore)
 
-            if self.inputStream != nil, self.outputStream != nil, self.inputStream.streamStatus == .open, self.outputStream.streamStatus == .open {
+            if Globals.shared.inputStream != nil, Globals.shared.outputStream != nil, Globals.shared.inputStream.streamStatus == .open, Globals.shared.outputStream.streamStatus == .open {
                 // connesso
                 self.timeoutTimerWifi.invalidate()
                 self.timeoutTimerWifi = nil
-                AppSettings.shared.deviceIsConnected = true
+                Globals.shared.deviceIsConnected = true
                 self.deviceConnected()
 
-                if self.inputStream.streamStatus == .open && self.outputStream.streamStatus == .open {
+                if Globals.shared.inputStream.streamStatus == .open && Globals.shared.outputStream.streamStatus == .open {
                     NotificationCenter.default.post(name: Notification.Name("connected"), object: nil)
                 }
             }
@@ -936,11 +968,11 @@ class CanZeViewController: UIViewController {
                 self.timeoutTimerWifi = nil
                 self.disconnectWifi()
                 DispatchQueue.main.async {
+                    self.disconnect(showToast: false)
                     self.view.hideAllToasts()
                     self.view.makeToast("TIMEOUT")
-                    self.disconnect(showToast: false)
                 }
-                AppSettings.shared.deviceIsConnected = false
+                Globals.shared.deviceIsConnected = false
                 self.deviceDisconnected()
             }
 
@@ -950,46 +982,43 @@ class CanZeViewController: UIViewController {
     }
 
     func disconnectWifi() {
-        // TODO:
-        AppSettings.shared.deviceIsConnected = false
+        Globals.shared.deviceIsConnected = false
         deviceDisconnected()
-        if inputStream != nil {
-            inputStream.close()
-            inputStream.remove(from: RunLoop.current, forMode: .default)
-            inputStream.delegate = nil
-            inputStream = nil
+        if Globals.shared.inputStream != nil {
+            Globals.shared.inputStream.close()
+            Globals.shared.inputStream.remove(from: RunLoop.current, forMode: .default)
+            Globals.shared.inputStream.delegate = nil
+            Globals.shared.inputStream = nil
         }
-        if outputStream != nil {
-            outputStream.close()
-            outputStream.remove(from: RunLoop.current, forMode: .default)
-            outputStream.delegate = nil
-            outputStream = nil
+        if Globals.shared.outputStream != nil {
+            Globals.shared.outputStream.close()
+            Globals.shared.outputStream.remove(from: RunLoop.current, forMode: .default)
+            Globals.shared.outputStream.delegate = nil
+            Globals.shared.outputStream = nil
         }
     }
 
     func writeWifi(s: String) {
-        // TODO:
-        if outputStream != nil {
+        if Globals.shared.outputStream != nil {
             let s2 = s.appending("\r")
             let data = s2.data(using: .utf8)!
             data.withUnsafeBytes {
                 guard let pointer = $0.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-                    debug(s: "Error")
+                    debug("Error")
                     return
                 }
-                debug(s: "> \(s)")
-                outputStream.write(pointer, maxLength: data.count)
+                debug("> \(s)")
+                Globals.shared.outputStream.write(pointer, maxLength: data.count)
             }
         }
     }
 
-    // ricezione dati wifi
     @objc func didReceiveFromWifiDongle(notification: Notification) {
         let dic = notification.object as? [String: Any]
         if dic != nil, dic?.keys != nil {
             for k in dic!.keys {
                 let ss = dic![k] as! String
-                NotificationCenter.default.post(name: Notification.Name("ricevuto"), object: ["tag": ss])
+                NotificationCenter.default.post(name: Notification.Name("received"), object: ["tag": ss])
             }
         }
     }
@@ -1017,13 +1046,12 @@ class CanZeViewController: UIViewController {
         }
     }
 
-    // http
-
+    // HTTP
     func writeHttp(s: String) {
-        var request = URLRequest(url: URL(string: "\(AppSettings.shared.deviceHttpAddress)\(s)")!, timeoutInterval: 5)
+        var request = URLRequest(url: URL(string: "\(Globals.shared.deviceHttpAddress)\(s)")!, timeoutInterval: 5)
         request.httpMethod = "GET"
 
-        debug(s: "> \(s)")
+        debug("> \(s)")
 
         let task = URLSession.shared.dataTask(with: request) { data, _, error in
             guard let data = data else {
@@ -1031,7 +1059,6 @@ class CanZeViewController: UIViewController {
                 self.view.makeToast(error?.localizedDescription)
                 return
             }
-//            print(data)
             let reply = String(data: data, encoding: .utf8)
             let reply2 = reply?.components(separatedBy: ",")
             if reply2?.count == 2 {
@@ -1040,62 +1067,66 @@ class CanZeViewController: UIViewController {
                     reply3 = "ERROR"
                 }
                 let dic = ["tag": reply3]
-                NotificationCenter.default.post(name: Notification.Name("ricevuto2"), object: dic)
+                NotificationCenter.default.post(name: Notification.Name("received2"), object: dic)
             } else {
-                self.debug(s: reply!)
+                self.debug(reply!)
             }
         }
         task.resume()
     }
 
-    func iniziaCoda2() {
-        // TEST
-        // if !deviceIsInitialized {
-        // debug(s: "device not Initialized")
-        // return
-        // }
-        // TEST
+    func startQueue2() {
         indiceCmd = 0
-        processaCoda2()
+        processQueue2()
     }
 
-    func processaCoda2() {
-        if coda2.count == 0 {
-            print("FINITO coda2")
-            NotificationCenter.default.post(name: Notification.Name("fineCoda2"), object: nil)
+    func processQueue2() {
+        if queue2.count == 0 {
+            print("END queue2")
+            NotificationCenter.default.post(name: Notification.Name("endQueue2"), object: nil)
             return
         }
 
-        let seq = coda2.first! as Sequenza
+        let seq = queue2.first! as Sequence
+
         if indiceCmd >= seq.cmd.count {
-            coda2.removeFirst()
-            // print("FINITO cmd")
-            iniziaCoda2()
+            queue2.removeFirst()
+            startQueue2()
             return
         }
+        if indiceCmd == 0, seq.field != nil {
+            let dic = ["debug": "Debug \(seq.field?.sid ?? "?")"]
+            NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+            //  debug(seq.field.sid)
+        }
+
         let cmd = seq.cmd[indiceCmd]
         write(s: cmd)
 
         if timeoutTimer != nil, timeoutTimer.isValid {
             timeoutTimer.invalidate()
         }
-        timeoutTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { timer in
+
+        var contatore = 5.0
+        #if targetEnvironment(simulator)
+            contatore = 500000.0
+        #endif
+        timeoutTimer = Timer.scheduledTimer(withTimeInterval: contatore, repeats: false) { timer in
             timer.invalidate()
-            self.debug(s: "coda2 timeout !!!")
+            self.debug("queue2 timeout !!!")
             DispatchQueue.main.async {
+                self.disconnect(showToast: false)
                 self.view.hideAllToasts()
                 self.view.makeToast("TIMEOUT")
-                self.disconnect(showToast: false)
             }
             return
         }
     }
 
-    func continuaCoda2() {
-        // next step, after delay
+    func continueQueue2() {
         indiceCmd += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // Change n to the desired number of seconds
-            self.processaCoda2()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            self.processQueue2()
         }
     }
 }
@@ -1107,36 +1138,28 @@ extension CanZeViewController: StreamDelegate {
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         switch eventCode {
         case .hasBytesAvailable:
-            if aStream == inputStream {
-                //   print("\(aStream) hasBytesAvailable")
+            if aStream == Globals.shared.inputStream {
                 readAvailableBytes(stream: aStream as! InputStream)
             }
         case .endEncountered:
-            debug(s: "\(aStream) endEncountered")
+            debug("\(aStream) endEncountered")
         case .hasSpaceAvailable:
-            // print("\(aStream) hasSpaceAvailable")
-            if aStream == outputStream {
-//                print("ready")
-//                print("ready")
-                //   debug(s: "ready")
-                // tv.text += ("ready\n")
-                // tv.scrollToBottom()
-            }
+            if aStream == Globals.shared.outputStream {}
         case .errorOccurred:
-            debug(s: "\(aStream) errorOccurred")
+            debug("\(aStream) errorOccurred")
         case .openCompleted:
-            debug(s: "\(aStream) openCompleted")
+            debug("\(aStream) openCompleted")
         default:
-            debug(s: "\(aStream) \(eventCode.rawValue)")
+            debug("\(aStream) \(eventCode.rawValue)")
         }
     }
 
     private func readAvailableBytes(stream: InputStream) {
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: maxReadLength)
         while stream.hasBytesAvailable {
-            let numberOfBytesRead = inputStream.read(buffer, maxLength: maxReadLength)
+            let numberOfBytesRead = Globals.shared.inputStream.read(buffer, maxLength: maxReadLength)
             if numberOfBytesRead < 0, let error = stream.streamError {
-                debug(s: error.localizedDescription)
+                debug(error.localizedDescription)
                 break
             }
             var string = String(
@@ -1154,157 +1177,196 @@ extension CanZeViewController: StreamDelegate {
         }
     }
 
-    @objc func ricevuto(notification: Notification) {
-        if coda.count > 0 || codaInit.count > 0 {
+    @objc func received(notification: Notification) {
+        if queue.count > 0 || queueInit.count > 0 {
             if timeoutTimer != nil, timeoutTimer.isValid {
                 timeoutTimer.invalidate()
-                if coda.count > 0 {
-                    continuaCoda()
-                } else if codaInit.count > 0 {
-                    continuaCodaInit()
+                if queue.count > 0 {
+                    continueQueue()
+                } else if queueInit.count > 0 {
+                    continueQueueInit()
                 }
             }
-        } else if coda2.count > 0 {
-            NotificationCenter.default.post(name: Notification.Name("ricevuto2"), object: notification.object)
+        } else if queue2.count > 0 {
+            NotificationCenter.default.post(name: Notification.Name("received2"), object: notification.object)
         } else {
             let dic = notification.object as! [String: Any]
             let ss = dic["tag"] as! String
-            debug(s: "< \(ss)")
+            debug("< \(ss)")
         }
     }
 
-    @objc func ricevuto2(notification: Notification) {
+    @objc func received2(notification: Notification) {
         var error = "ok"
         let dic = notification.object as! [String: Any]
-        let risposta = dic["tag"] as! String
+        let reply = dic["tag"] as! String
 
-        debug(s: "< '\(risposta)' \(risposta.count)")
+        debug("< '\(reply)' (\(reply.count))")
 
-        // TEST
         var sid = ""
-        let seq = coda2.first
+        let seq = queue2.first
+        if seq == nil {
+            return
+        }
         if dic["sid"] != nil {
             sid = dic["sid"] as! String
-        } else {
+        } else if seq?.field != nil {
             sid = (seq?.field.sid)!
         }
-        // TEST
+        if sid == "" {
+            // firmware
 
-        let field = Fields.getInstance.getBySID(sid: sid)
+            let binString = getAsBinaryString(data: reply)
+            debug("\(binString) (\(binString.count))")
 
-        if risposta.contains("ERROR") {
-            // do nothing
-            error = "ERROR"
-            debug(s: error)
-        } else if risposta == "OK" {
-            // do nothing
-        } else if risposta == "" {
-            error = "EMPTY"
-            debug(s: error)
-        } else if field != nil {
-            if AppSettings.shared.deviceType == .ELM327 {
-                field?.strVal = decodeIsoTp(elmResponse2: risposta) // ""
-            } else {
-                // http, cansee
-                field?.strVal = risposta
-            }
+            for field in seq!.frame.getAllFields() {
+                onMessageCompleteEventField(binString_: binString, field: field)
 
-//            print("\(field?.sid ?? "?") \(field?.name ?? "?")")
-//            tv.text += "\n\(field?.sid ?? "?") \(field?.name ?? "?")"
-
-            if field!.strVal.hasPrefix("7f") {
-                error = "ERROR 7F"
-                debug(s: error)
-            } else if field!.strVal == "" {
-                error = "EMPTY"
-                debug(s: error)
-            } else {
-                let binString = getAsBinaryString(data: field!.strVal)
-                // debug(s: binString)
-                onMessageCompleteEventField(binString_: binString, field: field!)
-
-                if seq?.sidVirtual != nil {
-                    var result = 0.0
-                    switch seq?.sidVirtual {
-                    case Sid.Instant_Consumption:
-                        break
-                    case Sid.FrictionTorque:
-                        break
-                    case Sid.DcPowerIn:
-                        if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil {
-                            result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
-                        }
-                    case Sid.DcPowerOut:
-                        if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil {
-                            result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
-                        }
-                    case Sid.ElecBrakeTorque:
-                        break
-                    case Sid.TotalPositiveTorque:
-                        break
-                    case Sid.TotalNegativeTorque:
-                        break
-                    case Sid.ACPilot:
-                        break
-                    default:
-                        print("unknown virtual sid")
-                    }
-                    field?.value = result
+                if field.isString() || field.isHexString() {
+                    debug("\(field.strVal)")
+                    fieldResultsString[field.sid] = field.strVal
+                } else if sid == Sid.BatterySerial, field.strVal != "", field.strVal.count > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
+                    field.strVal = field.strVal.subString(from: field.strVal.count - 6)
+                    field.strVal = "F" + field.strVal
+                    fieldResultsString[field.sid] = field.strVal
+                    debug("\(field.strVal)")
+                } else {
+                    debug("\(field.name ?? "?") \(String(format: "%.\(field.decimals!)f", field.getValue()))\n")
+                    fieldResultsDouble[field.sid] = field.getValue()
                 }
 
-                if field!.isString() || field!.isHexString() {
-                    debug(s: "\(field!.strVal)")
-                    fieldResultsString[field!.sid] = field!.strVal
-                } else if sid == Sid.BatterySerial, field?.strVal != nil, (field?.strVal.count)! > 6, AppSettings.shared.car == AppSettings.CAR_ZOE_Q210 {
-                    field?.strVal = (field?.strVal.subString(from: (field?.strVal.count)! - 6))!
-                    field?.strVal = "F" + field!.strVal
-                    fieldResultsString[field!.sid] = field!.strVal
-                    debug(s: "\(field!.strVal)")
+                var n = notification.object as! [String: String]
+                n["sid"] = field.sid
+                if seq?.sidVirtual != nil {
+                    n["sid"] = seq?.sidVirtual
+                }
+                NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
+
+                let dic = ["debug": "Debug \(field.sid ?? "?") \(error)"]
+                NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+            }
+
+        } else {
+            let field = Fields.getInstance.getBySID(sid)
+
+            if reply.contains("ERROR") {
+                // do nothing
+                error = "ERROR"
+                debug(error)
+            } else if reply == "OK" {
+                // do nothing
+            } else if reply == "" {
+                error = "EMPTY"
+                debug(error)
+            } else if field != nil {
+                if Globals.shared.deviceType == .ELM327 {
+                    field?.strVal = decodeIsoTp(elmResponse2: reply) // ""
                 } else {
-                    debug(s: "\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
-                    fieldResultsDouble[field!.sid] = field!.getValue()
+                    // http, cansee
+                    field?.strVal = reply
+                }
+
+                if field!.strVal.hasPrefix("7f") {
+                    error = "ERROR 7F"
+                    debug(error)
+                } else if field!.strVal == "" {
+                    error = "EMPTY"
+                    debug(error)
+                } else if field!.strVal.contains("not found") {
+                    error = "NOT FOUND"
+                    debug(error)
+                } else {
+                    let binString = getAsBinaryString(data: field!.strVal)
+                    debug("\(binString) (\(binString.count))")
+
+                    for f in field!.frame.getAllFields() {
+                        onMessageCompleteEventField(binString_: binString, field: f)
+
+                        if seq?.sidVirtual != nil {
+                            var result = 0.0
+                            switch seq?.sidVirtual {
+                            case Sid.Instant_Consumption:
+                                break
+                            case Sid.FrictionTorque:
+                                break
+                            case Sid.DcPowerIn:
+                                if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
+                                    result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
+                                }
+                            case Sid.DcPowerOut:
+                                if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
+                                    result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
+                                }
+                            case Sid.ElecBrakeTorque:
+                                break
+                            case Sid.TotalPositiveTorque:
+                                break
+                            case Sid.TotalNegativeTorque:
+                                break
+                            case Sid.ACPilot:
+                                break
+                            default:
+                                print("unknown virtual sid")
+                            }
+                            field?.value = result
+                        }
+
+                        if field!.isString() || field!.isHexString() {
+//                            debug( "\(field!.strVal)")
+                            fieldResultsString[field!.sid] = field!.strVal
+                        } else if sid == Sid.BatterySerial, field?.strVal != nil, (field?.strVal.count)! > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
+                            field?.strVal = (field?.strVal.subString(from: (field?.strVal.count)! - 6))!
+                            field?.strVal = "F" + field!.strVal
+                            fieldResultsString[field!.sid] = field!.strVal
+//                            debug( "\(field!.strVal)")
+                        } else {
+//                            debug( "\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
+                            fieldResultsDouble[field!.sid] = field!.getValue()
+                        }
+                    }
                 }
             }
 
             let dic = ["debug": "Debug \(field?.sid ?? "?") \(error)"]
             NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
 
-        } else {
-            debug(s: "field \(seq?.field.sid ?? "?") not found")
+            var n = notification.object as! [String: String]
+            n["sid"] = field!.sid
+            if seq?.sidVirtual != nil {
+                n["sid"] = seq?.sidVirtual
+            }
+            NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
         }
 
-        NotificationCenter.default.post(name: Notification.Name("decodificato"), object: notification.object)
-
-        if coda2.count > 0, timeoutTimer != nil, timeoutTimer.isValid {
+        if queue2.count > 0, timeoutTimer != nil, timeoutTimer.isValid {
             timeoutTimer.invalidate()
-            continuaCoda2()
+            continueQueue2()
         }
     }
 
-    func processaCodaInit() {
-        if codaInit.count == 0 {
-            print("FINITO")
-            AppSettings.shared.deviceIsInitialized = true
+    func processQueueInit() {
+        if queueInit.count == 0 {
+            print("END")
+            Globals.shared.deviceIsInitialized = true
             NotificationCenter.default.post(name: Notification.Name("autoInit"), object: nil)
             return
         }
         if timeoutTimer != nil, timeoutTimer.isValid {
             timeoutTimer.invalidate()
         }
-        write(s: codaInit.first!)
+        write(s: queueInit.first!)
         timeoutTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
-            print("coda timeout !!!")
+            print("queue timeout !!!")
             timer.invalidate()
             return
         }
     }
 
-    func continuaCodaInit() {
-        // next step, after delay
-        if codaInit.count > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // Change n to the desired number of seconds
-                self.codaInit.remove(at: 0)
-                self.processaCodaInit()
+    func continueQueueInit() {
+        if queueInit.count > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                self.queueInit.remove(at: 0)
+                self.processQueueInit()
             }
         }
     }
@@ -1319,21 +1381,21 @@ extension CanZeViewController: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .unknown:
-            debug(s: "central.state is .unknown")
+            debug("central.state is .unknown")
         case .resetting:
-            debug(s: "central.state is .resetting")
+            debug("central.state is .resetting")
         case .unsupported:
-            debug(s: "central.state is .unsupported")
+            debug("central.state is .unsupported")
         case .unauthorized:
-            debug(s: "central.state is .unauthorized")
+            debug("central.state is .unauthorized")
         case .poweredOff:
-            debug(s: "central.state is .poweredOff")
+            debug("central.state is .poweredOff")
         case .poweredOn:
-            debug(s: "central.state is .poweredOn")
+            debug("central.state is .poweredOn")
             //            centralManager.scanForPeripherals(withServices: [serviceCBUUID])
             centralManager.scanForPeripherals(withServices: [])
         @unknown default:
-            debug(s: "central.state is unknown")
+            debug("central.state is unknown")
         }
     }
 
@@ -1344,47 +1406,38 @@ extension CanZeViewController: CBCentralManagerDelegate {
         let p = BlePeripheral()
         p.blePeripheral = peripheral
         p.rssi = RSSI
-        peripheralsDic[peripheral.identifier.uuidString] = p
+        Globals.shared.peripheralsDic[peripheral.identifier.uuidString] = p
 
-        //        peripheralsArray.sort { (a:Peripheral, b:Peripheral) -> Bool in
-        //            a.peripheral.name ?? "" < b.peripheral.name ?? ""
-        //        }
-
-        if blePhase == .DISCOVERED, AppSettings.shared.deviceBlePeripheralIdentifierUuid == p.blePeripheral.identifier.uuidString {
+        if blePhase == .DISCOVERED, Globals.shared.deviceBlePeripheralName == p.blePeripheral.name {
             timeoutTimerBle.invalidate()
             centralManager.stopScan()
             p.blePeripheral.delegate = self
-            selectedPeripheral = p
-            debug(s: "found selected Peripheral \(selectedPeripheral.blePeripheral.name ?? "")")
-            centralManager.connect(selectedPeripheral.blePeripheral)
+            Globals.shared.selectedPeripheral = p
+            debug("found selected Peripheral \(Globals.shared.selectedPeripheral.blePeripheral.name ?? "")")
+            centralManager.connect(Globals.shared.selectedPeripheral.blePeripheral)
         }
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        debug(s: "didConnect \(peripheral.name ?? "?") \(peripheral.identifier.uuidString)")
-        servicesArray = []
+        debug("didConnect \(peripheral.name ?? "?") \(peripheral.identifier.uuidString)")
+        Globals.shared.servicesArray = []
         pickerPhase = .SERVICES
-        //   tmpPickerIndex = 0
-        //  peripheral.delegate = self
         peripheral.discoverServices(nil)
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        debug(s: "didFailToConnect \(peripheral) \(error?.localizedDescription ?? "")")
+        debug("didFailToConnect \(peripheral) \(error?.localizedDescription ?? "")")
     }
 
     func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
-        debug(s: "connectionEventDidOccur \(peripheral)")
+        debug("connectionEventDidOccur \(peripheral)")
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        debug(s: "didDisconnectPeripheral \(peripheral.name ?? "")")
+        debug("didDisconnectPeripheral \(peripheral.name ?? "")")
     }
 
     func centralManager(_ central: CBCentralManager, didUpdateANCSAuthorizationFor peripheral: CBPeripheral) {}
-
-    //    func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
-    //    }
 }
 
 // MARK: CBPeripheralDelegate
@@ -1398,33 +1451,20 @@ extension CanZeViewController: CBPeripheralDelegate {
             print(error?.localizedDescription as Any)
             return
         }
-        //        var i = 0
-        //        while i < peripheral.services!.count {
-        //            let service = peripheral.services![i]
-        //            print(service)
-        //            tv.text += ("\n\(service.uuid.uuidString)")
-        //            tv.scrollToBottom()
-        //            servicesArray.append(service)
-        //            i = i + 1
-        //        }
-        servicesArray.append(contentsOf: peripheral.services ?? [])
+        Globals.shared.servicesArray.append(contentsOf: peripheral.services ?? [])
 
         if blePhase == .DISCOVERED {
-            for s in servicesArray {
-                if s.uuid.uuidString == AppSettings.shared.deviceBleServiceUuid {
-                    selectedService = s
-                    debug(s: "found selected service \(selectedService.uuid)")
-                    characteristicArray = []
-                    selectedPeripheral.blePeripheral.discoverCharacteristics([selectedService.uuid], for: selectedService)
+            for s in Globals.shared.servicesArray {
+                if s.uuid.uuidString == Globals.shared.deviceBleServiceUuid {
+                    Globals.shared.selectedService = s
+                    debug("found selected service \(Globals.shared.selectedService.uuid)")
+                    Globals.shared.characteristicArray = []
+                    Globals.shared.selectedPeripheral.blePeripheral.discoverCharacteristics([Globals.shared.selectedService.uuid], for: Globals.shared.selectedService)
                     break
                 }
             }
         }
     }
-
-    //    func peripheral(_ peripheral: CBPeripheral, didWriteValueFor descriptor: CBDescriptor, error: Error?) {
-    //        print("\(Date().description(with: Locale.current)) didWriteValueFor \(peripheral.name ?? "") \(descriptor.uuid) \(error?.localizedDescription ?? "")")
-    //    }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Error?) {
         print("didUpdateValueFor \(descriptor.uuid) \(error?.localizedDescription ?? "")")
@@ -1448,59 +1488,27 @@ extension CanZeViewController: CBPeripheralDelegate {
     // Characteristics
     // Characteristics
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        //        print("didDiscoverCharacteristicsFor ")
         if service.characteristics != nil, service.characteristics!.count > 0 {
-            // selectedPeripheral.characteristics = service.characteristics!
-            // var ii = 0
-            // while ii < service.characteristics!.count {
-            //   let characteristic = service.characteristics![ii]
-            //  characteristicArray.append(characteristic)
-            /*
-              let s = "\(characteristic) \(characteristic.properties)"
-             print(s)
-             tv.text += "\n\(s)"
-             tv.scrollToBottom()
-             if characteristic.properties.contains(.read) {
-                 tv.text += "read "
-             }
-             if characteristic.properties.contains(.write) {
-                 tv.text += "write "
-             }
-             if characteristic.properties.contains(.writeWithoutResponse) {
-                 tv.text += "writeWithoutResponse "
-             }
-             if characteristic.properties.contains(.notify) {
-                 tv.text += "notify"
-             }
-             tv.text += "\n"
-             */
-            // ii = ii + 1
-            // }
-            characteristicArray.append(contentsOf: service.characteristics ?? [])
+            Globals.shared.characteristicArray.append(contentsOf: service.characteristics ?? [])
 
             if blePhase == .DISCOVERED {
-                for c in characteristicArray {
+                for c in Globals.shared.characteristicArray {
 //                    print(c.uuid.uuidString)
-                    if c.uuid.uuidString == AppSettings.shared.deviceBleWriteCharacteristicUuid {
-                        selectedWriteCharacteristic = c
-                        debug(s: "found selected write characteristic \(c.uuid)")
-                        // peripheral.discoverDescriptors(for: characteristics)
+                    if c.uuid.uuidString == Globals.shared.deviceBleWriteCharacteristicUuid {
+                        Globals.shared.selectedWriteCharacteristic = c
+                        debug("found selected write characteristic \(c.uuid)")
                     }
-                    if c.uuid.uuidString == AppSettings.shared.deviceBleReadCharacteristicUuid {
-                        selectedReadCharacteristic = c
-                        debug(s: "found selected notify characteristic \(c.uuid)")
+                    if c.uuid.uuidString == Globals.shared.deviceBleReadCharacteristicUuid {
+                        Globals.shared.selectedReadCharacteristic = c
+                        debug("found selected notify characteristic \(c.uuid)")
                         if c.properties.contains(.notify) {
-//                            for c in selectedService.characteristics! {
-//                              selectedPeripheral.blePeripheral.setNotifyValue(false, for: c)
-//                            }
-                            selectedPeripheral.blePeripheral.setNotifyValue(true, for: c)
+                            Globals.shared.selectedPeripheral.blePeripheral.setNotifyValue(true, for: c)
                         }
-                        // peripheral.discoverDescriptors(for: characteristics)
                     }
 
-                    if selectedReadCharacteristic != nil, selectedWriteCharacteristic != nil {
+                    if Globals.shared.selectedReadCharacteristic != nil, Globals.shared.selectedWriteCharacteristic != nil {
                         NotificationCenter.default.post(name: Notification.Name("connected"), object: nil)
-                        AppSettings.shared.deviceIsConnected = true
+                        Globals.shared.deviceIsConnected = true
                         deviceConnected()
                         break
                     }
@@ -1515,18 +1523,14 @@ extension CanZeViewController: CBPeripheralDelegate {
         if error != nil {
             print("error didWriteValueFor \(characteristic.uuid.uuidString) \(error!.localizedDescription)")
             return
-        } else {
-            // print("\(Date().description(with: Locale.current)) didWriteValueFor \(peripheral.name ?? "") \(characteristic.uuid) \(error?.localizedDescription ?? "")")
-            // print("didWriteValueFor \(peripheral.name!) \(characteristic.uuid)")
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        // print("\(Date().description(with: Locale.current)) didUpdateValueFor \(characteristic.uuid) \(error?.localizedDescription ?? "")")
         if error != nil {
             print(error?.localizedDescription as Any)
             return
-        } else if characteristic.uuid.uuidString == selectedReadCharacteristic.uuid.uuidString {
+        } else if characteristic.uuid.uuidString == Globals.shared.selectedReadCharacteristic.uuid.uuidString {
             let s = String(data: characteristic.value!, encoding: .utf8)
             if s?.last == ">" {
                 lastRxString += s!
@@ -1535,28 +1539,13 @@ extension CanZeViewController: CBPeripheralDelegate {
                 ss = String(ss.filter { !">".contains($0) })
                 ss = String(ss.filter { !"\r".contains($0) })
 
-//                var ss = String(lastRxString.filter { !"\r".contains($0) })
-//                ss = String(ss.filter { !"\n".contains($0) })
-//                ss = String(ss.filter { !">".contains($0) })
-
-                //  ss = ss.trimmingCharacters(in: .whitespacesAndNewlines)
-
-//                print("< \(ss) (\(lastRxString.count) chars)")
-//                tv.text += "\n< \(ss) (\(lastRxString.count) chars)"
-//                tv.scrollToBottom()
-                NotificationCenter.default.post(name: Notification.Name("ricevuto"), object: ["tag": ss])
+                NotificationCenter.default.post(name: Notification.Name("received"), object: ["tag": ss])
                 lastRxString = ""
-//                if coda.count > 0, timeoutTimer != nil, timeoutTimer.isValid {
-//                    timeoutTimer.invalidate()
-                // print("risposta ricevuta")
-//                    continuaCoda()
-//                }
             } else {
                 lastRxString += s ?? ""
-                // print(".")
             }
         } else {
-            print("ricevuto dati da char sconosciuta \(characteristic.uuid.uuidString)")
+            print("received dati da char sconosciuta \(characteristic.uuid.uuidString)")
         }
     }
 
@@ -1565,11 +1554,11 @@ extension CanZeViewController: CBPeripheralDelegate {
     // Descriptors
     func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            debug(s: error!.localizedDescription)
+            debug(error!.localizedDescription)
         } else {
             let s = "didDiscoverDescriptorsFor \(characteristic.uuid)"
-            debug(s: s)
-            debug(s: "characteristic.descriptors \(characteristic.descriptors!)")
+            debug(s)
+            debug("characteristic.descriptors \(characteristic.descriptors!)")
         }
     }
 
@@ -1577,12 +1566,10 @@ extension CanZeViewController: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            debug(s: "errore didUpdateNotificationStateFor characteristic \(characteristic.uuid.uuidString): \(error?.localizedDescription as Any)")
+            debug("error didUpdateNotificationStateFor characteristic \(characteristic.uuid.uuidString): \(error?.localizedDescription as Any)")
         } else {
             let s = "didUpdateNotificationStateFor \(characteristic.uuid)"
-            debug(s: s)
-            //   tv.text += "\n\(s)"
-            //   tv.scrollToBottom()
+            debug(s)
         }
     }
 }

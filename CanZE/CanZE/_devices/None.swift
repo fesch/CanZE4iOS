@@ -8,5 +8,5 @@
 import Foundation
 
 class None: Device {
-    let DEFAULT_TIMEOUT = 500
+ //   let DEFAULT_TIMEOUT = 500
 }

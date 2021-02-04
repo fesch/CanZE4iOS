@@ -47,7 +47,12 @@ extension String {
     }
 
     func index(from: Int) -> Index {
-        return index(startIndex, offsetBy: from)
+        if count >= from {
+            return index(startIndex, offsetBy: from)
+        } else {
+            print("substring from error !!!!!!")
+            return index(startIndex, offsetBy: 0)
+        }
     }
 
     func subString(from: Int) -> String {
@@ -67,8 +72,26 @@ extension String {
     }
 
     func subString(from: Int, to: Int) -> String {
-        let startIndex = index(from: from)
-        let endIndex = index(from: to)
-        return String(self[startIndex ..< endIndex])
+        if from <= count, to <= count, from < to {
+            let startIndex = index(from: from)
+            let endIndex = index(from: to)
+            return String(self[startIndex ..< endIndex])
+        } else {
+            print("substring from-to error !!!!!!")
+            return self
+        }
+    }
+
+    func trim() -> String {
+        return trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    func appendLineToURL(fileURL: URL) throws {
+        try (self + "\n").appendToURL(fileURL: fileURL)
+    }
+
+    func appendToURL(fileURL: URL) throws {
+        let data = self.data(using: String.Encoding.utf8)!
+        try data.append(fileURL: fileURL)
     }
 }
