@@ -1293,35 +1293,6 @@ extension CanZeViewController: StreamDelegate {
                     for f in field!.frame.getAllFields() {
                         onMessageCompleteEventField(binString_: binString, field: f)
 
-                        if seq?.sidVirtual != nil {
-                            var result = 0.0
-                            switch seq?.sidVirtual {
-                            case Sid.Instant_Consumption:
-                                break
-                            case Sid.FrictionTorque:
-                                break
-                            case Sid.DcPowerIn:
-                                if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
-                                    result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
-                                }
-                            case Sid.DcPowerOut:
-                                if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
-                                    result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
-                                }
-                            case Sid.ElecBrakeTorque:
-                                break
-                            case Sid.TotalPositiveTorque:
-                                break
-                            case Sid.TotalNegativeTorque:
-                                break
-                            case Sid.ACPilot:
-                                break
-                            default:
-                                print("unknown virtual sid")
-                            }
-                            field?.value = result
-                        }
-
                         if field!.isString() || field!.isHexString() {
 //                            debug( "\(field!.strVal)")
                             fieldResultsString[field!.sid] = field!.strVal
@@ -1334,6 +1305,35 @@ extension CanZeViewController: StreamDelegate {
 //                            debug( "\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
                             fieldResultsDouble[field!.sid] = field!.getValue()
                         }
+
+                        if seq?.sidVirtual != nil {
+                            var result = 0.0
+                            switch seq?.sidVirtual {
+                            case Sid.Instant_Consumption:
+                                print("TODO VIRTUAL FIELD")
+                            case Sid.FrictionTorque:
+                                print("TODO VIRTUAL FIELD")
+                            case Sid.DcPowerIn:
+                                if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
+                                    result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
+                                }
+                            case Sid.DcPowerOut:
+                                if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
+                                    result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
+                                }
+                            case Sid.ElecBrakeTorque:
+                                print("TODO VIRTUAL FIELD")
+                            case Sid.TotalPositiveTorque:
+                                print("TODO VIRTUAL FIELD")
+                            case Sid.TotalNegativeTorque:
+                                print("TODO VIRTUAL FIELD")
+                            case Sid.ACPilot:
+                                print("TODO VIRTUAL FIELD")
+                            default:
+                                print("unknown virtual sid")
+                            }
+                            fieldResultsDouble[(seq?.sidVirtual)!] = result
+                        }
                     }
                 }
             }
@@ -1343,6 +1343,7 @@ extension CanZeViewController: StreamDelegate {
 
             var n = notification.object as! [String: String]
             n["sid"] = field!.sid
+            NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
             if seq?.sidVirtual != nil {
                 n["sid"] = seq?.sidVirtual
             }

@@ -138,9 +138,9 @@ class ConsumptionViewController: CanZeViewController {
         addField(Sid.UserSoC, intervalMs: 99999)
 
         addField(Sid.RealSpeed, intervalMs: 99999)
-        addField("800.6104.24", intervalMs: 99999)
+       // addField("800.6104.24", intervalMs: 99999)  TODO: existing virtual field ?
 
-        addField("800.6107.24", intervalMs: 99999)
+       // addField("800.6107.24", intervalMs: 99999)  TODO: existing virtual field ?
         addField(Sid.RangeEstimate, intervalMs: 99999)
 
         startQueue2()
