@@ -116,25 +116,25 @@ class BatteryViewController: CanZeViewController {
         queue2 = []
 
         if Utils.isPh2() {
-            addField(sid: "7ec.5003.0", intervalMs: 2000) // open EVC
+            addField("7ec.5003.0", intervalMs: 2000) // open EVC
         }
-        addField(sid: "658.33", intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
+        addField("658.33", intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
 
-        addField(sid: Sid.UserSoC, intervalMs: 5000)
-        addField(sid: Sid.RealSoC, intervalMs: 5000)
+        addField(Sid.UserSoC, intervalMs: 5000)
+        addField(Sid.RealSoC, intervalMs: 5000)
 
         // 7bb.6141.16,7bb.6141.32,7bb.6141.48,7bb.6141.64,7bb.6141.80,7bb.6141.96,7bb.6141.112,7bb.6141.128,7bb.6141.144,7bb.6141.160,7bb.6141.176,7bb.6141.192,7bb.6141.208,7bb.6141.224,7bb.6141.240,7bb.6141.256,7bb.6141.272,7bb.6141.288,7bb.6141.304,7bb.6141.320,7bb.6141.336,7bb.6141.352,7bb.6141.368,7bb.6141.384,7bb.6141.400,7bb.6141.416,7bb.6141.432,7bb.6141.448,7bb.6141.464,7bb.6141.480,7bb.6141.496,7bb.6141.512,7bb.6141.528,7bb.6141.544,7bb.6141.560,7bb.6141.576,7bb.6141.592,7bb.6141.608,7bb.6141.624,7bb.6141.640,7bb.6141.656,7bb.6141.672,7bb.6141.688,7bb.6141.704,7bb.6141.720,7bb.6141.736,7bb.6141.752,7bb.6141.768,7bb.6141.784,7bb.6141.800,7bb.6141.816,7bb.6141.832,7bb.6141.848,7bb.6141.864,7bb.6141.880,7bb.6141.896,7bb.6141.912,7bb.6141.928,7bb.6141.944,7bb.6141.960,7bb.6141.976,7bb.6141.992,7bb.6142.16,7bb.6142.32,7bb.6142.48,7bb.6142.64,7bb.6142.80,7bb.6142.96,7bb.6142.112,7bb.6142.128,7bb.6142.144,7bb.6142.160,7bb.6142.176,7bb.6142.192,7bb.6142.208,7bb.6142.224,7bb.6142.240,7bb.6142.256,7bb.6142.272,7bb.6142.288,7bb.6142.304,7bb.6142.320,7bb.6142.336,7bb.6142.352,7bb.6142.368,7bb.6142.384,7bb.6142.400,7bb.6142.416,7bb.6142.432,7bb.6142.448,7bb.6142.464,7bb.6142.480,7bb.6142.496,7bb.6142.512,7bb.6142.528,7bb.6142.544"
 
         // 7bb.6104.32,7bb.6104.56,7bb.6104.80,7bb.6104.104,7bb.6104.128,7bb.6104.152,7bb.6104.176,7bb.6104.200,7bb.6104.224,7bb.6104.248,7bb.6104.272,7bb.6104.296
 
         if !doneOneTimeOnly {
-            addField(sid: Sid.BatterySerial, intervalMs: 5000)
+            addField(Sid.BatterySerial, intervalMs: 5000)
             doneOneTimeOnly = true
         }
 
-        addField(sid: "7bb.6141.16", intervalMs: 5000) // cell 1 volt
+        addField("7bb.6141.16", intervalMs: 5000) // cell 1 volt
 
-        addField(sid: "7bb.6104.32", intervalMs: 5000) // cell 1 temp
+        addField("7bb.6104.32", intervalMs: 5000) // cell 1 temp
 
         startQueue2()
     }

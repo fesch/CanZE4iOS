@@ -32,7 +32,10 @@ class AuxBatteryViewController: CanZeViewController {
     @IBOutlet var lblVoltage: UILabel!
     @IBOutlet var lblVehicleState: UILabel!
     @IBOutlet var chartView: LineChartView!
-    var chartEntries = [ChartDataEntry]()
+    var chartEntries1 = [ChartDataEntry]()
+    var chartEntries2 = [ChartDataEntry]()
+    var line1: LineChartDataSet!
+    var line2: LineChartDataSet!
 
     let aux_Status = Globals.localizableFromPlist?.value(forKey: "list_AuxStatus") as? [String]
     let vehicle_Status = Globals.localizableFromPlist?.value(forKey: Utils.isPh2() ? "list_VehicleStatePh2" : "list_VehicleState") as? [String]
@@ -113,14 +116,14 @@ class AuxBatteryViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(sid: Sid.Aux12V, intervalMs: 2000)
-        addField(sid: Sid.Aux12A, intervalMs: 1000)
-        addField(sid: Sid.DcLoad, intervalMs: 1000)
-        addField(sid: Sid.AuxStatus, intervalMs: 1000)
-        addField(sid: Sid.VehicleState, intervalMs: 99999)
+        addField(Sid.Aux12V, intervalMs: 2000)
+        addField(Sid.Aux12A, intervalMs: 1000)
+        addField(Sid.DcLoad, intervalMs: 1000)
+        addField(Sid.AuxStatus, intervalMs: 1000)
+        addField(Sid.VehicleState, intervalMs: 99999)
         // addField(Sid.ChargingStatusDisplay, 1000)
-        addField(sid: Sid.VoltageUnderLoad, intervalMs: 6000)
-        addField(sid: Sid.CurrentUnderLoad, intervalMs: 6000)
+        addField(Sid.VoltageUnderLoad, intervalMs: 6000)
+        addField(Sid.CurrentUnderLoad, intervalMs: 6000)
 
         startQueue2()
     }
@@ -139,7 +142,7 @@ class AuxBatteryViewController: CanZeViewController {
                 self.text12V.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
                 self.lblVoltage.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
                 if self.fieldResultsDouble[sid!] != nil {
-                    self.chartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                    self.chartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
                     self.updateChart()
                 }
             case Sid.Aux12A:
@@ -158,6 +161,8 @@ class AuxBatteryViewController: CanZeViewController {
                 if val != nil {
                     if Int(val!) >= 0, Int(val!) < self.vehicle_Status!.count {
                         self.text_vehicle_state.text = self.vehicle_Status![Int(val!)]
+                        self.chartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        self.updateChart()
                     }
                 }
             case Sid.VoltageUnderLoad:
@@ -184,29 +189,44 @@ class AuxBatteryViewController: CanZeViewController {
         let yAxis = chartView.leftAxis
         yAxis.axisMinimum = 9
         yAxis.axisMaximum = 15
-    }
 
-    func updateChart() {
-        if chartEntries.count == 0 {
-            return
-        }
-        let line1 = LineChartDataSet(entries: chartEntries, label: nil)
+        line1 = LineChartDataSet(entries: chartEntries1, label: nil)
 
-//        line1.colors = [.red]
         line1.lineWidth = 0
         line1.drawCirclesEnabled = false
         line1.drawValuesEnabled = false
 
-        let gradientColors = [ChartColorTemplates.colorFromString("#5050ff").cgColor,
-                              ChartColorTemplates.colorFromString("#50ff50").cgColor,
-                              ChartColorTemplates.colorFromString("#ff5050").cgColor]
-//        let colorLocations: [CGFloat] = [0.0, 9.0, 12.0, 14.0, 99.0]
-        let gradient = CGGradient(colorsSpace: nil, colors: gradientColors as CFArray, locations: nil)
-        line1.fill = Fill.fillWithLinearGradient(gradient!, angle: 90)
+        let gradientColors1 = [ChartColorTemplates.colorFromString("#5050ff").cgColor,
+                               ChartColorTemplates.colorFromString("#50ff50").cgColor,
+                               ChartColorTemplates.colorFromString("#ff5050").cgColor]
+        let gradient1 = CGGradient(colorsSpace: nil, colors: gradientColors1 as CFArray, locations: [0.0, 0.75, 1.0])
+        line1.fill = Fill.fillWithLinearGradient(gradient1!, angle: 90)
         line1.fillAlpha = 1
         line1.drawFilledEnabled = true
 
-        chartView.data = LineChartData(dataSets: [line1])
+        line2 = LineChartDataSet(entries: chartEntries2, label: nil)
+        line2.lineWidth = 0
+        line2.drawCirclesEnabled = false
+        line2.drawValuesEnabled = false
+
+        let gradientColors2 = [ChartColorTemplates.colorFromString("#ff0000").cgColor,
+                               ChartColorTemplates.colorFromString("#00ff00").cgColor,
+                               ChartColorTemplates.colorFromString("#0000ff").cgColor,
+                               ChartColorTemplates.colorFromString("#ffff00").cgColor,
+                               ChartColorTemplates.colorFromString("#00ffff").cgColor,
+                               ChartColorTemplates.colorFromString("#ff00ff").cgColor,
+                               ChartColorTemplates.colorFromString("#000000").cgColor,
+                               ChartColorTemplates.colorFromString("#808080").cgColor]
+        let gradient2 = CGGradient(colorsSpace: nil, colors: gradientColors2 as CFArray, locations: [0.0, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0])
+        line2.fill = Fill.fillWithLinearGradient(gradient2!, angle: 90)
+        line2.fillAlpha = 1
+        line2.drawFilledEnabled = true
+    }
+
+    func updateChart() {
+        line1.replaceEntries(chartEntries1)
+        line2.replaceEntries(chartEntries2)
+        chartView.data = LineChartData(dataSets: [line1, line2])
     }
 
     class TimestampAxis: IAxisValueFormatter {

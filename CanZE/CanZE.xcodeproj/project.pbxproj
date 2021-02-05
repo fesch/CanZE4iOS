@@ -25,6 +25,7 @@
 		626C004725B9DFDF00121456 /* CanZEiconSmall.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 626C004625B9DFDF00121456 /* CanZEiconSmall.jpg */; };
 		62759A8B259B62300021415C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 62759A8A259B62300021415C /* GoogleService-Info.plist */; };
 		6279AB0A25BC3A36009DE847 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6279AB0925BC3A36009DE847 /* UserDefaults.swift */; };
+		6282BBB525CC48E600BB442B /* ConsumptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6282BBB425CC48E600BB442B /* ConsumptionViewController.swift */; };
 		628928302593AD98008F9C1F /* VirtualField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6289282F2593AD98008F9C1F /* VirtualField.swift */; };
 		629204D5258BB05000288D1E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629204D4258BB05000288D1E /* AppDelegate.swift */; };
 		629204D7258BB05000288D1E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629204D6258BB05000288D1E /* SceneDelegate.swift */; };
@@ -99,6 +100,7 @@
 		626C004625B9DFDF00121456 /* CanZEiconSmall.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = CanZEiconSmall.jpg; sourceTree = "<group>"; };
 		62759A8A259B62300021415C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6279AB0925BC3A36009DE847 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		6282BBB425CC48E600BB442B /* ConsumptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionViewController.swift; sourceTree = "<group>"; };
 		6289282F2593AD98008F9C1F /* VirtualField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualField.swift; sourceTree = "<group>"; };
 		629204D1258BB05000288D1E /* CanZE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CanZE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		629204D4258BB05000288D1E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 				622B484925CAA53C00F27323 /* VoltageHeatmapViewController.swift */,
 				622B484C25CAA54B00F27323 /* TemperatureHeatmapViewController.swift */,
 				622B485325CB051400F27323 /* AuxBatteryViewController.swift */,
+				6282BBB425CC48E600BB442B /* ConsumptionViewController.swift */,
 				62DFAB5C25924CB800B00C5C /* _TestViewController.swift */,
 				62E602AE25B971130018D36C /* _Test_CentralManager.swift */,
 				62E602B125B9714A0018D36C /* _Test_Peripheral.swift */,
@@ -505,6 +508,7 @@
 				622B485425CB051400F27323 /* AuxBatteryViewController.swift in Sources */,
 				6255283F259CEA1300C2772E /* AppSettings.swift in Sources */,
 				62D3F94625932BDE002CB6C7 /* Battery.swift in Sources */,
+				6282BBB525CC48E600BB442B /* ConsumptionViewController.swift in Sources */,
 				62E4920B25A8CA2B00AA45CE /* SettingsTableViewCell.swift in Sources */,
 				628928302593AD98008F9C1F /* VirtualField.swift in Sources */,
 				622B485125CAC29300F27323 /* UIColor.swift in Sources */,

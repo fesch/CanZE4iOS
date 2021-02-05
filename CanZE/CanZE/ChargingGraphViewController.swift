@@ -105,14 +105,14 @@ class ChargingGraphViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(sid: Sid.ACPilot, intervalMs: 10000)
-        addField(sid: Sid.AvailableChargingPower, intervalMs: 10000)
+        addField(Sid.ACPilot, intervalMs: 10000)
+        addField(Sid.AvailableChargingPower, intervalMs: 10000)
 
-        addField(sid: Sid.MaxCharge, intervalMs: 10000)
-        addField(sid: Sid.DcPowerIn, intervalMs: 10000)
+        addField(Sid.MaxCharge, intervalMs: 10000)
+        addField(Sid.DcPowerIn, intervalMs: 10000)
 
-        addField(sid: Sid.AvailableEnergy, intervalMs: 10000)
-        addField(sid: Sid.HvTemp, intervalMs: 10000)
+        addField(Sid.AvailableEnergy, intervalMs: 10000)
+        addField(Sid.HvTemp, intervalMs: 10000)
 
         startQueue2()
     }

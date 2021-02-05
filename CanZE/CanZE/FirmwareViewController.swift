@@ -146,7 +146,7 @@ class FirmwareViewController: CanZeViewController {
                          if frame.containingFrame != nil || ecu.fromId == 0x801 { // only use subframes and free frames
                              // query the Frame
                              for field in frame.getAllFields() {
-                                 addField(sid: field.sid, intervalMs: 99999)
+                                 addField(field.sid, intervalMs: 99999)
                              }
                          }
                      }
@@ -167,7 +167,7 @@ class FirmwareViewController: CanZeViewController {
 
         if Utils.isPh2() {
             // open the gateway, as the poller is stopped
-            queryFrame(frame: getFrame(fromId: 0x18daf1d2, responseId: "5003")!)
+            // queryFrame(frame: getFrame(fromId: 0x18daf1d2, responseId: "5003")!)
         }
 
         if ecu.sessionRequired {

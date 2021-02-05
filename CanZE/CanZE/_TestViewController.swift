@@ -499,22 +499,22 @@ class TestViewController: UIViewController {
 //            lastId = -1
             queue = []
             if Utils.isPh2() {
-                addField(sid: "7ec.5003.0", intervalMs: 2000) // open EVC
+                addField("7ec.5003.0", intervalMs: 2000) // open EVC
             }
 
-//            addField(sid: Sid.MaxCharge, intervalMs: 5000)
-            addField(sid: Sid.UserSoC, intervalMs: 5000)
-            addField(sid: Sid.RealSoC, intervalMs: 5000)
-//            addField(sid: Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
-//            addField(sid: Sid.RangeEstimate, intervalMs: 5000)
-            addField(sid: Sid.DcPowerIn, intervalMs: 5000) // virtual virtual virtual
-//            addField(sid: Sid.AvailableChargingPower, intervalMs: 5000)
-//            addField(sid: Sid.HvTemp, intervalMs: 5000)
+//            addField(Sid.MaxCharge, intervalMs: 5000)
+            addField(Sid.UserSoC, intervalMs: 5000)
+            addField(Sid.RealSoC, intervalMs: 5000)
+//            addField(Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
+//            addField(Sid.RangeEstimate, intervalMs: 5000)
+            addField(Sid.DcPowerIn, intervalMs: 5000) // virtual virtual virtual
+//            addField(Sid.AvailableChargingPower, intervalMs: 5000)
+//            addField(Sid.HvTemp, intervalMs: 5000)
 
-//            addField(sid: Sid.BatterySerial, intervalMs: 99999) // 7bb.6162.16      2ff
-//            addField(sid: Sid.Total_kWh, intervalMs: 99999) // 7bb.6161.120         1ff
-//            addField(sid: Sid.Counter_Full, intervalMs: 99999) //                   ff
-//            addField(sid: Sid.Counter_Partial, intervalMs: 99999) //                ff
+//            addField(Sid.BatterySerial, intervalMs: 99999) // 7bb.6162.16      2ff
+//            addField(Sid.Total_kWh, intervalMs: 99999) // 7bb.6161.120         1ff
+//            addField(Sid.Counter_Full, intervalMs: 99999) //                   ff
+//            addField(Sid.Counter_Partial, intervalMs: 99999) //                ff
 
             startQueue2()
 
@@ -599,7 +599,7 @@ class TestViewController: UIViewController {
         }
     }
 
-    func addField(sid: String, intervalMs: Int) {
+    func addField(_ sid: String, intervalMs: Int) {
         let field = Fields.getInstance.getBySID(sid)
         if field != nil {
             if field!.responseId != "999999" {

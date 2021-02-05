@@ -154,7 +154,7 @@ class AllDataViewController: CanZeViewController {
                 if frame.containingFrame != nil || ecu.fromId == 0x801 { // only use subframes and free frames
                     // query the Frame
                     for field in frame.getAllFields() {
-                        addField(sid: field.sid, intervalMs: 99999)
+                        addField(field.sid, intervalMs: 99999)
                     }
                 }
             }

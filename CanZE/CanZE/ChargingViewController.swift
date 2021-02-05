@@ -118,16 +118,16 @@ class ChargingViewController: CanZeViewController {
         queue2 = []
 
         if Utils.isPh2() {
-            addField(sid: "7ec.5003.0", intervalMs: 2000) // open EVC
+            addField("7ec.5003.0", intervalMs: 2000) // open EVC
         }
-        addField(sid: Sid.MaxCharge, intervalMs: 5000)
-        addField(sid: Sid.UserSoC, intervalMs: 5000)
-        addField(sid: Sid.RealSoC, intervalMs: 5000)
-        addField(sid: Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
-        addField(sid: Sid.RangeEstimate, intervalMs: 5000)
-        addField(sid: Sid.DcPowerIn, intervalMs: 5000)
-        addField(sid: Sid.AvailableChargingPower, intervalMs: 5000)
-        addField(sid: Sid.HvTemp, intervalMs: 5000)
+        addField(Sid.MaxCharge, intervalMs: 5000)
+        addField(Sid.UserSoC, intervalMs: 5000)
+        addField(Sid.RealSoC, intervalMs: 5000)
+        addField(Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
+        addField(Sid.RangeEstimate, intervalMs: 5000)
+        addField(Sid.DcPowerIn, intervalMs: 5000)
+        addField(Sid.AvailableChargingPower, intervalMs: 5000)
+        addField(Sid.HvTemp, intervalMs: 5000)
 
         startQueue2()
     }

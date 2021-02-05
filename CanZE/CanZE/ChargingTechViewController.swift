@@ -351,65 +351,65 @@ class ChargingTechViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(sid: Sid.BcbTesterInit, intervalMs: 0) // INTERVAL_ONCE)
-        addField(sid: Sid.MaxCharge, intervalMs: 5000)
-        addField(sid: Sid.ACPilot, intervalMs: 5000)
-        addField(sid: Sid.PlugConnected, intervalMs: 5000)
-        addField(sid: Sid.UserSoC, intervalMs: 5000)
-        addField(sid: Sid.RealSoC, intervalMs: 5000)
-        addField(sid: Sid.AvailableChargingPower, intervalMs: 5000)
-        addField(sid: Sid.AvailableEnergy, intervalMs: 5000)
-        addField(sid: Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
-        addField(sid: Sid.RangeEstimate, intervalMs: 5000)
-        addField(sid: Sid.HvKilometers, intervalMs: 5000)
-        addField(sid: Sid.TractionBatteryVoltage, intervalMs: 5000)
-        addField(sid: Sid.TractionBatteryCurrent, intervalMs: 5000)
+        addField(Sid.BcbTesterInit, intervalMs: 0) // INTERVAL_ONCE)
+        addField(Sid.MaxCharge, intervalMs: 5000)
+        addField(Sid.ACPilot, intervalMs: 5000)
+        addField(Sid.PlugConnected, intervalMs: 5000)
+        addField(Sid.UserSoC, intervalMs: 5000)
+        addField(Sid.RealSoC, intervalMs: 5000)
+        addField(Sid.AvailableChargingPower, intervalMs: 5000)
+        addField(Sid.AvailableEnergy, intervalMs: 5000)
+        addField(Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
+        addField(Sid.RangeEstimate, intervalMs: 5000)
+        addField(Sid.HvKilometers, intervalMs: 5000)
+        addField(Sid.TractionBatteryVoltage, intervalMs: 5000)
+        addField(Sid.TractionBatteryCurrent, intervalMs: 5000)
 
         for i in 0 ... 12 {
             var sid = "\(Sid.Preamble_CompartmentTemperatures)\(32 + i * 24)"
-            addField(sid: sid, intervalMs: 5000)
+            addField(sid, intervalMs: 5000)
             sid = "\(Sid.Preamble_BalancingBytes)\(16 + i * 8)"
-            addField(sid: sid, intervalMs: 5000)
+            addField(sid, intervalMs: 5000)
         }
 
-        addField(sid: Sid.BcbTesterAwake, intervalMs: 1500)
-        addField(sid: Sid.MainsCurrentType, intervalMs: 0)
-        addField(sid: Sid.Phase1currentRMS, intervalMs: 0)
-        addField(sid: Sid.Phase2CurrentRMS, intervalMs: 0)
-        addField(sid: Sid.Phase3CurrentRMS, intervalMs: 0)
+        addField(Sid.BcbTesterAwake, intervalMs: 1500)
+        addField(Sid.MainsCurrentType, intervalMs: 0)
+        addField(Sid.Phase1currentRMS, intervalMs: 0)
+        addField(Sid.Phase2CurrentRMS, intervalMs: 0)
+        addField(Sid.Phase3CurrentRMS, intervalMs: 0)
         if !Utils.isPh2() {
-            addField(sid: Sid.PhaseVoltage1, intervalMs: 0)
-            addField(sid: Sid.PhaseVoltage2, intervalMs: 0)
-            addField(sid: Sid.PhaseVoltage3, intervalMs: 0)
+            addField(Sid.PhaseVoltage1, intervalMs: 0)
+            addField(Sid.PhaseVoltage2, intervalMs: 0)
+            addField(Sid.PhaseVoltage3, intervalMs: 0)
         }
-        addField(sid: Sid.InterPhaseVoltage12, intervalMs: 0)
-        addField(sid: Sid.InterPhaseVoltage23, intervalMs: 0)
-        addField(sid: Sid.InterPhaseVoltage31, intervalMs: 0)
-        addField(sid: Sid.MainsActivePower, intervalMs: 0)
-        addField(sid: Sid.GroundResistance, intervalMs: 0)
-        addField(sid: Sid.SupervisorState, intervalMs: 0)
-        addField(sid: Sid.CompletionStatus, intervalMs: 0)
+        addField(Sid.InterPhaseVoltage12, intervalMs: 0)
+        addField(Sid.InterPhaseVoltage23, intervalMs: 0)
+        addField(Sid.InterPhaseVoltage31, intervalMs: 0)
+        addField(Sid.MainsActivePower, intervalMs: 0)
+        addField(Sid.GroundResistance, intervalMs: 0)
+        addField(Sid.SupervisorState, intervalMs: 0)
+        addField(Sid.CompletionStatus, intervalMs: 0)
 
         // TODO: Add variable holding information if CCS charging is available for the car
         if Utils.isPh2() {
-            addField(sid: Sid.CCSEVSEStatus, intervalMs: 0)
-            addField(sid: Sid.CCSFailureStatus, intervalMs: 0)
-            addField(sid: Sid.CCSEVReady, intervalMs: 0)
-            addField(sid: Sid.CCSCPLCComStatus, intervalMs: 0)
-            addField(sid: Sid.CCSEVRequestState, intervalMs: 0)
-            addField(sid: Sid.CCSEVSEState, intervalMs: 0)
-            addField(sid: Sid.CCSEVSEMaxPower, intervalMs: 0)
-            addField(sid: Sid.CCSEVSEPowerLimitReached, intervalMs: 0)
-            addField(sid: Sid.CCSEVSEMaxVoltage, intervalMs: 0)
-            addField(sid: Sid.CCSEVSEPresentVoltage, intervalMs: 0)
-            addField(sid: Sid.CCSEVSEVoltageLimitReaced, intervalMs: 0)
-            addField(sid: Sid.CCSEVSEMaxCurrent, intervalMs: 0)
-            addField(sid: Sid.CCSEVSEPresentCurrent, intervalMs: 0)
-            addField(sid: Sid.CCSEVSECurrentLimitReached, intervalMs: 0)
+            addField(Sid.CCSEVSEStatus, intervalMs: 0)
+            addField(Sid.CCSFailureStatus, intervalMs: 0)
+            addField(Sid.CCSEVReady, intervalMs: 0)
+            addField(Sid.CCSCPLCComStatus, intervalMs: 0)
+            addField(Sid.CCSEVRequestState, intervalMs: 0)
+            addField(Sid.CCSEVSEState, intervalMs: 0)
+            addField(Sid.CCSEVSEMaxPower, intervalMs: 0)
+            addField(Sid.CCSEVSEPowerLimitReached, intervalMs: 0)
+            addField(Sid.CCSEVSEMaxVoltage, intervalMs: 0)
+            addField(Sid.CCSEVSEPresentVoltage, intervalMs: 0)
+            addField(Sid.CCSEVSEVoltageLimitReaced, intervalMs: 0)
+            addField(Sid.CCSEVSEMaxCurrent, intervalMs: 0)
+            addField(Sid.CCSEVSEPresentCurrent, intervalMs: 0)
+            addField(Sid.CCSEVSECurrentLimitReached, intervalMs: 0)
         }
 
         if Globals.shared.useIsoTpFields {
-            addField(sid: Sid.BcbVersion, intervalMs: 0) // pre 0x0800 versions have a pilot PWM resolution of 1
+            addField(Sid.BcbVersion, intervalMs: 0) // pre 0x0800 versions have a pilot PWM resolution of 1
         }
 
         startQueue2()

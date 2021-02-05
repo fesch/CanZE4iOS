@@ -474,7 +474,7 @@ class CanZeViewController: UIViewController {
         }
     }
 
-    func addField(sid: String, intervalMs: Int) {
+    func addField(_ sid: String, intervalMs: Int) {
         let field = Fields.getInstance.getBySID(sid)
         if field != nil {
             if field!.responseId != "999999" {
@@ -852,12 +852,20 @@ class CanZeViewController: UIViewController {
     }
 
     func getAsBinaryString(data: String) -> String {
-        var result = ""
-        var data2 = data
-        if data2.count % 2 != 0 {
-            data2 = "0" + data2
-        }
-        result = data2.hexaToBinary
+//        var result = ""
+//        var data2 = data
+//        if data2.count % 2 != 0 {
+//            data2 = "0" + data2
+//        }
+//        result = data2.hexaToBinary
+
+        let hex = data
+        let result = hex.compactMap { c -> String? in
+            guard let value = Int(String(c), radix: 16) else { return nil }
+            let string = String(value, radix: 2)
+            return repeatElement("0", count: 4 - string.count) + string
+        }.joined()
+
         return result
     }
 
@@ -1076,13 +1084,16 @@ class CanZeViewController: UIViewController {
     }
 
     func startQueue2() {
+        UIApplication.shared.isIdleTimerDisabled = true
         indiceCmd = 0
+        lastId = -1
         processQueue2()
     }
 
     func processQueue2() {
         if queue2.count == 0 {
             print("END queue2")
+            UIApplication.shared.isIdleTimerDisabled = false
             NotificationCenter.default.post(name: Notification.Name("endQueue2"), object: nil)
             return
         }

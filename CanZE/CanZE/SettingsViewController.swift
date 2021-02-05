@@ -97,8 +97,8 @@ class SettingsViewController: CanZeViewController {
             "ZOE Q210",
             "ZOE R240",
             "ZOE Q90",
-            "ZOE R90",
-            "ZOE ZE50",
+            "ZOE R90/110",
+            "ZOE ZE40/ZE50",
             "TWINGO (experimental)",
             "TWIZY (experimental)",
         ], listValues: [
@@ -185,10 +185,10 @@ class SettingsViewController: CanZeViewController {
 
         queue2 = []
         if Utils.isPh2() {
-            addField(sid: "7ec.5003.0", intervalMs: 2000) // open EVC
+            addField("7ec.5003.0", intervalMs: 2000) // open EVC
         }
-        addField(sid: Sid.SoC, intervalMs: 5000)
-        addField(sid: Sid.BatterySerial, intervalMs: 5000)
+        addField(Sid.SoC, intervalMs: 5000)
+        addField(Sid.BatterySerial, intervalMs: 5000)
         startQueue2()
     }
 
