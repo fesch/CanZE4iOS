@@ -35,6 +35,7 @@
 		629204E1258BB05400288D1E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 629204DF258BB05400288D1E /* LaunchScreen.storyboard */; };
 		629D902725C31187007EF21A /* ChargingGraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629D902625C31187007EF21A /* ChargingGraphViewController.swift */; };
 		62A01DE825CD92CA00D69A01 /* DrivingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A01DE725CD92CA00D69A01 /* DrivingViewController.swift */; };
+		62A27E1725CEB390005F3DD5 /* ChargingHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A27E1625CEB390005F3DD5 /* ChargingHistoryViewController.swift */; };
 		62B1DFB025A9A255006454EE /* _assets in Resources */ = {isa = PBXBuildFile; fileRef = 62B1DFAF25A9A255006454EE /* _assets */; };
 		62B1DFC525A9BA3C006454EE /* BatteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1DFC425A9BA3C006454EE /* BatteryViewController.swift */; };
 		62B5A56225A8B10600C4F050 /* Localizable.plist in Resources */ = {isa = PBXBuildFile; fileRef = 62B5A56425A8B10600C4F050 /* Localizable.plist */; };
@@ -113,6 +114,7 @@
 		629204E2258BB05400288D1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		629D902625C31187007EF21A /* ChargingGraphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingGraphViewController.swift; sourceTree = "<group>"; };
 		62A01DE725CD92CA00D69A01 /* DrivingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrivingViewController.swift; sourceTree = "<group>"; };
+		62A27E1625CEB390005F3DD5 /* ChargingHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingHistoryViewController.swift; sourceTree = "<group>"; };
 		62B1DFAF25A9A255006454EE /* _assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = _assets; sourceTree = "<group>"; };
 		62B1DFC425A9BA3C006454EE /* BatteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryViewController.swift; sourceTree = "<group>"; };
 		62B5A55625A8AD4F00C4F050 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				62E4920A25A8CA2B00AA45CE /* SettingsTableViewCell.swift */,
 				62B1DFC425A9BA3C006454EE /* BatteryViewController.swift */,
 				62D2649F25B5C0E600421F14 /* ChargingViewController.swift */,
+				62A27E1625CEB390005F3DD5 /* ChargingHistoryViewController.swift */,
 				62D67DFA25C1D1260075D7AB /* ChargingTechViewController.swift */,
 				629D902625C31187007EF21A /* ChargingGraphViewController.swift */,
 				62D1FFAD25C40E17006EDDA5 /* AllDataViewController.swift */,
@@ -531,6 +534,7 @@
 				62DFAB322592300500B00C5C /* Utils.swift in Sources */,
 				62DA73ED259493AD0068CDF8 /* Setting.swift in Sources */,
 				62D3F95D25932E3E002CB6C7 /* Test.swift in Sources */,
+				62A27E1725CEB390005F3DD5 /* ChargingHistoryViewController.swift in Sources */,
 				62D264A025B5C0E600421F14 /* ChargingViewController.swift in Sources */,
 				62D3F9732593461E002CB6C7 /* SettingsViewController.swift in Sources */,
 				62DA73F12594AF880068CDF8 /* SettingsSwitchTableViewCell.swift in Sources */,

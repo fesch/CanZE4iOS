@@ -1,0 +1,6 @@
+framework module Pods_CanZE {
+  umbrella header "Pods-CanZE-umbrella.h"
+
+  export *
+  module * { export * }
+}
