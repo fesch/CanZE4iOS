@@ -116,7 +116,7 @@ class BatteryViewController: CanZeViewController {
         queue2 = []
 
         if Utils.isPh2() {
-            addField("7ec.5003.0", intervalMs: 2000) // open EVC
+            addField(Sid.EVC, intervalMs: 2000) // open EVC
         }
         addField("658.33", intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
 

@@ -34,6 +34,7 @@
 		629204DE258BB05400288D1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 629204DD258BB05400288D1E /* Assets.xcassets */; };
 		629204E1258BB05400288D1E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 629204DF258BB05400288D1E /* LaunchScreen.storyboard */; };
 		629D902725C31187007EF21A /* ChargingGraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629D902625C31187007EF21A /* ChargingGraphViewController.swift */; };
+		62A01DE825CD92CA00D69A01 /* DrivingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A01DE725CD92CA00D69A01 /* DrivingViewController.swift */; };
 		62B1DFB025A9A255006454EE /* _assets in Resources */ = {isa = PBXBuildFile; fileRef = 62B1DFAF25A9A255006454EE /* _assets */; };
 		62B1DFC525A9BA3C006454EE /* BatteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1DFC425A9BA3C006454EE /* BatteryViewController.swift */; };
 		62B5A56225A8B10600C4F050 /* Localizable.plist in Resources */ = {isa = PBXBuildFile; fileRef = 62B5A56425A8B10600C4F050 /* Localizable.plist */; };
@@ -111,6 +112,7 @@
 		629204E0258BB05400288D1E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		629204E2258BB05400288D1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		629D902625C31187007EF21A /* ChargingGraphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingGraphViewController.swift; sourceTree = "<group>"; };
+		62A01DE725CD92CA00D69A01 /* DrivingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrivingViewController.swift; sourceTree = "<group>"; };
 		62B1DFAF25A9A255006454EE /* _assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = _assets; sourceTree = "<group>"; };
 		62B1DFC425A9BA3C006454EE /* BatteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryViewController.swift; sourceTree = "<group>"; };
 		62B5A55625A8AD4F00C4F050 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				622B484925CAA53C00F27323 /* VoltageHeatmapViewController.swift */,
 				622B484C25CAA54B00F27323 /* TemperatureHeatmapViewController.swift */,
 				622B485325CB051400F27323 /* AuxBatteryViewController.swift */,
+				62A01DE725CD92CA00D69A01 /* DrivingViewController.swift */,
 				6282BBB425CC48E600BB442B /* ConsumptionViewController.swift */,
 				62DFAB5C25924CB800B00C5C /* _TestViewController.swift */,
 				62E602AE25B971130018D36C /* _Test_CentralManager.swift */,
@@ -536,6 +539,7 @@
 				62D3F93D25926D36002CB6C7 /* Frame.swift in Sources */,
 				62D3F95025932CF9002CB6C7 /* Dtc.swift in Sources */,
 				62D3F97925934B6C002CB6C7 /* CanZeViewController.swift in Sources */,
+				62A01DE825CD92CA00D69A01 /* DrivingViewController.swift in Sources */,
 				62E602A825B970620018D36C /* _Test_Wifi.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

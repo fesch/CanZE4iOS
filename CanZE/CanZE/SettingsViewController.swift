@@ -179,13 +179,13 @@ class SettingsViewController: CanZeViewController {
             return
         }
         view.hideAllToasts()
-        view.makeToast("starting test")
+        view.makeToast("_starting test")
 
         NotificationCenter.default.addObserver(self, selector: #selector(endOBDTest), name: Notification.Name("endQueue2"), object: nil)
 
         queue2 = []
         if Utils.isPh2() {
-            addField("7ec.5003.0", intervalMs: 2000) // open EVC
+            addField(Sid.EVC, intervalMs: 2000) // open EVC
         }
         addField(Sid.SoC, intervalMs: 5000)
         addField(Sid.BatterySerial, intervalMs: 5000)
@@ -209,7 +209,7 @@ class SettingsViewController: CanZeViewController {
 //            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)")
         } else {
             view.hideAllToasts()
-            view.makeToast("test ko :-(")
+            view.makeToast("_test ko :-(")
         }
     }
 

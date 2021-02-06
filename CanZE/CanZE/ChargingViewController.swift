@@ -118,7 +118,7 @@ class ChargingViewController: CanZeViewController {
         queue2 = []
 
         if Utils.isPh2() {
-            addField("7ec.5003.0", intervalMs: 2000) // open EVC
+            addField(Sid.EVC, intervalMs: 2000) // open EVC
         }
         addField(Sid.MaxCharge, intervalMs: 5000)
         addField(Sid.UserSoC, intervalMs: 5000)

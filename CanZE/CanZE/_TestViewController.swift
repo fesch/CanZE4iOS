@@ -499,7 +499,7 @@ class TestViewController: UIViewController {
 //            lastId = -1
             queue = []
             if Utils.isPh2() {
-                addField("7ec.5003.0", intervalMs: 2000) // open EVC
+                addField(Sid.EVC, intervalMs: 2000) // open EVC
             }
 
 //            addField(Sid.MaxCharge, intervalMs: 5000)
