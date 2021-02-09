@@ -14,9 +14,15 @@ class FirmwareViewController: CanZeViewController {
     var arrayEcu: [Ecu] = []
 
     @IBOutlet var btnDownload_: UIButton!
-    @IBOutlet var lblResult: UILabel!
+    @IBOutlet var lblResult1: UILabel!
+    @IBOutlet var lblResult2: UILabel!
+    @IBOutlet var lblResult3: UILabel!
+    @IBOutlet var lblResult4: UILabel!
     @IBOutlet var lblHeader: UILabel!
     @IBOutlet var tableV: UITableView!
+
+    var multi = false
+    var logger = AllFirmwaresLogger()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +36,10 @@ class FirmwareViewController: CanZeViewController {
         ///
 
         lblHeader.attributedText = NSLocalizedString("help_Ecus", comment: "").htmlToAttributedString
-        lblResult.text = ""
+        lblResult1.text = ""
+        lblResult2.text = ""
+        lblResult3.text = ""
+        lblResult4.text = ""
 
         btnDownload_.setTitle(NSLocalizedString("button_WriteCsv", comment: "").uppercased(), for: .normal)
 
@@ -93,69 +102,48 @@ class FirmwareViewController: CanZeViewController {
         startQueue2()
     }
 
-    @objc func endQueue2() {}
+    @objc func endQueue2() { if multi == true {
+        if let v = view.viewWithTag(vBG_TAG) {
+            v.removeFromSuperview()
+        }
+        view.makeToast("_end")
+
+    }}
 
     @objc func decoded(notification: Notification) {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
-        let field = Fields.getInstance.fieldsBySid[sid!]
-        if field != nil {
+        if let field = Fields.getInstance.fieldsBySid[sid!] {
             DispatchQueue.main.async {
-                if field?.value == Double.nan || field?.value == nil, field?.strVal == nil || field?.strVal == "" {
-                    if self.lblResult.text!.count > 0 {
-                        self.lblResult.text? += "\n"
-                    }
-                    self.lblResult.text! += "\(field!.frame.sendingEcu.mnemonic ?? ""),\(field!.name.replacingOccurrences(of: " (string!)", with: "")):"
-                } else {
-                    if field!.to - field!.from < 8 {
-                        if self.lblResult.text!.count > 0 {
-                            self.lblResult.text? += "\n"
-                        }
-                        self.lblResult.text! += "\(field!.frame.sendingEcu.mnemonic ?? ""),\(field!.name.replacingOccurrences(of: " (string!)", with: "")):\(String(format: "%02X", Int(field!.value)))"
+                let fieldName = field.name.replacingOccurrences(of: " (string!)", with: "")
+                var s = "\(field.frame.sendingEcu.mnemonic ?? ""),\(fieldName):"
+                if field.value != Double.nan, field.value != nil, field.strVal == "" {
+                    if field.to - field.from < 8 {
+                        s.append(String(format: "%02X", Int(field.value)))
+                    } else if field.strVal != "" {
+                        s.append(field.strVal)
                     } else {
-                        if field?.strVal != nil, field?.strVal != "" {
-                            if self.lblResult.text!.count > 0 {
-                                self.lblResult.text? += "\n"
-                            }
-                            self.lblResult.text! += "\(field!.frame.sendingEcu.mnemonic ?? ""),\(field!.name.replacingOccurrences(of: " (string!)", with: "")):\(field?.strVal ?? "")"
-                        } else {
-                            if self.lblResult.text!.count > 0 {
-                                self.lblResult.text? += "\n"
-                            }
-                            self.lblResult.text! += "\(field!.frame.sendingEcu.mnemonic ?? ""),\(field!.name.replacingOccurrences(of: " (string!)", with: "")):\(String(format: "%04X", Int(field!.value)))"
-                        }
+                        s.append(String(format: "%04X", Int(field.value)))
                     }
+                }
+                if sid!.contains(".6180.56") || sid!.contains(".62f1a0.") {
+                    self.lblResult1.text = s
+                } else if sid!.contains(".6180.64") || sid!.contains(".62f18a.") {
+                    self.lblResult2.text = s
+                } else if sid!.contains(".6180.128") || sid!.contains(".62f194.") {
+                    self.lblResult3.text = s
+                } else if sid!.contains(".6180.144") || sid!.contains(".62f195.") {
+                    self.lblResult4.text = s
+                }
+                if self.multi {
+                    self.logger.add(s)
                 }
             }
         }
     }
 
-    @IBAction func btnDownload() {
-        view.makeToast("not yet implemented")
-        // TODO:
-
-        /*
-                  queue2 = []
-                 Frames.getInstance.load(ecu: ecu)
-                 Fields.getInstance.load(assetName: ecu.mnemonic + "_Fields.csv")
-
-                 for frame in Frames.getInstance.getAllFrames() {
-                     if frame.responseId != nil, !frame.responseId.starts(with: "5") { // ship dtc commands and mode controls
-         //                          testerKeepalive(ecu); // may need to set a keepalive/session
-                         if frame.containingFrame != nil || ecu.fromId == 0x801 { // only use subframes and free frames
-                             // query the Frame
-                             for field in frame.getAllFields() {
-                                 addField(field.sid, intervalMs: 99999)
-                             }
-                         }
-                     }
-                 }
-                 startQueue()
-             }*/
-    }
-
-    func download(ecu: Ecu) {
+    func downloadSingle(_ ecu: Ecu) {
         let i = tableV.indexPathForSelectedRow
         if i == nil {
             return
@@ -163,22 +151,101 @@ class FirmwareViewController: CanZeViewController {
 
         let ecu = arrayEcu[i!.row]
         queue2 = []
-        lblResult.text = ""
+        lblResult1.text = ""
+        lblResult2.text = ""
+        lblResult3.text = ""
+        lblResult4.text = ""
+        multi = false
 
         if Utils.isPh2() {
             // open the gateway, as the poller is stopped
-            // queryFrame(frame: getFrame(fromId: 0x18daf1d2, responseId: "5003")!)
+            queryFrame(getFrame(fromId: 0x18daf1d2, responseId: "5003")!)
         }
 
         if ecu.sessionRequired {
-            // open the ecu, as the poller is stopped
-            queryFrame(frame: getFrame(fromId: ecu.fromId, responseId: ecu.startDiag)!)
+            if ecu.fromId > 0, ecu.fromId < 0x800 || ecu.fromId >= 0x900 {
+                // open the ecu, as the poller is stopped
+                queryFrame(getFrame(fromId: ecu.fromId, responseId: ecu.startDiag)!)
+            }
         }
         // get the info
-        processOneEcu(ecu: ecu)
+        processOneEcu(ecu)
     }
 
-    func queryFrame(frame: Frame) {
+    class AllFirmwaresLogger {
+        var url: URL?
+        func add(_ s: String) {
+            if url == nil {
+                let dir: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last! as URL
+
+                let df = DateFormatter()
+                df.dateFormat = "YYYY-MM-dd-HH-mm-ss"
+                let s = "Firmwares-\(df.string(from: Date())).csv"
+                url = dir.appendingPathComponent(s)
+
+                do {
+                    try "\(Date())".appendLineToURL(fileURL: url! as URL)
+                } catch {
+                    print("can't create log file")
+                }
+            }
+            do {
+                try s.appendLineToURL(fileURL: url! as URL)
+            } catch {
+                print("can't write to log file")
+            }
+        }
+    }
+
+    @IBAction func btnDownload() {
+        // TODO:
+
+        logger = AllFirmwaresLogger()
+        logger.add("ECU, Version Type, Version data")
+
+        if Utils.isPh2() {
+            if let frame = getFrame(fromId: 0x18daf1d2, responseId: "5003") { // open the gateway, as the poller is stopped
+                queryFrame(frame)
+            }
+        }
+
+        for ecu in Ecus.getInstance.getAllEcus() {
+            // see if we need to stop right now
+            if ecu.fromId > 0, ecu.fromId < 0x800 || ecu.fromId >= 0x900 {
+                keepAlive()
+                if ecu.sessionRequired {
+                    if let frame = getFrame(fromId: ecu.fromId, responseId: ecu.startDiag) { // open the ecu, as the poller is stopped
+                        queryFrame(frame)
+                    }
+                }
+                processOneEcu(ecu)
+            }
+        }
+        // closeDump()
+        // displayProgress(false, R.id.progressBar_cyclic3, R.id.csvFirmware) //
+        multi = true
+
+        let vBG = UIView(frame: view.frame)
+        vBG.backgroundColor = UIColor.black.withAlphaComponent(0.75)
+        vBG.tag = vBG_TAG
+        view.addSubview(vBG)
+
+        startQueue2()
+    }
+
+    func keepAlive() {
+        if !Utils.isPh2() {
+            return // quit ticker if no gateway and no session
+        }
+//           if (Calendar.getInstance().getTimeInMillis() < ticker) return; // then, quit if no timeout
+        if Utils.isPh2() {
+            // open the gateway
+            queryFrame(Frames.getInstance.getById(id: 0x18daf1d2, responseId: "5003")!)
+        }
+//           ticker = ticker + 3000;
+    }
+
+    func queryFrame(_ frame: Frame) {
         addFrame(frame: frame)
     }
 
@@ -192,28 +259,23 @@ class FirmwareViewController: CanZeViewController {
         return frame!
     }
 
-    func processOneEcu(ecu: Ecu) {
+    func processOneEcu(_ ecu: Ecu) {
         // query the Frame
-        var frame = getFrame(fromId: ecu.fromId, responseId: "6180")
-        if frame != nil {
-            addFrame(frame: frame!)
+        if let frame = getFrame(fromId: ecu.fromId, responseId: "6180") { // all firmware data
+            addFrame(frame: frame)
         } else {
             // else 2nd approach
-            frame = getFrame(fromId: ecu.fromId, responseId: "62f1a0")
-            if frame != nil {
-                addFrame(frame: frame!)
+            if let frame = getFrame(fromId: ecu.fromId, responseId: "62f1a0") { // diagnosticVersion
+                addFrame(frame: frame)
             }
-            frame = getFrame(fromId: ecu.fromId, responseId: "62f18a")
-            if frame != nil {
-                addFrame(frame: frame!)
+            if let frame = getFrame(fromId: ecu.fromId, responseId: "62f18a") { // systemSupplierIdentifier
+                addFrame(frame: frame)
             }
-            frame = getFrame(fromId: ecu.fromId, responseId: "62f194")
-            if frame != nil {
-                addFrame(frame: frame!)
+            if let frame = getFrame(fromId: ecu.fromId, responseId: "62f194") { // systemSupplierECUSoftwareNumber
+                addFrame(frame: frame)
             }
-            frame = getFrame(fromId: ecu.fromId, responseId: "62f195")
-            if frame != nil {
-                addFrame(frame: frame!)
+            if let frame = getFrame(fromId: ecu.fromId, responseId: "62f195") { // systemSupplierECUSoftwareVersionNumber
+                addFrame(frame: frame)
             }
         }
         startQueue2()
@@ -241,7 +303,7 @@ class FirmwareViewController: CanZeViewController {
 extension FirmwareViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let ecu = arrayEcu[indexPath.row]
-        download(ecu: ecu)
+        downloadSingle(ecu)
     }
 }
 

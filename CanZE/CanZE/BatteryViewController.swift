@@ -25,16 +25,20 @@ class BatteryViewController: CanZeViewController {
     @IBOutlet var socChartView: LineChartView!
     var realSocChartEntries = [ChartDataEntry]()
     var userSocChartEntries = [ChartDataEntry]()
+    var realSocChartLine = LineChartDataSet()
+    var userSocChartLine = LineChartDataSet()
 
     @IBOutlet var lblHelp_QA: UILabel!
 
     @IBOutlet var lblGraph_CellVoltages_title: UILabel!
     @IBOutlet var voltChartView: LineChartView!
     var voltChartEntries = [ChartDataEntry]()
+    var voltChartLine = LineChartDataSet()
 
     @IBOutlet var lblGraph_ModuleTemperatures_title: UILabel!
     @IBOutlet var tempChartView: LineChartView!
     var tempChartEntries = [ChartDataEntry]()
+    var tempChartLine = LineChartDataSet()
 
     @IBOutlet var lblBatterySerial: UILabel!
 
@@ -183,6 +187,8 @@ class BatteryViewController: CanZeViewController {
 
     func initSocChart() {
         socChartView.legend.enabled = false
+        socChartView.rightAxis.enabled = false
+
         let xAxis = socChartView.xAxis
         xAxis.labelPosition = .bottom
         xAxis.labelFont = UIFont.systemFont(ofSize: 8.0)
@@ -191,14 +197,28 @@ class BatteryViewController: CanZeViewController {
         xAxis.drawGridLinesEnabled = false
         xAxis.valueFormatter = TimestampAxis()
 //        xAxis.labelRotationAngle = -45.0
-        socChartView.rightAxis.enabled = false
+
         let yAxis = socChartView.leftAxis
         yAxis.axisMinimum = 0
         yAxis.axisMaximum = 100
+
+        realSocChartLine = LineChartDataSet(entries: realSocChartEntries, label: nil)
+        realSocChartLine.colors = [.red]
+        realSocChartLine.drawCirclesEnabled = false
+        realSocChartLine.drawValuesEnabled = false
+
+        userSocChartLine = LineChartDataSet(entries: userSocChartEntries, label: nil)
+        userSocChartLine.colors = [.blue]
+        userSocChartLine.drawCirclesEnabled = false
+        userSocChartLine.drawValuesEnabled = false
+
+        socChartView.data = LineChartData(dataSets: [realSocChartLine, userSocChartLine])
     }
 
     func initVoltChart() {
         voltChartView.legend.enabled = false
+        voltChartView.rightAxis.enabled = false
+
         let xAxis = voltChartView.xAxis
 //        xAxis.drawAxisLineEnabled = false
         xAxis.drawGridLinesEnabled = false
@@ -209,15 +229,24 @@ class BatteryViewController: CanZeViewController {
          xAxis.labelRotationAngle = -45.0*/
 //        xAxis.enabled = false
         xAxis.drawLabelsEnabled = false
-        voltChartView.rightAxis.enabled = false
+
         let yAxis = voltChartView.leftAxis
         yAxis.drawLabelsEnabled = false
         yAxis.axisMinimum = 3
         yAxis.axisMaximum = 5
+
+        voltChartLine = LineChartDataSet(entries: voltChartEntries, label: nil)
+        voltChartLine.drawCirclesEnabled = false
+        voltChartLine.drawValuesEnabled = false
+        voltChartLine.colors = [.red]
+
+        voltChartView.data = LineChartData(dataSet: voltChartLine)
     }
 
     func initTempChart() {
         tempChartView.legend.enabled = false
+        tempChartView.rightAxis.enabled = false
+
         let xAxis = tempChartView.xAxis
 //        xAxis.drawAxisLineEnabled = false
         xAxis.drawGridLinesEnabled = false
@@ -228,48 +257,34 @@ class BatteryViewController: CanZeViewController {
          xAxis.labelRotationAngle = -45.0*/
 //        xAxis.enabled = false
         xAxis.drawLabelsEnabled = false
-        tempChartView.rightAxis.enabled = false
+
         let yAxis = tempChartView.leftAxis
         yAxis.drawLabelsEnabled = false
         yAxis.axisMinimum = 0
         yAxis.axisMaximum = 50
+
+        tempChartLine = LineChartDataSet(entries: tempChartEntries, label: nil)
+        tempChartLine.colors = [.red]
+        tempChartLine.drawCirclesEnabled = false
+        tempChartLine.drawValuesEnabled = false
+
+        tempChartView.data = LineChartData(dataSet: tempChartLine)
     }
 
     func updateSocChart() {
-        if realSocChartEntries.count == 0, userSocChartEntries.count == 0 {
-            return
-        }
-        let line1 = LineChartDataSet(entries: realSocChartEntries, label: nil)
-        line1.colors = [.red]
-        let line2 = LineChartDataSet(entries: userSocChartEntries, label: nil)
-        line2.colors = [.blue]
-        line1.drawCirclesEnabled = false
-        line1.drawValuesEnabled = false
-        line2.drawCirclesEnabled = false
-        line2.drawValuesEnabled = false
-        socChartView.data = LineChartData(dataSets: [line1, line2])
+        realSocChartLine.replaceEntries(realSocChartEntries)
+        userSocChartLine.replaceEntries(userSocChartEntries)
+        socChartView.data = BarChartData(dataSets: [realSocChartLine, userSocChartLine])
     }
 
     func updateVoltChart() {
-        if voltChartEntries.count == 0 {
-            return
-        }
-        let line1 = LineChartDataSet(entries: voltChartEntries, label: nil)
-        line1.drawCirclesEnabled = false
-        line1.drawValuesEnabled = false
-        line1.colors = [.red]
-        voltChartView.data = LineChartData(dataSet: line1)
+        voltChartLine.replaceEntries(voltChartEntries)
+        voltChartView.data = BarChartData(dataSet: voltChartLine)
     }
 
     func updateTempChart() {
-        if tempChartEntries.count == 0 {
-            return
-        }
-        let line1 = LineChartDataSet(entries: tempChartEntries, label: nil)
-        line1.colors = [.red]
-        line1.drawCirclesEnabled = false
-        line1.drawValuesEnabled = false
-        tempChartView.data = LineChartData(dataSet: line1)
+        tempChartLine.replaceEntries(tempChartEntries)
+        tempChartView.data = BarChartData(dataSet: tempChartLine)
     }
 
     class TimestampAxis: IAxisValueFormatter {

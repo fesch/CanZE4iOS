@@ -150,18 +150,18 @@ class AuxBatteryViewController: CanZeViewController {
             case Sid.DcLoad:
                 self.textDcLoad.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
             case Sid.AuxStatus:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.aux_Status!.count {
-                        self.textAuxStatus.text = self.aux_Status![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.aux_Status!.count {
+                        self.textAuxStatus.text = self.aux_Status![i]
                     }
                 }
             case Sid.VehicleState:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.vehicle_Status!.count {
-                        self.text_vehicle_state.text = self.vehicle_Status![Int(val!)]
-                        self.chartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.vehicle_Status!.count {
+                        self.text_vehicle_state.text = self.vehicle_Status![i]
+                        self.chartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: Double(i)))
                         self.updateChart()
                     }
                 }
@@ -177,6 +177,8 @@ class AuxBatteryViewController: CanZeViewController {
 
     func initChart() {
         chartView.legend.enabled = false
+        chartView.rightAxis.enabled = false
+
         let xAxis = chartView.xAxis
         xAxis.labelPosition = .bottom
         xAxis.labelFont = UIFont.systemFont(ofSize: 8.0)
@@ -185,7 +187,7 @@ class AuxBatteryViewController: CanZeViewController {
         xAxis.drawGridLinesEnabled = false
         xAxis.valueFormatter = TimestampAxis()
 //        xAxis.labelRotationAngle = -45.0
-        chartView.rightAxis.enabled = false
+
         let yAxis = chartView.leftAxis
         yAxis.axisMinimum = 9
         yAxis.axisMaximum = 15

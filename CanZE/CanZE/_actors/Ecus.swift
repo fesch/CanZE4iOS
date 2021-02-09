@@ -26,10 +26,9 @@ struct Ecus {
 
     mutating func fillFromAsset(assetName: String) {
         let p = assetName
-        let path = Bundle.main.path(forResource: p, ofType: nil)
-        if path != nil {
+        if let path = Bundle.main.path(forResource: p, ofType: nil) {
             do {
-                let completo = try String(contentsOfFile: path!, encoding: .utf8)
+                let completo = try String(contentsOfFile: path, encoding: .utf8)
                 let righe = completo.components(separatedBy: "\n")
                 // print(righe.count)
                 ecus = []

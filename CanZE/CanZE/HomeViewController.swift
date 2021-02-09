@@ -136,7 +136,7 @@ class HomeViewController: CanZeViewController {
         btnAllData.setTitle(NSLocalizedString("button_alldata", comment: "").uppercased(), for: .normal)
         btnAllData.setImage(#imageLiteral(resourceName: "button_alldata"), for: .normal)
         btnVoltageHeatmap.setTitle(NSLocalizedString("button_HeatmapVoltage", comment: "").uppercased(), for: .normal)
-        btnVoltageHeatmap.setImage(#imageLiteral(resourceName: "button_alldata"), for: .normal)
+        btnVoltageHeatmap.setImage(#imageLiteral(resourceName: "button_lightning"), for: .normal)
         btnTemperatureHeatmap.setTitle(NSLocalizedString("button_HeatmapTemperature", comment: "").uppercased(), for: .normal)
         btnTemperatureHeatmap.setImage(#imageLiteral(resourceName: "button_batterytemp"), for: .normal)
         btnDtcReadout.setTitle(NSLocalizedString("button_DtcReadout", comment: "").uppercased(), for: .normal)
@@ -147,7 +147,7 @@ class HomeViewController: CanZeViewController {
         btnElmTesting.setImage(#imageLiteral(resourceName: "button_elm327"), for: .normal)
         btnChargingHistory.setTitle(NSLocalizedString("button_chargingHistory", comment: "").uppercased(), for: .normal)
         btnChargingHistory.setImage(#imageLiteral(resourceName: "button_charginghist"), for: .normal)
-        btn12VBattery.setTitle(NSLocalizedString("title_activity_auxbatt", comment: "").uppercased(), for: .normal)
+        btn12VBattery.setTitle(NSLocalizedString("button_AuxBatt", comment: "").uppercased(), for: .normal)
         btn12VBattery.setImage(#imageLiteral(resourceName: "button_auxbat"), for: .normal)
         btnRange.setTitle(NSLocalizedString("button_Range", comment: "").uppercased(), for: .normal)
         btnRange.setImage(#imageLiteral(resourceName: "button_range"), for: .normal)
@@ -187,14 +187,13 @@ class HomeViewController: CanZeViewController {
                 do {
                     let newsData = try decoder.decode(AnyDecodable.self, from: data).value as! [String: Any]
 
-                    let newsText = newsData["news"] as? String
-                    if newsText != nil {
-                        if newsText!.contains("<") {
+                    if let newsText = newsData["news"] as? String {
+                        if newsText.contains("<") {
                             self.isHtml = true
                         }
                         DispatchQueue.main.async {
                             if self.isHtml {
-                                self.lblNews.attributedText = newsText?.htmlToAttributedString
+                                self.lblNews.attributedText = newsText.htmlToAttributedString
                             } else {
                                 self.lblNews.text = newsText
                             }

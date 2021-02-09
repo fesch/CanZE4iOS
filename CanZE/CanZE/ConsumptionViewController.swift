@@ -157,27 +157,24 @@ class ConsumptionViewController: CanZeViewController {
         DispatchQueue.main.async {
             switch sid {
             case Sid.TotalPositiveTorque:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
+                if let val = self.fieldResultsDouble[sid!] {
                     let field = Fields.getInstance.fieldsBySid[sid!]
-                    self.posTorque = Int(val!)
+                    self.posTorque = Int(val)
 //                pb = findViewById(R.id.MeanEffectiveAccTorque);
 //                pb.setProgress(posTorque);
                     self.text_wheel_torque.text = "\(self.posTorque - self.negTorque) \(field?.unit ?? "")"
                 }
             case Sid.TotalNegativeTorque:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
+                if let val = self.fieldResultsDouble[sid!] {
                     let field = Fields.getInstance.fieldsBySid[sid!]
-                    self.negTorque = Int(val!)
+                    self.negTorque = Int(val)
 //                pb = findViewById(R.id.pb_driver_torque_request)
 //                pb.setProgress(negTorque)
                     self.text_wheel_torque.text = "\(self.posTorque - self.negTorque) \(field?.unit ?? "")"
                 }
             case Sid.TotalPotentialResistiveWheelsTorque:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    var tprwt = -Int(val!)
+                if let val = self.fieldResultsDouble[sid!] {
+                    var tprwt = -Int(val)
 //                pb = findViewById(R.id.MaxBreakTorque)
 //                if (pb != null) pb.setProgress(tprwt < 2047 ? tprwt : 10)
                     // TODO:
@@ -247,6 +244,7 @@ class ConsumptionViewController: CanZeViewController {
 
     func initChart1() {
         chartView1.legend.enabled = false
+
         let xAxis = chartView1.xAxis
         xAxis.labelPosition = .bottom
         xAxis.labelFont = UIFont.systemFont(ofSize: 8.0)
@@ -256,9 +254,11 @@ class ConsumptionViewController: CanZeViewController {
         xAxis.valueFormatter = TimestampAxis()
         //        xAxis.labelRotationAngle = -45.0
         // chartView1.rightAxis.enabled = false
+
         let yAxisLeft = chartView1.leftAxis
         yAxisLeft.axisMinimum = -30
         yAxisLeft.axisMaximum = 70
+
         let yAxisRight = chartView1.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 100
@@ -294,10 +294,13 @@ class ConsumptionViewController: CanZeViewController {
         //        line2.fill = Fill.fillWithLinearGradient(gradient2!, angle: 90)
         //        line2.fillAlpha = 1
         //        line2.drawFilledEnabled = true
+
+        chartView1.data = LineChartData(dataSets: [line1a, line1b])
     }
 
     func initChart2() {
         chartView2.legend.enabled = false
+
         let xAxis = chartView2.xAxis
         xAxis.labelPosition = .bottom
         xAxis.labelFont = UIFont.systemFont(ofSize: 8.0)
@@ -307,9 +310,11 @@ class ConsumptionViewController: CanZeViewController {
         xAxis.valueFormatter = TimestampAxis()
 //        xAxis.labelRotationAngle = -45.0
 //        chartView2.rightAxis.enabled = false
+
         let yAxisLeft = chartView2.leftAxis
         yAxisLeft.axisMinimum = 0
         yAxisLeft.axisMaximum = 160
+
         let yAxisRight = chartView2.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 40
@@ -345,10 +350,13 @@ class ConsumptionViewController: CanZeViewController {
 //        line4.fill = Fill.fillWithLinearGradient(gradient4!, angle: 90)
 //        line4.fillAlpha = 1
 //        line4.drawFilledEnabled = true
+
+        chartView2.data = LineChartData(dataSets: [line2a, line2b])
     }
 
     func initChart3() {
         chartView3.legend.enabled = false
+
         let xAxis = chartView3.xAxis
         xAxis.labelPosition = .bottom
         xAxis.labelFont = UIFont.systemFont(ofSize: 8.0)
@@ -358,9 +366,11 @@ class ConsumptionViewController: CanZeViewController {
         xAxis.valueFormatter = TimestampAxis()
 //        xAxis.labelRotationAngle = -45.0
 //        chartView3.rightAxis.enabled = false
+
         let yAxisLeft = chartView3.leftAxis
         yAxisLeft.axisMinimum = -12
         yAxisLeft.axisMaximum = 12
+
         let yAxisRight = chartView3.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 180
@@ -372,6 +382,8 @@ class ConsumptionViewController: CanZeViewController {
         line3b = LineChartDataSet(entries: chartEntries3b, label: nil)
         line3b.drawCirclesEnabled = false
         line3b.drawValuesEnabled = false
+
+        chartView3.data = LineChartData(dataSets: [line3a, line3b])
     }
 
     func updateChart1() {

@@ -254,13 +254,12 @@ class TestViewController: UIViewController {
     func writeBle(s: String) {
         if selectedWriteCharacteristic != nil {
             let ss = s.appending("\r")
-            let data = ss.data(using: .utf8)
-            if data != nil {
+            if let data = ss.data(using: .utf8) {
                 if selectedWriteCharacteristic.properties.contains(.write) {
-                    selectedPeripheral.blePeripheral.writeValue(data!, for: selectedWriteCharacteristic, type: .withResponse)
+                    selectedPeripheral.blePeripheral.writeValue(data, for: selectedWriteCharacteristic, type: .withResponse)
                     debug("> \(s)")
                 } else if selectedWriteCharacteristic.properties.contains(.writeWithoutResponse) {
-                    selectedPeripheral.blePeripheral.writeValue(data!, for: selectedWriteCharacteristic, type: .withoutResponse)
+                    selectedPeripheral.blePeripheral.writeValue(data, for: selectedWriteCharacteristic, type: .withoutResponse)
                     debug("> \(s)")
                 } else {
                     debug("can't write to characteristic")
@@ -600,12 +599,11 @@ class TestViewController: UIViewController {
     }
 
     func addField(_ sid: String, intervalMs: Int) {
-        let field = Fields.getInstance.getBySID(sid)
-        if field != nil {
-            if field!.responseId != "999999" {
+        if let field = Fields.getInstance.getBySID(sid) {
+            if field.responseId != "999999" {
                 //  addField(field:field, intervalMs: intervalMs)
                 //   print("sid \(field?.from ?? -1)")
-                requestIsoTpFrame(frame2: (field?.frame)!, field: field!)
+                requestIsoTpFrame(frame2: (field.frame)!, field: field)
             }
         } else {
 //            MainActivity.debug(this.getClass().getSimpleName() + " (CanzeActivity): SID " + sid + " does not exist in class Fields");

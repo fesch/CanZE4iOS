@@ -250,9 +250,8 @@ class DrivingViewController: CanZeViewController {
 
         let confirmAction = UIAlertAction(title: NSLocalizedString("default_Ok", comment: ""), style: .default) { [weak alertController] _ in
             guard let alertController = alertController, let textField = alertController.textFields?.first else { return }
-            let i = Int(textField.text ?? "")
-            if i != nil {
-                self.saveDestOdo(d: self.odo + Double(i!))
+            if let i = Int(textField.text ?? "") {
+                self.saveDestOdo(d: self.odo + Double(i))
             }
         }
         alertController.addAction(confirmAction)
@@ -362,13 +361,13 @@ class DrivingViewController: CanZeViewController {
         pedalChartView.drawValueAboveBarEnabled = false
         pedalChartView.fitBars = true
 
+        let xAxis = pedalChartView.xAxis
+        xAxis.enabled = false
+
         let leftAxis = pedalChartView.leftAxis
         leftAxis.axisMinimum = 0
         leftAxis.axisMaximum = 125
         leftAxis.enabled = false
-
-        let xAxis = pedalChartView.xAxis
-        xAxis.enabled = false
 
         pedalLine = BarChartDataSet(entries: pedalChartEntries, label: nil)
         pedalLine.drawValuesEnabled = false

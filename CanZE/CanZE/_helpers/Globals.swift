@@ -50,5 +50,6 @@ class Globals: NSObject {
     var deviceIsInitialized = false
 
     // LOGGER
-    let logger = Logger()
+    var logger = Logger()
+    var useSdCard = false
 }

@@ -170,6 +170,15 @@ class SettingsViewController: CanZeViewController {
         }
 
         settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
+
+        // debug
+        settingsArray = []
+        titolo = NSLocalizedString("label_SdCardLogging", comment: "")
+
+        s = Setting(tag: AppSettings.SETTING_LOGGING_USE_SD_CARD, type: .SWITCH, title: NSLocalizedString("Log to sdcard1", comment: ""), boolValue: Globals.shared.useSdCard)
+        settingsArray.append(s)
+
+        settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
     }
 
     @IBAction func btnOBDTest() {
@@ -524,6 +533,7 @@ extension SettingsViewController: UITableViewDelegate {
 //            settingsDic[myKey] = arraySettings
             ud.setValue(setting.boolValue, forKey: setting.tag)
             ud.synchronize()
+
             loadSettings()
             organizeSettings()
             tableView.reloadData()

@@ -68,10 +68,9 @@ struct Fields {
 
     mutating func fillFromAsset(assetName: String) {
         let p = assetName
-        let path = Bundle.main.path(forResource: p, ofType: nil)
-        if path != nil {
+        if let path = Bundle.main.path(forResource: p, ofType: nil) {
             do {
-                let completo = try String(contentsOfFile: path!, encoding: .utf8)
+                let completo = try String(contentsOfFile: path, encoding: .utf8)
                 let righe = completo.components(separatedBy: "\n")
                 // print(righe.count)
                 for riga in righe {
@@ -222,9 +221,8 @@ struct Fields {
         var allOk = true
 
         for sid in dependantSids.components(separatedBy: ";") {
-            let field = getBySID(sid)
-            if field != nil {
-                if field?.responseId != "999999" {
+            if let field = getBySID(sid) {
+                if field.responseId != "999999" {
                     dependantFields[sid] = field
                 } else { // else not ok, but no error toast display. This is a temporary hack to avoid toast overload while fixing _FieldsPh2
                     allOk = false

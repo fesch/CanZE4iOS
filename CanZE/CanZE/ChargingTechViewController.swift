@@ -390,7 +390,7 @@ class ChargingTechViewController: CanZeViewController {
         addField(Sid.SupervisorState, intervalMs: 0)
         addField(Sid.CompletionStatus, intervalMs: 0)
 
-        // TODO: Add variable holding information if CCS charging is available for the car
+        // TO DO Add variable holding information if CCS charging is available for the car
         if Utils.isPh2() {
             addField(Sid.CCSEVSEStatus, intervalMs: 0)
             addField(Sid.CCSFailureStatus, intervalMs: 0)
@@ -446,20 +446,18 @@ class ChargingTechViewController: CanZeViewController {
             case Sid.RealSoC:
                 self.lbl_textRealSOC.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
             case Sid.AvailableChargingPower:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if val! > 45 {
+                if let val = self.fieldResultsDouble[sid!] {
+                    if val > 45 {
                         self.lbl_textAvChPwr.text = "-"
                     } else {
-                        self.lbl_textAvChPwr.text = String(format: "%.2f", val!)
+                        self.lbl_textAvChPwr.text = String(format: "%.2f", val)
                     }
                 }
             case Sid.AvailableEnergy:
                 if usoc > 0 {
-                    var val = self.fieldResultsDouble[sid!]
-                    if val != nil {
-                        val = val! * (1 - usoc) / usoc
-                        self.lbl_textETF.text = String(format: "%.2f", val!)
+                    if var val = self.fieldResultsDouble[sid!] {
+                        val = val * (1 - usoc) / usoc
+                        self.lbl_textETF.text = String(format: "%.2f", val)
                     }
                 }
                 self.lbl_textAvEner.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
@@ -533,9 +531,8 @@ class ChargingTechViewController: CanZeViewController {
             case Sid.Preamble_BalancingBytes + "104":
                 self.lbl_text_bala_12_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
             case Sid.MainsCurrentType:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    let i = Int(val!)
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
                     if i < self.mains_Current_Type!.count {
                         self.lbl_textMainsCurrentType.text = self.mains_Current_Type?[i]
                     }
@@ -564,68 +561,68 @@ class ChargingTechViewController: CanZeViewController {
                 self.lbl_textGroundResistance.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
 
             case Sid.SupervisorState:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.supervisor_State!.count {
-                        self.lbl_textSupervisorState.text = self.supervisor_State![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.supervisor_State!.count {
+                        self.lbl_textSupervisorState.text = self.supervisor_State![i]
                     }
                 }
             case Sid.CompletionStatus:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.completion_Status!.count {
-                        self.lbl_textCompletionStatus.text = self.completion_Status![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.completion_Status!.count {
+                        self.lbl_textCompletionStatus.text = self.completion_Status![i]
                     }
                 }
             case Sid.CCSEVSEStatus:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.evse_status!.count {
-                        self.lbl_textEVSEStatus.text = self.evse_status![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.evse_status!.count {
+                        self.lbl_textEVSEStatus.text = self.evse_status![i]
                     }
                 }
             case Sid.CCSFailureStatus:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.evse_failure_status!.count {
-                        self.lbl_textEVSEFailureStatus.text = self.evse_failure_status![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.evse_failure_status!.count {
+                        self.lbl_textEVSEFailureStatus.text = self.evse_failure_status![i]
                     }
                 }
             case Sid.CCSEVReady:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.ev_ready_status!.count {
-                        self.lbl_textEVReady.text = self.ev_ready_status![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.ev_ready_status!.count {
+                        self.lbl_textEVReady.text = self.ev_ready_status![i]
                     }
                 }
             case Sid.CCSCPLCComStatus:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.cplc_com_status!.count {
-                        self.lbl_textCPLCComStatus.text = self.cplc_com_status![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.cplc_com_status!.count {
+                        self.lbl_textCPLCComStatus.text = self.cplc_com_status![i]
                     }
                 }
             case Sid.CCSEVRequestState:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.ev_request_state!.count {
-                        self.lbl_textEVRequestState.text = self.ev_request_state![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.ev_request_state!.count {
+                        self.lbl_textEVRequestState.text = self.ev_request_state![i]
                     }
                 }
             case Sid.CCSEVSEState:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.evse_state!.count {
-                        self.lbl_textEVSEState.text = self.evse_state![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.evse_state!.count {
+                        self.lbl_textEVSEState.text = self.evse_state![i]
                     }
                 }
             case Sid.CCSEVSEMaxPower:
                 self.lbl_textEVSEMaxPower.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
             case Sid.CCSEVSEPowerLimitReached:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.limit_reached!.count {
-                        self.lbl_textEVSEPowerLimitReached.text = self.limit_reached![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.limit_reached!.count {
+                        self.lbl_textEVSEPowerLimitReached.text = self.limit_reached![i]
                     }
                 }
             case Sid.CCSEVSEMaxVoltage:
@@ -633,10 +630,10 @@ class ChargingTechViewController: CanZeViewController {
             case Sid.CCSEVSEPresentVoltage:
                 self.lbl_textEVSEPresentVoltage.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
             case Sid.CCSEVSEVoltageLimitReaced:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.limit_reached!.count {
-                        self.lbl_textEVSEVoltageLimitReached.text = self.limit_reached![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.limit_reached!.count {
+                        self.lbl_textEVSEVoltageLimitReached.text = self.limit_reached![i]
                     }
                 }
             case Sid.CCSEVSEMaxCurrent:
@@ -644,10 +641,10 @@ class ChargingTechViewController: CanZeViewController {
             case Sid.CCSEVSEPresentCurrent:
                 self.lbl_textEVSEPresentCurrent.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
             case Sid.CCSEVSECurrentLimitReached:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil {
-                    if Int(val!) >= 0, Int(val!) < self.limit_reached!.count {
-                        self.lbl_textEVSECurrentLimitReached.text = self.limit_reached![Int(val!)]
+                if let val = self.fieldResultsDouble[sid!] {
+                    let i = Int(val)
+                    if i >= 0, i < self.limit_reached!.count {
+                        self.lbl_textEVSECurrentLimitReached.text = self.limit_reached![i]
                     }
                 }
             case Sid.BcbVersion: // pre 0x0800 versions have a pilot PWM resolution of 1

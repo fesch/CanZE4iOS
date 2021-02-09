@@ -47,8 +47,7 @@ class VoltageHeatmapViewController: CanZeViewController {
         text_CellVoltageDelta.text = "-"
 
         for n in 1001 ..< 1097 {
-            let v = view.viewWithTag(n)
-            if v != nil {
+            if let v = view.viewWithTag(n) {
                 let vv = v as! UILabel
                 vv.text = "-"
                 vv.backgroundColor = baseColor
@@ -154,8 +153,7 @@ class VoltageHeatmapViewController: CanZeViewController {
                 // otherwise the UI will not be repainted
                 for i in 1 ..< lastCell+1 {
                     DispatchQueue.main.async {
-                        let tv = self.view.viewWithTag(i+1000)
-                        if tv != nil {
+                        if let tv = self.view.viewWithTag(i+1000) {
                             let tv2 = tv as! UILabel
                             // tv.setText(String.format("%.3f", lastVoltage[i]));
                             tv2.text = String(format: "%.3f", self.lastVoltage[i])

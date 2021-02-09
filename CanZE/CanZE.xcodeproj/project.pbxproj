@@ -78,11 +78,14 @@
 		62E602AF25B971130018D36C /* _Test_CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602AE25B971130018D36C /* _Test_CentralManager.swift */; };
 		62E602B225B9714A0018D36C /* _Test_Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602B125B9714A0018D36C /* _Test_Peripheral.swift */; };
 		62E602B525B971790018D36C /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602B425B971790018D36C /* String.swift */; };
+		62EF1D0725D2A6EA00E59E77 /* ClimateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0625D2A6EA00E59E77 /* ClimateViewController.swift */; };
+		62EF1D0A25D2B60200E59E77 /* BrakingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0925D2B60200E59E77 /* BrakingViewController.swift */; };
+		62EF1D0D25D2DA0600E59E77 /* LeakCurrentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0C25D2DA0600E59E77 /* LeakCurrentsViewController.swift */; };
+		62EF1D1025D2E60C00E59E77 /* RangeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0F25D2E60C00E59E77 /* RangeViewController.swift */; };
 		6602AFA8BCE7D7F8504BC50E /* Pods_CanZE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B04D1910E028049DD52CE67D /* Pods_CanZE.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3C020A5B48FC71DD702E188E /* Pods-CanZE4iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanZE4iOS.release.xcconfig"; path = "Target Support Files/Pods-CanZE4iOS/Pods-CanZE4iOS.release.xcconfig"; sourceTree = "<group>"; };
 		621AC0E325C7F673004A293C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		621AC0E625C80287004A293C /* CanZE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CanZE.entitlements; sourceTree = "<group>"; };
 		621AC0E825C811D2004A293C /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -165,10 +168,13 @@
 		62E602AE25B971130018D36C /* _Test_CentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Test_CentralManager.swift; sourceTree = "<group>"; };
 		62E602B125B9714A0018D36C /* _Test_Peripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Test_Peripheral.swift; sourceTree = "<group>"; };
 		62E602B425B971790018D36C /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		62EF1D0625D2A6EA00E59E77 /* ClimateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimateViewController.swift; sourceTree = "<group>"; };
+		62EF1D0925D2B60200E59E77 /* BrakingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrakingViewController.swift; sourceTree = "<group>"; };
+		62EF1D0C25D2DA0600E59E77 /* LeakCurrentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeakCurrentsViewController.swift; sourceTree = "<group>"; };
+		62EF1D0F25D2E60C00E59E77 /* RangeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeViewController.swift; sourceTree = "<group>"; };
 		6411126EFA1F31F14178CD9D /* Pods-CanZE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanZE.release.xcconfig"; path = "Target Support Files/Pods-CanZE/Pods-CanZE.release.xcconfig"; sourceTree = "<group>"; };
 		B04D1910E028049DD52CE67D /* Pods_CanZE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CanZE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1BAC1BA0DA5D12FBC36CFE7 /* Pods-CanZE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanZE.debug.xcconfig"; path = "Target Support Files/Pods-CanZE/Pods-CanZE.debug.xcconfig"; sourceTree = "<group>"; };
-		DE8A133E456DD435EBB2BBF6 /* Pods-CanZE4iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanZE4iOS.debug.xcconfig"; path = "Target Support Files/Pods-CanZE4iOS/Pods-CanZE4iOS.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -248,6 +254,10 @@
 				622B485325CB051400F27323 /* AuxBatteryViewController.swift */,
 				62A01DE725CD92CA00D69A01 /* DrivingViewController.swift */,
 				6282BBB425CC48E600BB442B /* ConsumptionViewController.swift */,
+				62EF1D0625D2A6EA00E59E77 /* ClimateViewController.swift */,
+				62EF1D0925D2B60200E59E77 /* BrakingViewController.swift */,
+				62EF1D0C25D2DA0600E59E77 /* LeakCurrentsViewController.swift */,
+				62EF1D0F25D2E60C00E59E77 /* RangeViewController.swift */,
 				62DFAB5C25924CB800B00C5C /* _TestViewController.swift */,
 				62E602AE25B971130018D36C /* _Test_CentralManager.swift */,
 				62E602B125B9714A0018D36C /* _Test_Peripheral.swift */,
@@ -332,8 +342,6 @@
 		97A05342BD95B7010884AB5A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DE8A133E456DD435EBB2BBF6 /* Pods-CanZE4iOS.debug.xcconfig */,
-				3C020A5B48FC71DD702E188E /* Pods-CanZE4iOS.release.xcconfig */,
 				C1BAC1BA0DA5D12FBC36CFE7 /* Pods-CanZE.debug.xcconfig */,
 				6411126EFA1F31F14178CD9D /* Pods-CanZE.release.xcconfig */,
 			);
@@ -502,6 +510,7 @@
 				621AC0E925C811D2004A293C /* Data.swift in Sources */,
 				62D3F95A25932DFA002CB6C7 /* Message.swift in Sources */,
 				6279AB0A25BC3A36009DE847 /* UserDefaults.swift in Sources */,
+				62EF1D0D25D2DA0600E59E77 /* LeakCurrentsViewController.swift in Sources */,
 				62D3F94325927126002CB6C7 /* Ecus.swift in Sources */,
 				629D902725C31187007EF21A /* ChargingGraphViewController.swift in Sources */,
 				62D1FFAE25C40E17006EDDA5 /* AllDataViewController.swift in Sources */,
@@ -518,6 +527,7 @@
 				62E4920B25A8CA2B00AA45CE /* SettingsTableViewCell.swift in Sources */,
 				628928302593AD98008F9C1F /* VirtualField.swift in Sources */,
 				622B485125CAC29300F27323 /* UIColor.swift in Sources */,
+				62EF1D0725D2A6EA00E59E77 /* ClimateViewController.swift in Sources */,
 				621AC0EC25C81B2C004A293C /* FirmwareViewController.swift in Sources */,
 				62D3F94925932BF5002CB6C7 /* Globals.swift in Sources */,
 				626C004025B9B44000121456 /* UITextView.swift in Sources */,
@@ -529,6 +539,7 @@
 				62DFAB38259231C600B00C5C /* ButtonWithImage.swift in Sources */,
 				626C004425B9C66000121456 /* UIDevice.swift in Sources */,
 				62D67DFB25C1D1260075D7AB /* ChargingTechViewController.swift in Sources */,
+				62EF1D0A25D2B60200E59E77 /* BrakingViewController.swift in Sources */,
 				62DFAB5D25924CB800B00C5C /* _TestViewController.swift in Sources */,
 				62E602B225B9714A0018D36C /* _Test_Peripheral.swift in Sources */,
 				62DFAB322592300500B00C5C /* Utils.swift in Sources */,
@@ -536,6 +547,7 @@
 				62D3F95D25932E3E002CB6C7 /* Test.swift in Sources */,
 				62A27E1725CEB390005F3DD5 /* ChargingHistoryViewController.swift in Sources */,
 				62D264A025B5C0E600421F14 /* ChargingViewController.swift in Sources */,
+				62EF1D1025D2E60C00E59E77 /* RangeViewController.swift in Sources */,
 				62D3F9732593461E002CB6C7 /* SettingsViewController.swift in Sources */,
 				62DA73F12594AF880068CDF8 /* SettingsSwitchTableViewCell.swift in Sources */,
 				62D2649D25B5BE9200421F14 /* DisclaimerViewController.swift in Sources */,

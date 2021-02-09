@@ -15,10 +15,13 @@ class ButtonWithImage: UIButton {
         titleLabel?.font = UIFont.boldSystemFont(ofSize: 15.0)
         titleLabel?.lineBreakMode = .byWordWrapping
         titleLabel?.numberOfLines = 0
-        backgroundColor = UIColor(white: 0.75, alpha: 1)
-        contentHorizontalAlignment = .left
-        layer.cornerRadius = 5
+        titleLabel?.textAlignment = .center
+
         imageEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-        titleEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
+        titleEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 5)
+        contentHorizontalAlignment = .left
+
+        backgroundColor = UIColor(white: 0.75, alpha: 1)
+        layer.cornerRadius = 5
     }
 }

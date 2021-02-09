@@ -84,9 +84,8 @@ class CanZeViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(received2(notification:)), name: Notification.Name("received2"), object: nil)
 
-        let vBG = view.viewWithTag(vBG_TAG)
-        if vBG != nil {
-            vBG?.removeFromSuperview()
+        if let vBG = view.viewWithTag(vBG_TAG) {
+            vBG.removeFromSuperview()
         }
     }
 
@@ -139,7 +138,9 @@ class CanZeViewController: UIViewController {
 
     func debug(_ s: String) {
         print(s)
-        Globals.shared.logger.add(s: s)
+        if Globals.shared.useSdCard {
+            Globals.shared.logger.add(s: s)
+        }
     }
 
     @IBAction func btnConnect() {
@@ -165,9 +166,8 @@ class CanZeViewController: UIViewController {
             NotificationCenter.default.addObserver(self, selector: #selector(autoInit), name: Notification.Name("autoInit"), object: nil)
             initDeviceELM327()
         } else {
-            let vBG = view.viewWithTag(vBG_TAG)
-            if vBG != nil {
-                vBG?.removeFromSuperview()
+            if let vBG = view.viewWithTag(vBG_TAG) {
+                vBG.removeFromSuperview()
             }
             view.hideAllToasts()
             view.makeToast("connected")
@@ -186,9 +186,8 @@ class CanZeViewController: UIViewController {
         Globals.shared.deviceIsInitialized = true
         NotificationCenter.default.removeObserver(self, name: Notification.Name("autoInit"), object: nil)
 
-        let vBG = view.viewWithTag(vBG_TAG)
-        if vBG != nil {
-            vBG?.removeFromSuperview()
+        if let vBG = view.viewWithTag(vBG_TAG) {
+            vBG.removeFromSuperview()
         }
 
         view.makeToast("connected and initialized")
@@ -309,12 +308,12 @@ class CanZeViewController: UIViewController {
         }
         print("SETTINGS_DEVICE_USE_ISOTP_FIELDS \(Globals.shared.useIsoTpFields)")
 
-        /*
-         Globals.shared.dataExportMode = false
-                 if ud.exists(key: SETTING_LOGGING_USE_SD_CARD) {
-         Globals.shared.dataExportMode = ud.bool(forKey: SETTING_LOGGING_USE_SD_CARD)
-                 }
+        Globals.shared.useSdCard = false
+        if ud.exists(key: AppSettings.SETTING_LOGGING_USE_SD_CARD) {
+            Globals.shared.useSdCard = ud.bool(forKey: AppSettings.SETTING_LOGGING_USE_SD_CARD)
+        }
 
+        /*
          Globals.shared.debugLogMode = false
                  if ud.exists(key: SETTING_LOGGING_DEBUG_LOG) {
          Globals.shared.debugLogMode = ud.bool(forKey: SETTING_LOGGING_DEBUG_LOG)
@@ -329,7 +328,6 @@ class CanZeViewController: UIViewController {
                  if ud.exists(key: SETTING_DISPLAY_TOAST_LEVEL) {
          Globals.shared.toastLevel = ud.integer(forKey: SETTING_DISPLAY_TOAST_LEVEL)
                  }
-
          */
 
         Ecus.getInstance.load(assetName: "")
@@ -352,7 +350,43 @@ class CanZeViewController: UIViewController {
         view.addSubview(vBG)
 
         view.hideAllToasts()
-        view.makeToast("_connecting, wait for initialize")
+
+        var s = ""
+
+        switch Globals.shared.deviceType {
+        case .ELM327:
+            s += "DEVICE_TYPE_ELM327\n"
+        case .CANSEE:
+            s += "DEVICE_TYPE_CANSEE\n"
+        case .HTTP:
+            s += "DEVICE_TYPE_HTTP\n"
+        default:
+            s += "unknown\n"
+        }
+
+        switch Globals.shared.deviceConnection {
+        case .WIFI:
+            s += "DEVICE_CONNECTION_WIFI\n"
+            s += Globals.shared.deviceWifiAddress + "\n"
+            s += Globals.shared.deviceWifiPort + "\n"
+        case .BLE:
+            s += "DEVICE_CONNECTION_BLE\n"
+            switch Globals.shared.deviceBleName {
+            case .VGATE:
+                s += "VGATE\n"
+            case .LELINK:
+                s += "LELINK\n"
+            default:
+                s += "unknown\n"
+            }
+        case .HTTP:
+            s += "DEVICE_CONNECTION_HTTP\n"
+            s += Globals.shared.deviceHttpAddress + "\n"
+        default:
+            s += "unknown\n"
+        }
+
+        view.makeToast("_connecting, wait for initialize\n\(s)")
 
         if Globals.shared.deviceIsConnected {
             disconnect(showToast: false)
@@ -366,9 +400,8 @@ class CanZeViewController: UIViewController {
             Globals.shared.deviceIsConnected = true
             Globals.shared.deviceIsInitialized = true
             deviceConnected()
-            let vBG = view.viewWithTag(vBG_TAG)
-            if vBG != nil {
-                vBG?.removeFromSuperview()
+            if let vBG = view.viewWithTag(vBG_TAG) {
+                vBG.removeFromSuperview()
             }
             view.hideAllToasts()
             view.makeToast("connected")
@@ -381,9 +414,8 @@ class CanZeViewController: UIViewController {
             Globals.shared.deviceIsConnected = true
             Globals.shared.deviceIsInitialized = true
             deviceConnected()
-            let vBG = view.viewWithTag(vBG_TAG)
-            if vBG != nil {
-                vBG?.removeFromSuperview()
+            if let vBG = view.viewWithTag(vBG_TAG) {
+                vBG.removeFromSuperview()
             }
             view.hideAllToasts()
             view.makeToast("connected")
@@ -412,9 +444,8 @@ class CanZeViewController: UIViewController {
         fieldResultsDouble = [:]
         fieldResultsString = [:]
 
-        let vBG = view.viewWithTag(vBG_TAG)
-        if vBG != nil {
-            vBG?.removeFromSuperview()
+        if let vBG = view.viewWithTag(vBG_TAG) {
+            vBG.removeFromSuperview()
         }
     }
 
@@ -475,19 +506,18 @@ class CanZeViewController: UIViewController {
     }
 
     func addField(_ sid: String, intervalMs: Int) {
-        let field = Fields.getInstance.getBySID(sid)
-        if field != nil {
-            if field!.responseId != "999999" {
-                if field!.virtual {
-                    let virtualField = Fields.getInstance.getBySID(field!.sid) as! VirtualField
+        if let field = Fields.getInstance.getBySID(sid) {
+            if field.responseId != "999999" {
+                if field.virtual {
+                    let virtualField = Fields.getInstance.getBySID(field.sid) as! VirtualField
                     let fields = virtualField.getFields()
                     for f in fields {
                         if f.responseId != "999999" {
-                            requestIsoTpFrame(frame2: (f.frame)!, field: f, virtual: field!.sid)
+                            requestIsoTpFrame(frame2: (f.frame)!, field: f, virtual: field.sid)
                         }
                     }
                 } else {
-                    requestIsoTpFrame(frame2: (field?.frame)!, field: field!, virtual: nil)
+                    requestIsoTpFrame(frame2: (field.frame)!, field: field, virtual: nil)
                 }
             }
 //        } else {
@@ -906,13 +936,12 @@ class CanZeViewController: UIViewController {
     func writeBle(s: String) {
         if Globals.shared.selectedWriteCharacteristic != nil {
             let ss = s.appending("\r")
-            let data = ss.data(using: .utf8)
-            if data != nil {
+            if let data = ss.data(using: .utf8) {
                 if Globals.shared.selectedWriteCharacteristic.properties.contains(.write) {
-                    Globals.shared.selectedPeripheral.blePeripheral.writeValue(data!, for: Globals.shared.selectedWriteCharacteristic, type: .withResponse)
+                    Globals.shared.selectedPeripheral.blePeripheral.writeValue(data, for: Globals.shared.selectedWriteCharacteristic, type: .withResponse)
                     debug("> \(s)")
                 } else if Globals.shared.selectedWriteCharacteristic.properties.contains(.writeWithoutResponse) {
-                    Globals.shared.selectedPeripheral.blePeripheral.writeValue(data!, for: Globals.shared.selectedWriteCharacteristic, type: .withoutResponse)
+                    Globals.shared.selectedPeripheral.blePeripheral.writeValue(data, for: Globals.shared.selectedWriteCharacteristic, type: .withoutResponse)
                     debug("> \(s)")
                 } else {
                     debug("can't write to characteristic")
