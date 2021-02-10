@@ -82,6 +82,9 @@
 		62EF1D0A25D2B60200E59E77 /* BrakingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0925D2B60200E59E77 /* BrakingViewController.swift */; };
 		62EF1D0D25D2DA0600E59E77 /* LeakCurrentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0C25D2DA0600E59E77 /* LeakCurrentsViewController.swift */; };
 		62EF1D1025D2E60C00E59E77 /* RangeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0F25D2E60C00E59E77 /* RangeViewController.swift */; };
+		62EF1D1325D2F68F00E59E77 /* ChargingPredictionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D1225D2F68F00E59E77 /* ChargingPredictionViewController.swift */; };
+		62FAC76325D3CFF700BA3AFD /* SpeedControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62FAC76225D3CFF700BA3AFD /* SpeedControlViewController.swift */; };
+		62FAC76725D3E0C800BA3AFD /* TiresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62FAC76625D3E0C800BA3AFD /* TiresViewController.swift */; };
 		6602AFA8BCE7D7F8504BC50E /* Pods_CanZE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B04D1910E028049DD52CE67D /* Pods_CanZE.framework */; };
 /* End PBXBuildFile section */
 
@@ -172,6 +175,9 @@
 		62EF1D0925D2B60200E59E77 /* BrakingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrakingViewController.swift; sourceTree = "<group>"; };
 		62EF1D0C25D2DA0600E59E77 /* LeakCurrentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeakCurrentsViewController.swift; sourceTree = "<group>"; };
 		62EF1D0F25D2E60C00E59E77 /* RangeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeViewController.swift; sourceTree = "<group>"; };
+		62EF1D1225D2F68F00E59E77 /* ChargingPredictionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingPredictionViewController.swift; sourceTree = "<group>"; };
+		62FAC76225D3CFF700BA3AFD /* SpeedControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedControlViewController.swift; sourceTree = "<group>"; };
+		62FAC76625D3E0C800BA3AFD /* TiresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiresViewController.swift; sourceTree = "<group>"; };
 		6411126EFA1F31F14178CD9D /* Pods-CanZE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanZE.release.xcconfig"; path = "Target Support Files/Pods-CanZE/Pods-CanZE.release.xcconfig"; sourceTree = "<group>"; };
 		B04D1910E028049DD52CE67D /* Pods_CanZE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CanZE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1BAC1BA0DA5D12FBC36CFE7 /* Pods-CanZE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanZE.debug.xcconfig"; path = "Target Support Files/Pods-CanZE/Pods-CanZE.debug.xcconfig"; sourceTree = "<group>"; };
@@ -258,6 +264,9 @@
 				62EF1D0925D2B60200E59E77 /* BrakingViewController.swift */,
 				62EF1D0C25D2DA0600E59E77 /* LeakCurrentsViewController.swift */,
 				62EF1D0F25D2E60C00E59E77 /* RangeViewController.swift */,
+				62EF1D1225D2F68F00E59E77 /* ChargingPredictionViewController.swift */,
+				62FAC76225D3CFF700BA3AFD /* SpeedControlViewController.swift */,
+				62FAC76625D3E0C800BA3AFD /* TiresViewController.swift */,
 				62DFAB5C25924CB800B00C5C /* _TestViewController.swift */,
 				62E602AE25B971130018D36C /* _Test_CentralManager.swift */,
 				62E602B125B9714A0018D36C /* _Test_Peripheral.swift */,
@@ -498,6 +507,7 @@
 				629204D9258BB05000288D1E /* HomeViewController.swift in Sources */,
 				62D3F97C25935E51002CB6C7 /* CanSee.swift in Sources */,
 				62D3F97F25935E5F002CB6C7 /* Http.swift in Sources */,
+				62FAC76725D3E0C800BA3AFD /* TiresViewController.swift in Sources */,
 				62D3F96125932F4B002CB6C7 /* Sid.swift in Sources */,
 				62D3F98225936032002CB6C7 /* None.swift in Sources */,
 				62DFAB6025924CF300B00C5C /* BlePeripheral.swift in Sources */,
@@ -514,6 +524,7 @@
 				62D3F94325927126002CB6C7 /* Ecus.swift in Sources */,
 				629D902725C31187007EF21A /* ChargingGraphViewController.swift in Sources */,
 				62D1FFAE25C40E17006EDDA5 /* AllDataViewController.swift in Sources */,
+				62FAC76325D3CFF700BA3AFD /* SpeedControlViewController.swift in Sources */,
 				622B484D25CAA54B00F27323 /* TemperatureHeatmapViewController.swift in Sources */,
 				622B484A25CAA53C00F27323 /* VoltageHeatmapViewController.swift in Sources */,
 				622A16A525B89567001D704E /* Sequence.swift in Sources */,
@@ -546,6 +557,7 @@
 				62DA73ED259493AD0068CDF8 /* Setting.swift in Sources */,
 				62D3F95D25932E3E002CB6C7 /* Test.swift in Sources */,
 				62A27E1725CEB390005F3DD5 /* ChargingHistoryViewController.swift in Sources */,
+				62EF1D1325D2F68F00E59E77 /* ChargingPredictionViewController.swift in Sources */,
 				62D264A025B5C0E600421F14 /* ChargingViewController.swift in Sources */,
 				62EF1D1025D2E60C00E59E77 /* RangeViewController.swift in Sources */,
 				62D3F9732593461E002CB6C7 /* SettingsViewController.swift in Sources */,

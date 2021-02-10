@@ -110,30 +110,38 @@ class FirmwareViewController: CanZeViewController {
 
     }}
 
+    func formatta(_ field: Field) -> String {
+        var s = ""
+        if field.value != Double.nan, field.value != nil, field.strVal == "" {
+            if field.to - field.from < 8 {
+                s = String(format: "%02X", Int(field.value))
+            } else if field.strVal != "" {
+                s = field.strVal
+            } else {
+                s = String(format: "%04X", Int(field.value))
+            }
+        }
+        return s
+    }
+
     @objc func decoded(notification: Notification) {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
         if let field = Fields.getInstance.fieldsBySid[sid!] {
             DispatchQueue.main.async {
-                let fieldName = field.name.replacingOccurrences(of: " (string!)", with: "")
-                var s = "\(field.frame.sendingEcu.mnemonic ?? ""),\(fieldName):"
-                if field.value != Double.nan, field.value != nil, field.strVal == "" {
-                    if field.to - field.from < 8 {
-                        s.append(String(format: "%02X", Int(field.value)))
-                    } else if field.strVal != "" {
-                        s.append(field.strVal)
-                    } else {
-                        s.append(String(format: "%04X", Int(field.value)))
-                    }
-                }
+                var s = "\(field.frame.sendingEcu.mnemonic ?? ""),"
                 if sid!.contains(".6180.56") || sid!.contains(".62f1a0.") {
+                    s.append("diagVersion:\(self.formatta(field))")
                     self.lblResult1.text = s
                 } else if sid!.contains(".6180.64") || sid!.contains(".62f18a.") {
+                    s.append("supplier:\(self.formatta(field))")
                     self.lblResult2.text = s
                 } else if sid!.contains(".6180.128") || sid!.contains(".62f194.") {
+                    s.append("soft:\(self.formatta(field))")
                     self.lblResult3.text = s
                 } else if sid!.contains(".6180.144") || sid!.contains(".62f195.") {
+                    s.append("version:\(self.formatta(field))")
                     self.lblResult4.text = s
                 }
                 if self.multi {

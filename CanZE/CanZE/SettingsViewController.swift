@@ -179,6 +179,17 @@ class SettingsViewController: CanZeViewController {
         settingsArray.append(s)
 
         settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
+
+        // app version
+        settingsArray = []
+        titolo = NSLocalizedString("label_Info", comment: "")
+
+        let version = "\(Bundle.main.infoDictionary!["CFBundleShortVersionString"] ?? "")(\(Bundle.main.infoDictionary!["CFBundleVersion"] ?? ""))"
+
+        s = Setting(tag: nil, type: .TEXTFIELD_READONLY, title: NSLocalizedString("version", comment: ""), stringValue: version)
+        settingsArray.append(s)
+
+        settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
     }
 
     @IBAction func btnOBDTest() {
@@ -321,7 +332,7 @@ class SettingsViewController: CanZeViewController {
 
         let value = textField.text
 
-        ud.setValue(value, forKey: setting!.tag)
+        ud.setValue(value, forKey: setting!.tag!)
         ud.synchronize()
 
         /*
@@ -531,7 +542,7 @@ extension SettingsViewController: UITableViewDelegate {
             }
 //            arraySettings![indexPath.row] = setting
 //            settingsDic[myKey] = arraySettings
-            ud.setValue(setting.boolValue, forKey: setting.tag)
+            ud.setValue(setting.boolValue, forKey: setting.tag!)
             ud.synchronize()
 
             loadSettings()

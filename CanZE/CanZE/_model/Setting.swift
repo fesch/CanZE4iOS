@@ -18,7 +18,7 @@ enum SettingType: String {
 var Type: SettingType = .NONE
 
 struct Setting {
-    var tag: String
+    var tag: String?
     var type: SettingType!
     var title: String?
     var subTitle: String?

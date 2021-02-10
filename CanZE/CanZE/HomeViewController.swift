@@ -157,6 +157,18 @@ class HomeViewController: CanZeViewController {
         btnTires.setImage(#imageLiteral(resourceName: "button_tire"), for: .normal)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if Utils.isPh2() {
+            btnTires.alpha = 0
+            btnTires.isEnabled = false
+        } else {
+            btnTires.alpha = 1
+            btnTires.isEnabled = true
+        }
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
