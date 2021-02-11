@@ -141,40 +141,43 @@ class ChargingViewController: CanZeViewController {
         let sid = obj["sid"]
         let f = Fields.getInstance.fieldsBySid[sid!]
 
-        DispatchQueue.main.async {
-            switch sid {
-            case Sid.MaxCharge:
-                self.text_max_charge.text = String(format: "%.\(f?.decimals ?? 2)f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] ?? Double.nan < self.avChPwr * 0.8, self.avChPwr < 45.0 {
-                    self.text_max_charge.textColor = .red
-                } else {
-                    self.text_max_charge.textColor = .black
+        let val = Globals.shared.fieldResultsDouble[sid!]
+        if val != nil {
+            DispatchQueue.main.async {
+                switch sid {
+                case Sid.MaxCharge:
+                    self.text_max_charge.text = String(format: "%.\(f?.decimals ?? 2)f", val!)
+                    if val! < self.avChPwr * 0.8, self.avChPwr < 45.0 {
+                        self.text_max_charge.textColor = .red
+                    } else {
+                        self.text_max_charge.textColor = .black
+                    }
+                case Sid.UserSoC:
+                    self.textUserSOC.text = String(format: "%.2f", val!)
+                case Sid.RealSoC:
+                    self.textRealSOC.text = String(format: "%.2f", val!)
+                case Sid.SOH:
+                    self.textSOH.text = String(format: "%.2f", val!)
+                case Sid.RangeEstimate:
+                    if val! >= 1023 {
+                        self.textKMA.text = "---"
+                    } else {
+                        self.textKMA.text = String(format: "%.0f", val!)
+                    }
+                case Sid.DcPowerIn:
+                    self.textDcPwr.text = String(format: "%.2f", val!)
+                case Sid.AvailableChargingPower:
+                    self.avChPwr = val!
+                    if self.avChPwr > 45 {
+                        self.textAvChPwr.text = "---"
+                    } else {
+                        self.textAvChPwr.text = String(format: "%.2f", val!)
+                    }
+                case Sid.HvTemp:
+                    self.textHvTemp.text = String(format: "%.2f", val!)
+                default:
+                    print("?")
                 }
-            case Sid.UserSoC:
-                self.textUserSOC.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.RealSoC:
-                self.textRealSOC.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.SOH:
-                self.textSOH.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.RangeEstimate:
-                if self.fieldResultsDouble[sid!] ?? Double.nan >= 1023 {
-                    self.textKMA.text = "---"
-                } else {
-                    self.textKMA.text = String(format: "%.0f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                }
-            case Sid.DcPowerIn:
-                self.textDcPwr.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.AvailableChargingPower:
-                self.avChPwr = self.fieldResultsDouble[sid!] ?? Double.nan
-                if self.avChPwr > 45 {
-                    self.textAvChPwr.text = "---"
-                } else {
-                    self.textAvChPwr.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                }
-            case Sid.HvTemp:
-                self.textHvTemp.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            default:
-                print("?")
             }
         }
     }

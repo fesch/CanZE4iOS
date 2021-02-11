@@ -108,11 +108,13 @@ class AllDataViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let field = Fields.getInstance.fieldsBySid[sid!]
+        let val = Globals.shared.fieldResultsString[sid!]
+
         DispatchQueue.main.async {
             if field!.isString() || field!.isHexString() {
-                self.tv.text += "\(sid!),\(field!.name ?? ""),\(self.fieldResultsString[sid!] ?? "")\n"
+                self.tv.text += "\(sid!),\(field!.name ?? ""),\(val!)\n"
             } else {
-//                self.tv.text += "\(sid!),\(field!.name ?? ""),\(self.fieldResultsDouble[sid!] ?? Double.nan)\n"
+//                self.tv.text += "\(sid!),\(field!.name ?? ""),\(val!)\n"
                 self.tv.text += "\(sid!),\(field!.name ?? ""),\(field!.getValue())\n"
             }
             self.tv.scrollToBottom()

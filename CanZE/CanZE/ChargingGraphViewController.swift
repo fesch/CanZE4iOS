@@ -132,49 +132,37 @@ class ChargingGraphViewController: CanZeViewController {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
-        DispatchQueue.main.async {
-            switch sid {
-            case Sid.ACPilot:
-                self.graph_PilotPower1.text = String(format: "%.0f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.pilotPowerChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+        let val = Globals.shared.fieldResultsDouble[sid!]
+        if val != nil {
+            DispatchQueue.main.async {
+                switch sid {
+                case Sid.ACPilot:
+                    self.graph_PilotPower1.text = String(format: "%.0f", val!)
+                    self.pilotPowerChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updatePilotPowerChart()
-                }
-            case Sid.AvailableChargingPower:
-                self.graph_PilotPower2.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.pilotPowerChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.AvailableChargingPower:
+                    self.graph_PilotPower2.text = String(format: "%.1f", val!)
+                    self.pilotPowerChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updatePilotPowerChart()
-                }
-
-            case Sid.MaxCharge:
-                self.graph_MaxRealChPwr1.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.maxRealChPwrChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.MaxCharge:
+                    self.graph_MaxRealChPwr1.text = String(format: "%.2f", val!)
+                    self.maxRealChPwrChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateMaxRealChPwrChart()
-                }
-            case Sid.DcPowerIn:
-                self.graph_MaxRealChPwr2.text = String(format: "%.0f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.maxRealChPwrChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.DcPowerIn:
+                    self.graph_MaxRealChPwr2.text = String(format: "%.0f", val!)
+                    self.maxRealChPwrChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateMaxRealChPwrChart()
-                }
-
-            case Sid.AvailableEnergy:
-                self.graph_EnergyTemperature1.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.energyTemperatureChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.AvailableEnergy:
+                    self.graph_EnergyTemperature1.text = String(format: "%.1f", val!)
+                    self.energyTemperatureChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateEnergyTemperatureChart()
-                }
-            case Sid.HvTemp:
-                self.graph_EnergyTemperature2.text = String(format: "%.0f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.energyTemperatureChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.HvTemp:
+                    self.graph_EnergyTemperature2.text = String(format: "%.0f", val!)
+                    self.energyTemperatureChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateEnergyTemperatureChart()
+                default:
+                    print("?")
                 }
-
-            default:
-                print("?")
             }
         }
     }

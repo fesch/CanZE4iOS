@@ -36,6 +36,7 @@ class HomeViewController: CanZeViewController {
 
     @IBOutlet var pg: UIPageControl!
     @IBOutlet var sv: UIScrollView!
+    @IBOutlet var cv: UIView!
 
     var firstRun = true
     var msg = ""
@@ -44,6 +45,21 @@ class HomeViewController: CanZeViewController {
 //    var last = "button_bluetooth_connected"
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+
+        var max: CGFloat = 0.0
+        for v in cv.subviews {
+            for vv in v.subviews {
+                if vv.frame.origin.y + vv.frame.size.height > max {
+                    max = vv.frame.origin.y + vv.frame.size.height
+                }
+            }
+        }
+
+        var f = cv.frame
+        f.size.height = max + 20
+        cv.frame = f
+
+        sv.contentSize = cv.frame.size
     }
 
     override func viewDidLoad() {

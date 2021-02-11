@@ -152,80 +152,81 @@ class ChargingHistoryViewController: CanZeViewController {
 
         let sidPreamble = sid!.subString(from: 0, to: 11) // 7e4.2233D4.
         let startBit = Int(sid!.subString(from: 11)) // 240 = 0 etc
-        let val = fieldResultsDouble[sid!] ?? Double.nan
-
-        DispatchQueue.main.async {
-            switch sidPreamble {
-            case Sid.Preamble_KM:
-                let indice = (264 - startBit!) / 24 - 1
-                self.km[indice] = val
-                var s = "\(NSLocalizedString("label_distance", comment: "")) \n"
-                for i in 0 ..< 10 {
-                    s += "\(self.km[i])\n"
-                }
-                self.label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-            case Sid.Preamble_END:
-                let indice = (104 - startBit!) / 8 - 1
-                self.end[indice] = val.isNaN ? 0.0 : val
-                var s = "\(NSLocalizedString("label_EndOfChargeStatus", comment: "")) \n"
-                for i in 0 ..< 10 {
-                    let ii = Int(self.end[i])
-                    if ii < self.charging_HistEnd!.count {
-                        s += "\(self.charging_HistEnd![ii])\n"
-                    } else {
-                        s += "\n"
+        let val = Globals.shared.fieldResultsDouble[sid!]
+        if val != nil {
+            DispatchQueue.main.async {
+                switch sidPreamble {
+                case Sid.Preamble_KM:
+                    let indice = (264 - startBit!) / 24 - 1
+                    self.km[indice] = val!
+                    var s = "\(NSLocalizedString("label_distance", comment: "")) \n"
+                    for i in 0 ..< 10 {
+                        s += "\(self.km[i])\n"
                     }
-                }
-                self.label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-            case Sid.Preamble_TYP:
-                let indice = (104 - startBit!) / 8 - 1
-                self.typ[indice] = val.isNaN ? 0.0 : val
-                var s = "\(NSLocalizedString("label_TypeOfCharge", comment: "")) \n"
-                for i in 0 ..< 10 {
-                    let ii = Int(self.typ[i])
-                    if ii < self.charging_HistTyp!.count {
-                        s += "\(self.charging_HistTyp![ii])\n"
-                    } else {
-                        s += "\n"
+                    self.label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                case Sid.Preamble_END:
+                    let indice = (104 - startBit!) / 8 - 1
+                    self.end[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString("label_EndOfChargeStatus", comment: "")) \n"
+                    for i in 0 ..< 10 {
+                        let ii = Int(self.end[i])
+                        if ii < self.charging_HistEnd!.count {
+                            s += "\(self.charging_HistEnd![ii])\n"
+                        } else {
+                            s += "\n"
+                        }
                     }
-                }
-                self.label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-            case Sid.Preamble_SOC:
-                let indice = (184 - startBit!) / 16 - 1
-                self.soc[indice] = val.isNaN ? 0.0 : val
-                var s = "\(NSLocalizedString("label_EndSoc", comment: "")) \n"
-                for i in 0 ..< 10 {
-                    s += "\(self.soc[i])\n"
-                }
-                self.label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-            case Sid.Preamble_TMP:
-                let indice = (104 - startBit!) / 8 - 1
-                self.tmp[indice] = val.isNaN ? 0.0 : val
-                var s = "\(NSLocalizedString("label_EndBatteryTemp", comment: "")) \n"
-                for i in 0 ..< 10 {
-                    s += "\(self.tmp[i])\n"
-                }
-                self.label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-            case Sid.Preamble_DUR:
-                let indice = (184 - startBit!) / 16 - 1
-                self.dur[indice] = val.isNaN ? 0.0 : val
-                var s = "\(NSLocalizedString("label_HistDuration", comment: "")) \n"
-                for i in 0 ..< 10 {
-                    s += "\(self.dur[i])\n"
-                }
-                self.label_HistDuration.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-            default:
-                switch sid {
-                case Sid.Total_kWh:
-                    self.textTotKwh.text = String(format: "%.0f", val)
-                case Sid.Total_Regen_kWh:
-                    self.textTotKwhRegen.text = String(format: "%.0f", val)
-                case Sid.Counter_Full:
-                    self.textCountFull.text = String(format: "%.0f", val)
-                case Sid.Counter_Partial:
-                    self.textCountPartial.text = String(format: "%.0f", val)
+                    self.label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                case Sid.Preamble_TYP:
+                    let indice = (104 - startBit!) / 8 - 1
+                    self.typ[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString("label_TypeOfCharge", comment: "")) \n"
+                    for i in 0 ..< 10 {
+                        let ii = Int(self.typ[i])
+                        if ii < self.charging_HistTyp!.count {
+                            s += "\(self.charging_HistTyp![ii])\n"
+                        } else {
+                            s += "\n"
+                        }
+                    }
+                    self.label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                case Sid.Preamble_SOC:
+                    let indice = (184 - startBit!) / 16 - 1
+                    self.soc[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString("label_EndSoc", comment: "")) \n"
+                    for i in 0 ..< 10 {
+                        s += "\(self.soc[i])\n"
+                    }
+                    self.label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                case Sid.Preamble_TMP:
+                    let indice = (104 - startBit!) / 8 - 1
+                    self.tmp[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString("label_EndBatteryTemp", comment: "")) \n"
+                    for i in 0 ..< 10 {
+                        s += "\(self.tmp[i])\n"
+                    }
+                    self.label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                case Sid.Preamble_DUR:
+                    let indice = (184 - startBit!) / 16 - 1
+                    self.dur[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString("label_HistDuration", comment: "")) \n"
+                    for i in 0 ..< 10 {
+                        s += "\(self.dur[i])\n"
+                    }
+                    self.label_HistDuration.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 default:
-                    print("?")
+                    switch sid {
+                    case Sid.Total_kWh:
+                        self.textTotKwh.text = String(format: "%.0f", val!)
+                    case Sid.Total_Regen_kWh:
+                        self.textTotKwhRegen.text = String(format: "%.0f", val!)
+                    case Sid.Counter_Full:
+                        self.textCountFull.text = String(format: "%.0f", val!)
+                    case Sid.Counter_Partial:
+                        self.textCountPartial.text = String(format: "%.0f", val!)
+                    default:
+                        print("?")
+                    }
                 }
             }
         }

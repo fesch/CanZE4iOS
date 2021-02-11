@@ -35,7 +35,7 @@ struct Ecus {
                 for riga in righe {
 //                    let campi = riga.components(separatedBy: ",")
 //                    print(campi.count)
-                    fillOneLine(line_: riga)
+                    fillOneLine(riga)
                 }
                 //  print("loaded ecus: \(ecus.count)")
             } catch {
@@ -46,7 +46,7 @@ struct Ecus {
         }
     }
 
-    mutating func fillOneLine(line_: String) {
+    mutating func fillOneLine(_ line_: String) {
         var line = line_
         if line.contains("#") {
             line = String(line[..<line.firstIndex(of: "#")!])
@@ -75,7 +75,7 @@ struct Ecus {
         }
     }
 
-    func getByMnemonic(mnemonic: String) -> Ecu? {
+    func getByMnemonic(_ mnemonic: String) -> Ecu? {
         for ecu in ecus {
             if ecu.mnemonic == mnemonic || ecu.aliases.contains(mnemonic) {
                 return ecu
@@ -84,7 +84,7 @@ struct Ecus {
         return nil
     }
 
-    func getByFromId(fromId: Int) -> Ecu {
+    func getByFromId(_ fromId: Int) -> Ecu {
         for ecu in ecus {
             if ecu.fromId == fromId {
                 return ecu

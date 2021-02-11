@@ -53,9 +53,6 @@ class CanZeViewController: UIViewController {
 
     var blePhase: BlePhase = .DISCOVERED
 
-    var fieldResultsDouble: [String: Double] = [:]
-    var fieldResultsString: [String: String] = [:]
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -441,8 +438,9 @@ class CanZeViewController: UIViewController {
         Globals.shared.deviceIsConnected = false
         Globals.shared.deviceIsInitialized = false
         deviceDisconnected()
-        fieldResultsDouble = [:]
-        fieldResultsString = [:]
+        Globals.shared.fieldResultsDouble = [:]
+        Globals.shared.fieldResultsString = [:]
+        Globals.shared.resultsString = [:]
 
         if let vBG = view.viewWithTag(vBG_TAG) {
             vBG.removeFromSuperview()
@@ -601,7 +599,7 @@ class CanZeViewController: UIViewController {
         // TEST
         let frame = frame2
         if frame.sendingEcu.fromId == 0x18DAF1DA, frame.responseId == "5003" {
-            let ecu = Ecus.getInstance.getByFromId(fromId: 0x18DAF1D2)
+            let ecu = Ecus.getInstance.getByFromId(0x18DAF1D2)
             frame.sendingEcu = ecu
             frame.fromId = ecu.fromId
         }
@@ -1264,15 +1262,15 @@ extension CanZeViewController: StreamDelegate {
 
                 if field.isString() || field.isHexString() {
                     debug("\(field.strVal)")
-                    fieldResultsString[field.sid] = field.strVal
+                    Globals.shared.fieldResultsString[field.sid] = field.strVal
                 } else if sid == Sid.BatterySerial, field.strVal != "", field.strVal.count > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
                     field.strVal = field.strVal.subString(from: field.strVal.count - 6)
                     field.strVal = "F" + field.strVal
-                    fieldResultsString[field.sid] = field.strVal
+                    Globals.shared.fieldResultsString[field.sid] = field.strVal
                     debug("\(field.strVal)")
                 } else {
                     debug("\(field.name ?? "?") \(String(format: "%.\(field.decimals!)f", field.getValue()))\n")
-                    fieldResultsDouble[field.sid] = field.getValue()
+                    Globals.shared.fieldResultsDouble[field.sid] = field.getValue()
                 }
 
                 var n = notification.object as! [String: String]
@@ -1324,15 +1322,15 @@ extension CanZeViewController: StreamDelegate {
 
                         if field!.isString() || field!.isHexString() {
 //                            debug( "\(field!.strVal)")
-                            fieldResultsString[field!.sid] = field!.strVal
+                            Globals.shared.fieldResultsString[field!.sid] = field!.strVal
                         } else if sid == Sid.BatterySerial, field?.strVal != nil, (field?.strVal.count)! > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
                             field?.strVal = (field?.strVal.subString(from: (field?.strVal.count)! - 6))!
                             field?.strVal = "F" + field!.strVal
-                            fieldResultsString[field!.sid] = field!.strVal
+                            Globals.shared.fieldResultsString[field!.sid] = field!.strVal
 //                            debug( "\(field!.strVal)")
                         } else {
 //                            debug( "\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
-                            fieldResultsDouble[field!.sid] = field!.getValue()
+                            Globals.shared.fieldResultsDouble[field!.sid] = field!.getValue()
                         }
 
                         if seq?.sidVirtual != nil {
@@ -1343,12 +1341,12 @@ extension CanZeViewController: StreamDelegate {
                             case Sid.FrictionTorque:
                                 print("TODO VIRTUAL FIELD")
                             case Sid.DcPowerIn:
-                                if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
-                                    result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
+                                if Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
+                                    result = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]! * Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
                                 }
                             case Sid.DcPowerOut:
-                                if fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
-                                    result = fieldResultsDouble[Sid.TractionBatteryVoltage]! * fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
+                                if Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
+                                    result = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]! * Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
                                 }
                             case Sid.ElecBrakeTorque:
                                 print("TODO VIRTUAL FIELD")
@@ -1361,7 +1359,7 @@ extension CanZeViewController: StreamDelegate {
                             default:
                                 print("unknown virtual sid")
                             }
-                            fieldResultsDouble[(seq?.sidVirtual)!] = result
+                            Globals.shared.fieldResultsDouble[(seq?.sidVirtual)!] = result
                         }
                     }
                 }

@@ -52,4 +52,9 @@ class Globals: NSObject {
     // LOGGER
     var logger = Logger()
     var useSdCard = false
+
+    // RESULTS
+    var fieldResultsDouble: [String: Double] = [:]
+    var fieldResultsString: [String: String] = [:]
+    var resultsString: [String: String] = [:]
 }

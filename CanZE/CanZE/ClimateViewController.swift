@@ -173,7 +173,7 @@ class ClimateViewController: CanZeViewController {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
-        let val = fieldResultsDouble[sid!]
+        let val = Globals.shared.fieldResultsDouble[sid!]
 
         DispatchQueue.main.async {
             switch sid {

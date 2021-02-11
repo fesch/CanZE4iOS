@@ -70,13 +70,8 @@
 		62DA73F12594AF880068CDF8 /* SettingsSwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DA73F02594AF880068CDF8 /* SettingsSwitchTableViewCell.swift */; };
 		62DFAB322592300500B00C5C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DFAB312592300500B00C5C /* Utils.swift */; };
 		62DFAB38259231C600B00C5C /* ButtonWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DFAB37259231C600B00C5C /* ButtonWithImage.swift */; };
-		62DFAB5D25924CB800B00C5C /* _TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DFAB5C25924CB800B00C5C /* _TestViewController.swift */; };
 		62DFAB6025924CF300B00C5C /* BlePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DFAB5F25924CF300B00C5C /* BlePeripheral.swift */; };
 		62E4920B25A8CA2B00AA45CE /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E4920A25A8CA2B00AA45CE /* SettingsTableViewCell.swift */; };
-		62E602A525B9704A0018D36C /* _Test_Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602A425B9704A0018D36C /* _Test_Picker.swift */; };
-		62E602A825B970620018D36C /* _Test_Wifi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602A725B970620018D36C /* _Test_Wifi.swift */; };
-		62E602AF25B971130018D36C /* _Test_CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602AE25B971130018D36C /* _Test_CentralManager.swift */; };
-		62E602B225B9714A0018D36C /* _Test_Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602B125B9714A0018D36C /* _Test_Peripheral.swift */; };
 		62E602B525B971790018D36C /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602B425B971790018D36C /* String.swift */; };
 		62EF1D0725D2A6EA00E59E77 /* ClimateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0625D2A6EA00E59E77 /* ClimateViewController.swift */; };
 		62EF1D0A25D2B60200E59E77 /* BrakingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EF1D0925D2B60200E59E77 /* BrakingViewController.swift */; };
@@ -447,7 +442,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 			);
 			outputFileListPaths = (
 			);
@@ -455,7 +450,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\" ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}\n";
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
 		F6A3E708B9A94F5A74A07BCE /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -529,7 +524,6 @@
 				622B484A25CAA53C00F27323 /* VoltageHeatmapViewController.swift in Sources */,
 				622A16A525B89567001D704E /* Sequence.swift in Sources */,
 				62D3F95425932D28002CB6C7 /* Dtcs.swift in Sources */,
-				62E602A525B9704A0018D36C /* _Test_Picker.swift in Sources */,
 				62D3F96525933793002CB6C7 /* NavigationController.swift in Sources */,
 				622B485425CB051400F27323 /* AuxBatteryViewController.swift in Sources */,
 				6255283F259CEA1300C2772E /* AppSettings.swift in Sources */,
@@ -544,15 +538,12 @@
 				626C004025B9B44000121456 /* UITextView.swift in Sources */,
 				62D3F970259339EE002CB6C7 /* ELM327.swift in Sources */,
 				62D3F96D2593380A002CB6C7 /* Device.swift in Sources */,
-				62E602AF25B971130018D36C /* _Test_CentralManager.swift in Sources */,
 				62D3F94025926FBC002CB6C7 /* Fields.swift in Sources */,
 				629204D7258BB05000288D1E /* SceneDelegate.swift in Sources */,
 				62DFAB38259231C600B00C5C /* ButtonWithImage.swift in Sources */,
 				626C004425B9C66000121456 /* UIDevice.swift in Sources */,
 				62D67DFB25C1D1260075D7AB /* ChargingTechViewController.swift in Sources */,
 				62EF1D0A25D2B60200E59E77 /* BrakingViewController.swift in Sources */,
-				62DFAB5D25924CB800B00C5C /* _TestViewController.swift in Sources */,
-				62E602B225B9714A0018D36C /* _Test_Peripheral.swift in Sources */,
 				62DFAB322592300500B00C5C /* Utils.swift in Sources */,
 				62DA73ED259493AD0068CDF8 /* Setting.swift in Sources */,
 				62D3F95D25932E3E002CB6C7 /* Test.swift in Sources */,
@@ -568,7 +559,6 @@
 				62D3F95025932CF9002CB6C7 /* Dtc.swift in Sources */,
 				62D3F97925934B6C002CB6C7 /* CanZeViewController.swift in Sources */,
 				62A01DE825CD92CA00D69A01 /* DrivingViewController.swift in Sources */,
-				62E602A825B970620018D36C /* _Test_Wifi.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -744,6 +734,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CanZE/CanZE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = USQU9Q295J;
 				INFOPLIST_FILE = "$(SRCROOT)/CanZE/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -765,6 +756,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CanZE/CanZE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = USQU9Q295J;
 				INFOPLIST_FILE = "$(SRCROOT)/CanZE/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (

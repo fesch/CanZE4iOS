@@ -136,41 +136,38 @@ class AuxBatteryViewController: CanZeViewController {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
-        DispatchQueue.main.async {
-            switch sid {
-            case Sid.Aux12V:
-                self.text12V.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                self.lblVoltage.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.chartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+        let val = Globals.shared.fieldResultsDouble[sid!]
+        if val != nil {
+            DispatchQueue.main.async {
+                switch sid {
+                case Sid.Aux12V:
+                    self.text12V.text = String(format: "%.1f", val!)
+                    self.lblVoltage.text = String(format: "%.2f", val!)
+                    self.chartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart()
-                }
-            case Sid.Aux12A:
-                self.text12A.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.DcLoad:
-                self.textDcLoad.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.AuxStatus:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.Aux12A:
+                    self.text12A.text = String(format: "%.1f", val!)
+                case Sid.DcLoad:
+                    self.textDcLoad.text = String(format: "%.1f", val!)
+                case Sid.AuxStatus:
+                    let i = Int(val!)
                     if i >= 0, i < self.aux_Status!.count {
                         self.textAuxStatus.text = self.aux_Status![i]
                     }
-                }
-            case Sid.VehicleState:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.VehicleState:
+                    let i = Int(val!)
                     if i >= 0, i < self.vehicle_Status!.count {
                         self.text_vehicle_state.text = self.vehicle_Status![i]
                         self.chartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: Double(i)))
                         self.updateChart()
                     }
+                case Sid.VoltageUnderLoad:
+                    self.textVoltageUnderLoad.text = String(format: "%.1f", val!)
+                case Sid.CurrentUnderLoad:
+                    self.textCurrentUnderLoad.text = String(format: "%.1f", val!)
+                default:
+                    print("?")
                 }
-            case Sid.VoltageUnderLoad:
-                self.textVoltageUnderLoad.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.CurrentUnderLoad:
-                self.textCurrentUnderLoad.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            default:
-                print("?")
             }
         }
     }

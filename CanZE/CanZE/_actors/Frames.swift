@@ -74,7 +74,7 @@ struct Frames {
         let tokens = line.components(separatedBy: ",")
         if tokens.count == 4 {
             // Create a new field object and fill his  data
-            let ecu = Ecus.getInstance.getByMnemonic(mnemonic: tokens[FRAME_ECU].trim())
+            let ecu = Ecus.getInstance.getByMnemonic(tokens[FRAME_ECU].trim())
             if ecu == nil {
                 print("(ecu does not exist: '\(tokens[FRAME_ECU].trim())')")
             } else {

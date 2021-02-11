@@ -165,74 +165,78 @@ class DrivingViewController: CanZeViewController {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
-        DispatchQueue.main.async {
-            switch sid {
-            case Sid.SoC:
-                self.textSOC.text = String(format: "%.1f", self.fieldResultsDouble[sid!] ?? Double.nan)
-            case Sid.Pedal:
-                self.pedalChartEntries = [BarChartDataEntry(x: 1, y: self.fieldResultsDouble[sid!] ?? Double.nan)]
-                self.updatePedalChartView()
-            case Sid.TotalPositiveTorque:
-                print("TODO")
+        let val = Globals.shared.fieldResultsDouble[sid!]
+        if val != nil {
+            DispatchQueue.main.async {
+                switch sid {
+                case Sid.SoC:
+                    self.textSOC.text = String(format: "%.1f", val!)
+                case Sid.Pedal:
+                    self.pedalChartEntries = [BarChartDataEntry(x: 1, y: val!)]
+                    self.updatePedalChartView()
+                case Sid.TotalPositiveTorque:
+                    print("TODO")
 //                 pb = findViewById(R.id.MeanEffectiveAccTorque);
 //                 pb.setProgress((int)field.getValue()); // --> translate from motor torque to wheel torque
-            case Sid.EVC_Odometer:
-                self.odo = self.fieldResultsDouble[sid!] ?? Double.nan
-            case Sid.TripMeterB:
-                self.tripBdistance = self.fieldResultsDouble[sid!] ?? Double.nan
-                self.tripDistance = self.tripBdistance - self.startBdistance
-                self.displayTripData()
-            case Sid.TripEnergyB:
-                self.tripBenergy = self.fieldResultsDouble[sid!] ?? Double.nan
-                self.tripEnergy = self.tripBenergy - self.startBenergy
-                self.displayTripData()
+                case Sid.EVC_Odometer:
+                    self.odo = val!
+                case Sid.TripMeterB:
+                    self.tripBdistance = val!
+                    self.tripDistance = self.tripBdistance - self.startBdistance
+                    self.displayTripData()
+                case Sid.TripEnergyB:
+                    self.tripBenergy = val!
+                    self.tripEnergy = self.tripBenergy - self.startBenergy
+                    self.displayTripData()
 //            case Sid.MaxCharge: NOT USED !
-//                self.text_max_charge.text = String(format: "%.1f", self.fieldResultsDouble[sid!] ?? Double.nan)
-            case Sid.RealSpeed:
-                self.realSpeed = self.fieldResultsDouble[sid!] ?? Double.nan
-                self.textRealSpeed.text = String(format: "%.1f", self.fieldResultsDouble[sid!] ?? Double.nan)
-            case Sid.DcPowerOut:
-                let dcPwr = self.fieldResultsDouble[sid!] ?? Double.nan
-                if !Globals.shared.milesMode, self.realSpeed > 5 {
-                    self.textConsumption.text = String(format: "%.1f", 100.0 * dcPwr / self.realSpeed)
-                } else if Globals.shared.milesMode, dcPwr != 0 {
-                    // real speed has already been returned in miles, so no conversions should be done
-                    self.textConsumption.text = String(format: "%.2f", self.realSpeed / dcPwr)
-                } else {
-                    self.textConsumption.text = "-"
-                }
-            case Sid.RangeEstimate:
-                // int rangeInBat = (int) Utils.kmOrMiles(field.getValue());
-                let rangeInBat = Int(self.fieldResultsDouble[sid!] ?? Double.nan)
-                if rangeInBat > 0, self.odo > 0, self.destOdo > 0 { // we update only if there are no weird values
-                    if self.destOdo > self.odo {
-                        self.displayDistToDest(distance1: Int(self.destOdo - self.odo), distance2: Int(Double(rangeInBat) - self.destOdo + self.odo))
+//                self.text_max_charge.text = String(format: "%.1f", val)
+                case Sid.RealSpeed:
+                    self.realSpeed = val!
+                    self.textRealSpeed.text = String(format: "%.1f", val!)
+                case Sid.DcPowerOut:
+                    if let dcPwr = val {
+                        if !Globals.shared.milesMode, self.realSpeed > 5 {
+                            self.textConsumption.text = String(format: "%.1f", 100.0 * dcPwr / self.realSpeed)
+                        } else if Globals.shared.milesMode, dcPwr != 0 {
+                            // real speed has already been returned in miles, so no conversions should be done
+                            self.textConsumption.text = String(format: "%.2f", self.realSpeed / dcPwr)
+                        }
                     } else {
-                        self.displayDistToDest(distance1: 0, distance2: 0)
+                        self.textConsumption.text = "-"
                     }
-                } else {
-                    self.displayDistToDest()
-                }
-            case Sid.TotalPotentialResistiveWheelsTorque: // blue bar
-                print("TODO")
-                var tprwt = -Int(self.fieldResultsDouble[sid!] ?? Double.nan)
+                case Sid.RangeEstimate:
+                    // int rangeInBat = (int) Utils.kmOrMiles(field.getValue());
+                    let rangeInBat = Int(val!)
+                    if rangeInBat > 0, self.odo > 0, self.destOdo > 0 { // we update only if there are no weird values
+                        if self.destOdo > self.odo {
+                            self.displayDistToDest(distance1: Int(self.destOdo - self.odo), distance2: Int(Double(rangeInBat) - self.destOdo + self.odo))
+                        } else {
+                            self.displayDistToDest(distance1: 0, distance2: 0)
+                        }
+                    } else {
+                        self.displayDistToDest()
+                    }
+                case Sid.TotalPotentialResistiveWheelsTorque: // blue bar
+                    print("TODO")
+                    var tprwt = -Int(val!)
 //                 pb = findViewById(R.id.MaxBrakeTorque);
 //                 if (pb != null) pb.setProgress(tprwt < 2047 ? tprwt : 10);
-            case Sid.TotalNegativeTorque:
-                print("TODO")
+                case Sid.TotalNegativeTorque:
+                    print("TODO")
 //                 pb = findViewById(R.id.pb_driver_torque_request);
 //                 if (pb != null) pb.setProgress((int) field.getValue());
-            // case Sid.DriverBrakeWheel_Torque_Request:
-            //    driverBrakeWheel_Torque_Request = field.getValue() + coasting_Torque;
-            //    pb = findViewById(R.id.pb_driver_torque_request);
-            //    if (pb != null) pb.setProgress((int) driverBrakeWheel_Torque_Request);
-            //    tv = null;
-            //    break;
-            // case Sid.Coasting_Torque:
-            //    coasting_Torque = field.getValue() * MainActivity.reduction; // this torque is given in motor torque, not in wheel torque
-            //    break;
-            default:
-                print("?")
+                // case Sid.DriverBrakeWheel_Torque_Request:
+                //    driverBrakeWheel_Torque_Request = field.getValue() + coasting_Torque;
+                //    pb = findViewById(R.id.pb_driver_torque_request);
+                //    if (pb != null) pb.setProgress((int) driverBrakeWheel_Torque_Request);
+                //    tv = null;
+                //    break;
+                // case Sid.Coasting_Torque:
+                //    coasting_Torque = field.getValue() * MainActivity.reduction; // this torque is given in motor torque, not in wheel torque
+                //    break;
+                default:
+                    print("?")
+                }
             }
         }
     }

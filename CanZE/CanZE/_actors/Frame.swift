@@ -53,7 +53,7 @@ class Frame {
     }
 
     func getToId() -> Int {
-        let ecu = Ecus.getInstance.getByFromId(fromId: fromId)
+        let ecu = Ecus.getInstance.getByFromId(fromId)
         return ecu.toId
     }
 

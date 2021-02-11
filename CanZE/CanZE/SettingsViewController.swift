@@ -216,11 +216,11 @@ class SettingsViewController: CanZeViewController {
         NotificationCenter.default.removeObserver(self, name: Notification.Name("endQueue2"), object: nil)
 
         let sid1 = Sid.SoC
-        let v1 = fieldResultsDouble[sid1]
+        let v1 = Globals.shared.fieldResultsDouble[sid1]
         let f1 = Fields.getInstance.getBySID(sid1)
 
         let sid2 = Sid.BatterySerial
-        let v2 = fieldResultsString[sid2]
+        let v2 = Globals.shared.fieldResultsString[sid2]
         let f2 = Fields.getInstance.getBySID(sid2)
 
         if f1 != nil, v1 != nil, f2 != nil, v2 != nil {

@@ -294,6 +294,8 @@ class ChargingTechViewController: CanZeViewController {
             lbl_textEVSEPresentCurrent.alpha = 0
             lbl_EVSECurrentLimitReached.alpha = 0
             lbl_textEVSECurrentLimitReached.alpha = 0
+
+            lbl_textPlug.text = plug_Status?[0]
         }
     }
 
@@ -423,238 +425,207 @@ class ChargingTechViewController: CanZeViewController {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
-        DispatchQueue.main.async { [self] in
-            switch sid {
-            case Sid.MaxCharge:
-                self.lbl_text_max_charge.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.ACPilot:
-                self.pilot = self.fieldResultsDouble[sid!] ?? Double.nan
-                self.lbl_text_max_pilot.text = String(format: "%.0f", self.pilot)
-            case Sid.PlugConnected:
-                let d = self.fieldResultsDouble[sid!]
-                if d != nil, !d!.isNaN {
-                    let i = Int(d!)
+        let val = Globals.shared.fieldResultsDouble[sid!]
+        if val != nil {
+            DispatchQueue.main.async { [self] in
+                switch sid {
+                case Sid.MaxCharge:
+                    self.lbl_text_max_charge.text = String(format: "%.2f", val!)
+                case Sid.ACPilot:
+                    self.pilot = val!
+                    self.lbl_text_max_pilot.text = String(format: "%.0f", self.pilot)
+                case Sid.PlugConnected:
+                    let i = Int(val!)
                     if i < self.plug_Status![i].count {
                         self.lbl_textPlug.text = self.plug_Status?[i]
                     }
-                } else {
-                    self.lbl_textPlug.text = self.plug_Status?[0]
-                }
-            case Sid.UserSoC:
-                self.usoc = self.fieldResultsDouble[sid!] ?? Double.nan
-                self.lbl_textUserSOC.text = String(format: "%.2f", self.usoc)
-            case Sid.RealSoC:
-                self.lbl_textRealSOC.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.AvailableChargingPower:
-                if let val = self.fieldResultsDouble[sid!] {
-                    if val > 45 {
+                case Sid.UserSoC:
+                    self.usoc = val!
+                    self.lbl_textUserSOC.text = String(format: "%.2f", self.usoc)
+                case Sid.RealSoC:
+                    self.lbl_textRealSOC.text = String(format: "%.2f", val!)
+                case Sid.AvailableChargingPower:
+                    if val! > 45 {
                         self.lbl_textAvChPwr.text = "-"
                     } else {
-                        self.lbl_textAvChPwr.text = String(format: "%.2f", val)
+                        self.lbl_textAvChPwr.text = String(format: "%.2f", val!)
                     }
-                }
-            case Sid.AvailableEnergy:
-                if usoc > 0 {
-                    if var val = self.fieldResultsDouble[sid!] {
-                        val = val * (1 - usoc) / usoc
-                        self.lbl_textETF.text = String(format: "%.2f", val)
+                case Sid.AvailableEnergy:
+                    if usoc > 0 {
+                        let val2 = val! * (1 - usoc) / usoc
+                        self.lbl_textETF.text = String(format: "%.2f", val2)
                     }
-                }
-                self.lbl_textAvEner.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.SOH: // state of health gives continuous timeouts. This frame is send at a very low rate
-                self.lbl_textSOH.text = String(format: "%.0f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.RangeEstimate:
-                let val = self.fieldResultsDouble[sid!]
-                if val != nil, val! >= 1023 {
-                    self.lbl_textKMA.text = "---"
-                } else {
-                    self.lbl_textKMA.text = String(format: "%.0f", val!)
-                }
-            case Sid.HvKilometers:
-                self.lbl_textHKM.text = String(format: "%.0f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.TractionBatteryVoltage:
-                self.dcVolt = self.fieldResultsDouble[sid!] ?? Double.nan
-                self.lbl_textVolt.text = String(format: "%.2f", self.dcVolt)
-            case Sid.TractionBatteryCurrent:
-                let current = self.fieldResultsDouble[sid!] ?? Double.nan
-                if current != Double.nan {
-                    let dcPwr = self.dcVolt * current / 1000.0
-                    self.lbl_textDcPwr.text = String(format: "%.1f", dcPwr)
-                    self.lbl_textAmps.text = String(format: "%.2f", current)
-                }
-            case Sid.Preamble_CompartmentTemperatures + "32":
-                self.lbl_text_comp_1_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "56":
-                self.lbl_text_comp_2_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "80":
-                self.lbl_text_comp_3_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "104":
-                self.lbl_text_comp_4_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "128":
-                self.lbl_text_comp_5_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "152":
-                self.lbl_text_comp_6_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "176":
-                self.lbl_text_comp_7_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "200":
-                self.lbl_text_comp_8_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "224":
-                self.lbl_text_comp_9_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "248":
-                self.lbl_text_comp_10_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "272":
-                self.lbl_text_comp_11_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_CompartmentTemperatures + "296":
-                self.lbl_text_comp_12_temp.text = String(format: self.DefaultFormatTemperature, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "16":
-                self.lbl_text_bala_1_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "24":
-                self.lbl_text_bala_2_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "32":
-                self.lbl_text_bala_3_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "40":
-                self.lbl_text_bala_4_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "48":
-                self.lbl_text_bala_5_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "56":
-                self.lbl_text_bala_6_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "64":
-                self.lbl_text_bala_7_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "72":
-                self.lbl_text_bala_8_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "80":
-                self.lbl_text_bala_9_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "88":
-                self.lbl_text_bala_10_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "96":
-                self.lbl_text_bala_11_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Preamble_BalancingBytes + "104":
-                self.lbl_text_bala_12_temp.text = String(format: self.DefaultFormatBalancing, (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.MainsCurrentType:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                    self.lbl_textAvEner.text = String(format: "%.2f", val!)
+                case Sid.SOH: // state of health gives continuous timeouts. This frame is send at a very low rate
+                    self.lbl_textSOH.text = String(format: "%.0f", val!)
+                case Sid.RangeEstimate:
+                    if val! >= 1023 {
+                        self.lbl_textKMA.text = "---"
+                    } else {
+                        self.lbl_textKMA.text = String(format: "%.0f", val!)
+                    }
+                case Sid.HvKilometers:
+                    self.lbl_textHKM.text = String(format: "%.0f", val!)
+                case Sid.TractionBatteryVoltage:
+                    self.dcVolt = val!
+                    self.lbl_textVolt.text = String(format: "%.2f", self.dcVolt)
+                case Sid.TractionBatteryCurrent:
+                    let current = val!
+                    if current != Double.nan {
+                        let dcPwr = self.dcVolt * current / 1000.0
+                        self.lbl_textDcPwr.text = String(format: "%.1f", dcPwr)
+                        self.lbl_textAmps.text = String(format: "%.2f", current)
+                    }
+                case Sid.Preamble_CompartmentTemperatures + "32":
+                    self.lbl_text_comp_1_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "56":
+                    self.lbl_text_comp_2_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "80":
+                    self.lbl_text_comp_3_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "104":
+                    self.lbl_text_comp_4_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "128":
+                    self.lbl_text_comp_5_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "152":
+                    self.lbl_text_comp_6_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "176":
+                    self.lbl_text_comp_7_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "200":
+                    self.lbl_text_comp_8_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "224":
+                    self.lbl_text_comp_9_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "248":
+                    self.lbl_text_comp_10_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "272":
+                    self.lbl_text_comp_11_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_CompartmentTemperatures + "296":
+                    self.lbl_text_comp_12_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                case Sid.Preamble_BalancingBytes + "16":
+                    self.lbl_text_bala_1_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "24":
+                    self.lbl_text_bala_2_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "32":
+                    self.lbl_text_bala_3_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "40":
+                    self.lbl_text_bala_4_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "48":
+                    self.lbl_text_bala_5_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "56":
+                    self.lbl_text_bala_6_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "64":
+                    self.lbl_text_bala_7_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "72":
+                    self.lbl_text_bala_8_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "80":
+                    self.lbl_text_bala_9_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "88":
+                    self.lbl_text_bala_10_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "96":
+                    self.lbl_text_bala_11_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.Preamble_BalancingBytes + "104":
+                    self.lbl_text_bala_12_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                case Sid.MainsCurrentType:
+                    let i = Int(val!)
                     if i < self.mains_Current_Type!.count {
                         self.lbl_textMainsCurrentType.text = self.mains_Current_Type?[i]
                     }
-                }
-            case Sid.Phase1currentRMS:
-                self.lbl_textPhase1CurrentRMS.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Phase2CurrentRMS:
-                self.lbl_textPhase2CurrentRMS.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.Phase3CurrentRMS:
-                self.lbl_textPhase3CurrentRMS.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.PhaseVoltage1:
-                self.lbl_textPhaseVoltage1.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.PhaseVoltage2:
-                self.lbl_textPhaseVoltage2.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.PhaseVoltage3:
-                self.lbl_textPhaseVoltage3.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.InterPhaseVoltage12:
-                self.lbl_textInterPhaseVoltage12.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.InterPhaseVoltage23:
-                self.lbl_textInterPhaseVoltage23.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.InterPhaseVoltage31:
-                self.lbl_textInterPhaseVoltage31.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.MainsActivePower:
-                self.lbl_textMainsActivePower.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.GroundResistance:
-                self.lbl_textGroundResistance.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
+                case Sid.Phase1currentRMS:
+                    self.lbl_textPhase1CurrentRMS.text = String(format: "%.2f", val!)
+                case Sid.Phase2CurrentRMS:
+                    self.lbl_textPhase2CurrentRMS.text = String(format: "%.2f", val!)
+                case Sid.Phase3CurrentRMS:
+                    self.lbl_textPhase3CurrentRMS.text = String(format: "%.2f", val!)
+                case Sid.PhaseVoltage1:
+                    self.lbl_textPhaseVoltage1.text = String(format: "%.2f", val!)
+                case Sid.PhaseVoltage2:
+                    self.lbl_textPhaseVoltage2.text = String(format: "%.2f", val!)
+                case Sid.PhaseVoltage3:
+                    self.lbl_textPhaseVoltage3.text = String(format: "%.2f", val!)
+                case Sid.InterPhaseVoltage12:
+                    self.lbl_textInterPhaseVoltage12.text = String(format: "%.2f", val!)
+                case Sid.InterPhaseVoltage23:
+                    self.lbl_textInterPhaseVoltage23.text = String(format: "%.2f", val!)
+                case Sid.InterPhaseVoltage31:
+                    self.lbl_textInterPhaseVoltage31.text = String(format: "%.2f", val!)
+                case Sid.MainsActivePower:
+                    self.lbl_textMainsActivePower.text = String(format: "%.2f", val!)
+                case Sid.GroundResistance:
+                    self.lbl_textGroundResistance.text = String(format: "%.2f", val!)
 
-            case Sid.SupervisorState:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.SupervisorState:
+                    let i = Int(val!)
                     if i >= 0, i < self.supervisor_State!.count {
                         self.lbl_textSupervisorState.text = self.supervisor_State![i]
                     }
-                }
-            case Sid.CompletionStatus:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CompletionStatus:
+                    let i = Int(val!)
                     if i >= 0, i < self.completion_Status!.count {
                         self.lbl_textCompletionStatus.text = self.completion_Status![i]
                     }
-                }
-            case Sid.CCSEVSEStatus:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSEVSEStatus:
+                    let i = Int(val!)
                     if i >= 0, i < self.evse_status!.count {
                         self.lbl_textEVSEStatus.text = self.evse_status![i]
                     }
-                }
-            case Sid.CCSFailureStatus:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSFailureStatus:
+                    let i = Int(val!)
                     if i >= 0, i < self.evse_failure_status!.count {
                         self.lbl_textEVSEFailureStatus.text = self.evse_failure_status![i]
                     }
-                }
-            case Sid.CCSEVReady:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSEVReady:
+                    let i = Int(val!)
                     if i >= 0, i < self.ev_ready_status!.count {
                         self.lbl_textEVReady.text = self.ev_ready_status![i]
                     }
-                }
-            case Sid.CCSCPLCComStatus:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSCPLCComStatus:
+                    let i = Int(val!)
                     if i >= 0, i < self.cplc_com_status!.count {
                         self.lbl_textCPLCComStatus.text = self.cplc_com_status![i]
                     }
-                }
-            case Sid.CCSEVRequestState:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSEVRequestState:
+                    let i = Int(val!)
                     if i >= 0, i < self.ev_request_state!.count {
                         self.lbl_textEVRequestState.text = self.ev_request_state![i]
                     }
-                }
-            case Sid.CCSEVSEState:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSEVSEState:
+                    let i = Int(val!)
                     if i >= 0, i < self.evse_state!.count {
                         self.lbl_textEVSEState.text = self.evse_state![i]
                     }
-                }
-            case Sid.CCSEVSEMaxPower:
-                self.lbl_textEVSEMaxPower.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.CCSEVSEPowerLimitReached:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSEVSEMaxPower:
+                    self.lbl_textEVSEMaxPower.text = String(format: "%.2f", val!)
+                case Sid.CCSEVSEPowerLimitReached:
+                    let i = Int(val!)
                     if i >= 0, i < self.limit_reached!.count {
                         self.lbl_textEVSEPowerLimitReached.text = self.limit_reached![i]
                     }
-                }
-            case Sid.CCSEVSEMaxVoltage:
-                self.lbl_textEVSEMaxVoltage.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.CCSEVSEPresentVoltage:
-                self.lbl_textEVSEPresentVoltage.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.CCSEVSEVoltageLimitReaced:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSEVSEMaxVoltage:
+                    self.lbl_textEVSEMaxVoltage.text = String(format: "%.2f", val!)
+                case Sid.CCSEVSEPresentVoltage:
+                    self.lbl_textEVSEPresentVoltage.text = String(format: "%.2f", val!)
+                case Sid.CCSEVSEVoltageLimitReaced:
+                    let i = Int(val!)
                     if i >= 0, i < self.limit_reached!.count {
                         self.lbl_textEVSEVoltageLimitReached.text = self.limit_reached![i]
                     }
-                }
-            case Sid.CCSEVSEMaxCurrent:
-                self.lbl_textEVSEMaxCurrent.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.CCSEVSEPresentCurrent:
-                self.lbl_textEVSEPresentCurrent.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.CCSEVSECurrentLimitReached:
-                if let val = self.fieldResultsDouble[sid!] {
-                    let i = Int(val)
+                case Sid.CCSEVSEMaxCurrent:
+                    self.lbl_textEVSEMaxCurrent.text = String(format: "%.2f", val!)
+                case Sid.CCSEVSEPresentCurrent:
+                    self.lbl_textEVSEPresentCurrent.text = String(format: "%.2f", val!)
+                case Sid.CCSEVSECurrentLimitReached:
+                    let i = Int(val!)
                     if i >= 0, i < self.limit_reached!.count {
                         self.lbl_textEVSECurrentLimitReached.text = self.limit_reached![i]
                     }
+                case Sid.BcbVersion: // pre 0x0800 versions have a pilot PWM resolution of 1
+                    let field = Fields.getInstance.fieldsBySid[sid!]
+                    let bcbVersionField = Fields.getInstance.getBySID(Sid.ACPilotDutyCycle)
+                    if bcbVersionField != nil, field != nil {
+                        bcbVersionField?.resolution = Int(field!.getValue()) < 0x0800 ? 1.0 : 0.5
+                    }
+                default:
+                    print("?")
                 }
-            case Sid.BcbVersion: // pre 0x0800 versions have a pilot PWM resolution of 1
-                let field = Fields.getInstance.fieldsBySid[sid!]
-                let bcbVersionField = Fields.getInstance.getBySID(Sid.ACPilotDutyCycle)
-                if bcbVersionField != nil, field != nil {
-                    bcbVersionField?.resolution = Int(field!.getValue()) < 0x0800 ? 1.0 : 0.5
-                }
-            default:
-                print("?")
             }
         }
     }

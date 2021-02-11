@@ -151,36 +151,32 @@ class BatteryViewController: CanZeViewController {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
-        DispatchQueue.main.async {
-            switch sid {
-            case "658.33":
-                self.lblGraph_SOH.text = String(format: "%.0f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-            case Sid.RealSoC:
-                self.lblGraph_RealIndicatedSoc.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.realSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+        let val = Globals.shared.fieldResultsDouble[sid!]
+        let strVal = Globals.shared.fieldResultsString[sid!]
+        if val != nil || strVal != "" {
+            DispatchQueue.main.async {
+                switch sid {
+                case "658.33":
+                    self.lblGraph_SOH.text = String(format: "%.0f", val!)
+                case Sid.RealSoC:
+                    self.lblGraph_RealIndicatedSoc.text = String(format: "%.2f", val!)
+                    self.realSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateSocChart()
-                }
-            case Sid.UserSoC:
-                self.lblGraph_UserIndicatedSoc.text = String(format: "%.2f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.userSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.UserSoC:
+                    self.lblGraph_UserIndicatedSoc.text = String(format: "%.2f", val!)
+                    self.userSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateSocChart()
-                }
-            case "7bb.6141.16":
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.voltChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case "7bb.6141.16":
+                    self.voltChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateVoltChart()
-                }
-            case "7bb.6104.32":
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.tempChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case "7bb.6104.32":
+                    self.tempChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateTempChart()
+                case Sid.BatterySerial:
+                    self.lblBatterySerial.text = "Serial: \(strVal!)"
+                default:
+                    print("?")
                 }
-            case Sid.BatterySerial:
-                self.lblBatterySerial.text = "Serial: \(self.fieldResultsString[sid!] ?? "")"
-            default:
-                print("?")
             }
         }
     }

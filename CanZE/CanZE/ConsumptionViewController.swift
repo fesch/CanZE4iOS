@@ -154,90 +154,75 @@ class ConsumptionViewController: CanZeViewController {
         let obj = notification.object as! [String: String]
         let sid = obj["sid"]
 
-        DispatchQueue.main.async {
-            switch sid {
-            case Sid.TotalPositiveTorque:
-                if let val = self.fieldResultsDouble[sid!] {
+        let val = Globals.shared.fieldResultsDouble[sid!]
+        if val != nil {
+            DispatchQueue.main.async {
+                switch sid {
+                case Sid.TotalPositiveTorque:
                     let field = Fields.getInstance.fieldsBySid[sid!]
-                    self.posTorque = Int(val)
+                    self.posTorque = Int(val!)
 //                pb = findViewById(R.id.MeanEffectiveAccTorque);
 //                pb.setProgress(posTorque);
                     self.text_wheel_torque.text = "\(self.posTorque - self.negTorque) \(field?.unit ?? "")"
-                }
-            case Sid.TotalNegativeTorque:
-                if let val = self.fieldResultsDouble[sid!] {
+                case Sid.TotalNegativeTorque:
                     let field = Fields.getInstance.fieldsBySid[sid!]
-                    self.negTorque = Int(val)
+                    self.negTorque = Int(val!)
 //                pb = findViewById(R.id.pb_driver_torque_request)
 //                pb.setProgress(negTorque)
                     self.text_wheel_torque.text = "\(self.posTorque - self.negTorque) \(field?.unit ?? "")"
-                }
-            case Sid.TotalPotentialResistiveWheelsTorque:
-                if let val = self.fieldResultsDouble[sid!] {
-                    var tprwt = -Int(val)
+                case Sid.TotalPotentialResistiveWheelsTorque:
+                    var tprwt = -Int(val!)
 //                pb = findViewById(R.id.MaxBreakTorque)
 //                if (pb != null) pb.setProgress(tprwt < 2047 ? tprwt : 10)
-                    // TODO:
-                    /*
-                     case Sid.Instant_Consumption:
-                             double consumptionDbl = field.getValue();
-                             int consumptionInt = (int)consumptionDbl;
-                             tv = findViewById(R.id.text_instant_consumption_negative);
-                             if (!Double.isNaN(consumptionDbl)) {
-                                 // progress bars are rescaled to miles by the layout
-                                 ((ProgressBar) findViewById(R.id.pb_instant_consumption_negative)).setProgress(-(Math.min(0, consumptionInt)));
-                                 ((ProgressBar) findViewById(R.id.pb_instant_consumption_positive)).setProgress(  Math.max(0, consumptionInt) );
-                                 if (!MainActivity.milesMode) {
-                                     tv.setText(consumptionInt + " " + field.getUnit());
-                                 } else if (consumptionDbl != 0.0) { // consumption is now in kWh/100mi, so rescale progress bar
-                                     // display the value in imperial format (100 / consumption, meaning mi/kwh)
-                                     tv.setText(String.format (Locale.getDefault(),"%.2f %s", (100.0 / consumptionDbl), MainActivity.getStringSingle(R.string.unit_ConsumptionMiAlt)));
-                                 } else {
-                                     tv.setText("-");
-                                 }
+                // TODO:
+                /*
+                 case Sid.Instant_Consumption:
+                         double consumptionDbl = field.getValue();
+                         int consumptionInt = (int)consumptionDbl;
+                         tv = findViewById(R.id.text_instant_consumption_negative);
+                         if (!Double.isNaN(consumptionDbl)) {
+                             // progress bars are rescaled to miles by the layout
+                             ((ProgressBar) findViewById(R.id.pb_instant_consumption_negative)).setProgress(-(Math.min(0, consumptionInt)));
+                             ((ProgressBar) findViewById(R.id.pb_instant_consumption_positive)).setProgress(  Math.max(0, consumptionInt) );
+                             if (!MainActivity.milesMode) {
+                                 tv.setText(consumptionInt + " " + field.getUnit());
+                             } else if (consumptionDbl != 0.0) { // consumption is now in kWh/100mi, so rescale progress bar
+                                 // display the value in imperial format (100 / consumption, meaning mi/kwh)
+                                 tv.setText(String.format (Locale.getDefault(),"%.2f %s", (100.0 / consumptionDbl), MainActivity.getStringSingle(R.string.unit_ConsumptionMiAlt)));
                              } else {
                                  tv.setText("-");
                              }
-                     */
-                }
-            case Sid.DcPowerOut:
-                self.lblGraphValue1a.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.chartEntries1a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                         } else {
+                             tv.setText("-");
+                         }
+                 */
+                case Sid.DcPowerOut:
+                    self.lblGraphValue1a.text = String(format: "%.1f", val!)
+                    self.chartEntries1a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart1()
-                }
-            case Sid.UserSoC:
-                self.lblGraphValue1b.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.chartEntries1b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.UserSoC:
+                    self.lblGraphValue1b.text = String(format: "%.1f", val!)
+                    self.chartEntries1b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart1()
-                }
-            case Sid.RealSpeed:
-                self.lblGraphValue2a.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.chartEntries2a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.RealSpeed:
+                    self.lblGraphValue2a.text = String(format: "%.1f", val!)
+                    self.chartEntries2a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart2()
-                }
-            case "800.6104.24":
-                self.lblGraphValue2b.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.chartEntries2b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case "800.6104.24":
+                    self.lblGraphValue2b.text = String(format: "%.1f", val!)
+                    self.chartEntries2b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart2()
-                }
-            case "800.6107.24":
-                self.lblGraphValue3a.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.chartEntries3a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case "800.6107.24":
+                    self.lblGraphValue3a.text = String(format: "%.1f", val!)
+                    self.chartEntries3a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart3()
-                }
-            case Sid.RangeEstimate:
-                self.lblGraphValue3b.text = String(format: "%.1f", (self.fieldResultsDouble[sid!] ?? Double.nan) as Double)
-                if self.fieldResultsDouble[sid!] != nil {
-                    self.chartEntries3b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: self.fieldResultsDouble[sid!] ?? Double.nan))
+                case Sid.RangeEstimate:
+                    self.lblGraphValue3b.text = String(format: "%.1f", val!)
+                    self.chartEntries3b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart3()
+                default:
+                    print("?")
                 }
-            default:
-                print("?")
             }
         }
     }
