@@ -176,7 +176,7 @@ class ChargingViewController: CanZeViewController {
                 case Sid.HvTemp:
                     self.textHvTemp.text = String(format: "%.2f", val!)
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

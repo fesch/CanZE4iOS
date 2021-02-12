@@ -400,7 +400,7 @@ class TiresViewController: CanZeViewController {
                           case 96: // CodeIdentite(4)_(0) --> IIdent code, left rear wheel (Wheel 4, set 0)
                               idsRead[3] = Int(field.getValue())
                           default:
-                              print("?")
+     print("unknown sid")
                       }
                   }
                   idsRead = bit23on(idsRead)

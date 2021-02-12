@@ -52,7 +52,7 @@ class VoltageHeatmapViewController: CanZeViewController {
                 vv.text = "-"
                 vv.backgroundColor = baseColor
             } else {
-                print("?")
+                print("view not found")
             }
         }
     }

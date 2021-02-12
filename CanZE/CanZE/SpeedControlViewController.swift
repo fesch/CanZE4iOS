@@ -177,7 +177,7 @@ class SpeedControlViewController: CanZeViewController {
                         }
                     }
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

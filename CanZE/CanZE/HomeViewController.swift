@@ -56,7 +56,7 @@ class HomeViewController: CanZeViewController {
         }
 
         var f = cv.frame
-        f.size.height = max + 20
+        f.size.height = max //+ 20
         cv.frame = f
 
         sv.contentSize = cv.frame.size
@@ -279,7 +279,7 @@ extension HomeViewController: UIScrollViewDelegate {
             items = Array(arrayLiteral: item1, item2!)
             navigationItem.leftBarButtonItems = items
         default:
-            print("?")
+            print("pg.currentPage out of range")
         }
     }
 }

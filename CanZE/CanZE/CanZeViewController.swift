@@ -440,7 +440,7 @@ class CanZeViewController: UIViewController {
         deviceDisconnected()
         Globals.shared.fieldResultsDouble = [:]
         Globals.shared.fieldResultsString = [:]
-        Globals.shared.resultsString = [:]
+        Globals.shared.resultsBySid = [:]
 
         if let vBG = view.viewWithTag(vBG_TAG) {
             vBG.removeFromSuperview()
@@ -499,7 +499,11 @@ class CanZeViewController: UIViewController {
             requestIsoTpFrame(frame2: frame, field: nil, virtual: nil)
         } else {
 //                if (MainActivity.altFieldsMode) MainActivity.toast(MainActivity.TOAST_NONE, "Free frame in ISOTP mode:" + frame.getRID()); // MainActivity.debug("********* free frame in alt mode ********: " + frame.getRID());
-            requestFreeFrame(frame: frame)
+            // TODO:
+            // requestFreeFrame(frame: frame)
+            DispatchQueue.main.async {
+                self.view.makeToast("FREE FRAMES NOT YET SUPPORTED")
+            }
         }
     }
 
@@ -598,11 +602,11 @@ class CanZeViewController: UIViewController {
         // TEST
         // TEST
         let frame = frame2
-        if frame.sendingEcu.fromId == 0x18DAF1DA, frame.responseId == "5003" {
-            let ecu = Ecus.getInstance.getByFromId(0x18DAF1D2)
-            frame.sendingEcu = ecu
-            frame.fromId = ecu.fromId
-        }
+        // if frame.sendingEcu.fromId == 0x18DAF1DA, frame.responseId == "5003" {
+        // let ecu = Ecus.getInstance.getByFromId(0x18DAF1D2)
+        // frame.sendingEcu = ecu
+        // frame.fromId = ecu.fromId
+        // }
         // TEST
         // TEST
 
@@ -911,8 +915,10 @@ class CanZeViewController: UIViewController {
                     self.centralManager.stopScan()
                     timer.invalidate()
                     self.disconnect(showToast: false)
-                    self.view.hideAllToasts()
-                    self.view.makeToast("can't connect to ble device: TIMEOUT")
+                    DispatchQueue.global(qos: .background).async {
+                        self.view.hideAllToasts()
+                        self.view.makeToast("can't connect to ble device: TIMEOUT")
+                    }
                 }
             })
         }
@@ -1089,12 +1095,17 @@ class CanZeViewController: UIViewController {
         debug("> \(s)")
 
         let task = URLSession.shared.dataTask(with: request) { data, _, error in
-            guard let data = data else {
-                print(error?.localizedDescription ?? "?")
-                self.view.makeToast(error?.localizedDescription)
+            if error != nil {
+                DispatchQueue.global(qos: .background).async {
+                    self.view.makeToast(error?.localizedDescription)
+                }
                 return
             }
-            let reply = String(data: data, encoding: .utf8)
+            if data == nil {
+                self.debug("data == nil")
+                return
+            }
+            let reply = String(data: data!, encoding: .utf8)
             let reply2 = reply?.components(separatedBy: ",")
             if reply2?.count == 2 {
                 var reply3 = reply2?.last
@@ -1136,6 +1147,28 @@ class CanZeViewController: UIViewController {
             let dic = ["debug": "Debug \(seq.field?.sid ?? "?")"]
             NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
             //  debug(seq.field.sid)
+        }
+
+        // cached ?
+        if seq.field != nil {
+            if let res = Globals.shared.resultsBySid[(seq.field.sid)!] {
+                if Date().timeIntervalSince1970 - res.lastTimestamp < 10000 {
+                    debug("cached")
+
+                    let dic = ["debug": "Debug \(seq.field.sid ?? "?") cached"]
+                    NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+
+                    // notify real field
+                    var n: [String: String] = [:]
+                    n["sid"] = seq.field.sid
+                    NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
+
+                    lastId = -1
+                    queue2.removeFirst()
+                    startQueue2()
+                    return
+                }
+            }
         }
 
         let cmd = seq.cmd[indiceCmd]
@@ -1251,26 +1284,28 @@ extension CanZeViewController: StreamDelegate {
         } else if seq?.field != nil {
             sid = (seq?.field.sid)!
         }
+
         if sid == "" {
             // firmware
+
+            // TODO: Globals.shared.resultsString[sid!] = FieldResult(reply)
 
             let binString = getAsBinaryString(data: reply)
             debug("\(binString) (\(binString.count))")
 
             for field in seq!.frame.getAllFields() {
-                onMessageCompleteEventField(binString_: binString, field: field)
-
-                if field.isString() || field.isHexString() {
-                    debug("\(field.strVal)")
-                    Globals.shared.fieldResultsString[field.sid] = field.strVal
-                } else if sid == Sid.BatterySerial, field.strVal != "", field.strVal.count > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
-                    field.strVal = field.strVal.subString(from: field.strVal.count - 6)
-                    field.strVal = "F" + field.strVal
-                    Globals.shared.fieldResultsString[field.sid] = field.strVal
-                    debug("\(field.strVal)")
+                if reply.contains("not found") {
+                    debug("not found")
                 } else {
-                    debug("\(field.name ?? "?") \(String(format: "%.\(field.decimals!)f", field.getValue()))\n")
-                    Globals.shared.fieldResultsDouble[field.sid] = field.getValue()
+                    onMessageCompleteEventField(binString_: binString, field: field)
+
+                    if field.isString() || field.isHexString() {
+                        debug("\(field.strVal)")
+                        Globals.shared.fieldResultsString[field.sid] = field.strVal
+                    } else {
+                        debug("\(field.name ?? "?") \(String(format: "%.\(field.decimals!)f", field.getValue()))\n")
+                        Globals.shared.fieldResultsDouble[field.sid] = field.getValue()
+                    }
                 }
 
                 var n = notification.object as! [String: String]
@@ -1303,7 +1338,6 @@ extension CanZeViewController: StreamDelegate {
                     // http, cansee
                     field?.strVal = reply
                 }
-
                 if field!.strVal.hasPrefix("7f") {
                     error = "ERROR 7F"
                     debug(error)
@@ -1320,18 +1354,29 @@ extension CanZeViewController: StreamDelegate {
                     for f in field!.frame.getAllFields() {
                         onMessageCompleteEventField(binString_: binString, field: f)
 
-                        if field!.isString() || field!.isHexString() {
+                        if f.isString() || f.isHexString() {
 //                            debug( "\(field!.strVal)")
-                            Globals.shared.fieldResultsString[field!.sid] = field!.strVal
-                        } else if sid == Sid.BatterySerial, field?.strVal != nil, (field?.strVal.count)! > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
-                            field?.strVal = (field?.strVal.subString(from: (field?.strVal.count)! - 6))!
-                            field?.strVal = "F" + field!.strVal
-                            Globals.shared.fieldResultsString[field!.sid] = field!.strVal
+                            Globals.shared.fieldResultsString[f.sid] = f.strVal
+                            Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: nil, stringValue: f.strVal)
+                        } else if sid == Sid.BatterySerial, f.strVal.count > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
+                            f.strVal = f.strVal.subString(from: f.strVal.count - 6)
+                            f.strVal = "F" + f.strVal
+                            Globals.shared.fieldResultsString[f.sid] = f.strVal
+                            Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: nil, stringValue: f.strVal)
 //                            debug( "\(field!.strVal)")
                         } else {
 //                            debug( "\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
-                            Globals.shared.fieldResultsDouble[field!.sid] = field!.getValue()
+                            Globals.shared.fieldResultsDouble[f.sid] = f.getValue()
+                            Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: f.getValue(), stringValue: nil)
                         }
+
+                        let dic = ["debug": "Defbug \(f.sid ?? "?") \(error)"]
+                        NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+
+                        // notify real field
+                        var n = notification.object as! [String: String]
+                        n["sid"] = f.sid
+                        NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
 
                         if seq?.sidVirtual != nil {
                             var result = 0.0
@@ -1360,6 +1405,21 @@ extension CanZeViewController: StreamDelegate {
                                 print("unknown virtual sid")
                             }
                             Globals.shared.fieldResultsDouble[(seq?.sidVirtual)!] = result
+                            Globals.shared.resultsBySid[field!.sid] = FieldResult(doubleValue: field!.getValue(), stringValue: nil)
+
+                            let dic = ["debug": "Debug \(field?.sid ?? "?") \(error)"]
+                            NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+
+                            // notify real field
+                            var n = notification.object as! [String: String]
+                            n["sid"] = field!.sid
+                            NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
+
+                            // notify virtual
+                            if seq?.sidVirtual != nil {
+                                n["sid"] = seq?.sidVirtual
+                            }
+                            NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
                         }
                     }
                 }
@@ -1368,9 +1428,12 @@ extension CanZeViewController: StreamDelegate {
             let dic = ["debug": "Debug \(field?.sid ?? "?") \(error)"]
             NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
 
+            // notify real field
             var n = notification.object as! [String: String]
             n["sid"] = field!.sid
             NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
+
+            // notify virtual
             if seq?.sidVirtual != nil {
                 n["sid"] = seq?.sidVirtual
             }

@@ -235,7 +235,7 @@ class DrivingViewController: CanZeViewController {
                 //    coasting_Torque = field.getValue() * MainActivity.reduction; // this torque is given in motor torque, not in wheel torque
                 //    break;
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

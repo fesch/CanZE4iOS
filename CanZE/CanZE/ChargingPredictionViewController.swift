@@ -176,8 +176,9 @@ class ChargingPredictionViewController: CanZeViewController {
                     self.car_soh = val!
                     self.car_status |= 0x20
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
+
                 if self.car_status == 0x3f {
                     // dropDebugMessage2 (String.format(Locale.getDefault(), "go %02X", car_status));
                     self.runPrediction()

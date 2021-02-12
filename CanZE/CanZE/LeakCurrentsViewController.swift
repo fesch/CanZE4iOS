@@ -127,7 +127,9 @@ class LeakCurrentsViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -155,7 +157,7 @@ class LeakCurrentsViewController: CanZeViewController {
                     self.leakCurrentEhfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateLeakCurrentEhfChart()
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

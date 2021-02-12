@@ -225,7 +225,7 @@ class ChargingHistoryViewController: CanZeViewController {
                     case Sid.Counter_Partial:
                         self.textCountPartial.text = String(format: "%.0f", val!)
                     default:
-                        print("?")
+                        print("unknown sid")
                     }
                 }
             }

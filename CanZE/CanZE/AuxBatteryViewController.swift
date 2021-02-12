@@ -166,7 +166,7 @@ class AuxBatteryViewController: CanZeViewController {
                 case Sid.CurrentUnderLoad:
                     self.textCurrentUnderLoad.text = String(format: "%.1f", val!)
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

@@ -56,5 +56,5 @@ class Globals: NSObject {
     // RESULTS
     var fieldResultsDouble: [String: Double] = [:]
     var fieldResultsString: [String: String] = [:]
-    var resultsString: [String: String] = [:]
+    var resultsBySid: [String: FieldResult] = [:]
 }

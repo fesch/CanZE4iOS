@@ -166,7 +166,7 @@ class RangeViewController: CanZeViewController {
                     self.rangeBest = self.energy / self.consumptionBest * 100
                     self.updateRange()
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

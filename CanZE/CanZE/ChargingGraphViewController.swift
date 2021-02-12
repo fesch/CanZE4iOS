@@ -161,7 +161,7 @@ class ChargingGraphViewController: CanZeViewController {
                     self.energyTemperatureChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateEnergyTemperatureChart()
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

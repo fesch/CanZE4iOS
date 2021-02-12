@@ -35,7 +35,7 @@ class TemperatureHeatmapViewController: CanZeViewController {
                 vv.text = "-"
                 vv.backgroundColor = baseColor
             } else {
-                print("?")
+                print("view not found")
             }
         }
     }
@@ -105,23 +105,27 @@ class TemperatureHeatmapViewController: CanZeViewController {
         if fieldId.starts(with: Sid.Preamble_CompartmentTemperatures) {
             cell = (Int(fieldId.components(separatedBy: ".")[2])! - 8)/24 // cell is 1-based
             let value = field?.getValue()
-            lastVal[cell] = value!
-            if cell == lastCell {
-                for i in 1 ..< lastCell+1 {
-                    mean += lastVal[i]
-                }
-                mean /= Double(lastCell)
+            if value != nil, !value!.isNaN {
+                if cell < lastVal.count {
+                    lastVal[cell] = value!
+                    if cell == lastCell {
+                        for i in 1 ..< lastCell+1 {
+                            mean += lastVal[i]
+                        }
+                        mean /= Double(lastCell)
 
-                // the update has to be done in a separate thread
-                // otherwise the UI will not be repainted
-                for i in 1 ..< lastCell+1 {
-                    DispatchQueue.main.async {
-                        if let tv = self.view.viewWithTag(i+1000) {
-                            let tv2 = tv as! UILabel
-                            // tv.setText(String.format("%.3f", lastVoltage[i]));
-                            tv2.text = String(format: "%.0f", self.lastVal[i])
-                            let delta = Int(50 * (self.lastVal[i] - self.mean)) // color is temp minus mean
-                            tv2.backgroundColor = self.makeColor(delta)
+                        // the update has to be done in a separate thread
+                        // otherwise the UI will not be repainted
+                        for i in 1 ..< lastCell+1 {
+                            DispatchQueue.main.async {
+                                if let tv = self.view.viewWithTag(i+1000) {
+                                    let tv2 = tv as! UILabel
+                                    // tv.setText(String.format("%.3f", lastVoltage[i]));
+                                    tv2.text = String(format: "%.0f", self.lastVal[i])
+                                    let delta = Int(50 * (self.lastVal[i] - self.mean)) // color is temp minus mean
+                                    tv2.backgroundColor = self.makeColor(delta)
+                                }
+                            }
                         }
                     }
                 }

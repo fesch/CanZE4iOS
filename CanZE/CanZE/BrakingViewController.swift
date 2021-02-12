@@ -151,7 +151,7 @@ class BrakingViewController: CanZeViewController {
                     self.updateTorqueRequestChart()
                     self.text_driver_torque_request.text = String(format: "%.0f \(um)", self.frictionTorque + self.elecBrakeTorque)
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

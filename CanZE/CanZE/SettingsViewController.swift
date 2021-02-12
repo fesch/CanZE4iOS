@@ -296,7 +296,7 @@ class SettingsViewController: CanZeViewController {
             ud.synchronize()
 
         default:
-            print("?")
+            print("setting?.tag unknown")
         }
 
         disconnect(showToast: false)

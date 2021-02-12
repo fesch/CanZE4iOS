@@ -221,7 +221,7 @@ class ConsumptionViewController: CanZeViewController {
                     self.chartEntries3b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart3()
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

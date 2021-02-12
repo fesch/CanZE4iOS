@@ -115,7 +115,7 @@ struct Battery {
                 setCoefficients(cons: 14.93, tempx: 1.101, socy: -0.145, tempxsocy: -0.00824)
                 setRawCapacity(41.0)
             default:
-                print("?")
+                print("unknown battery type")
         }
     }
 

@@ -153,30 +153,40 @@ class BatteryViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         let strVal = Globals.shared.fieldResultsString[sid!]
-        if val != nil || strVal != "" {
-            DispatchQueue.main.async {
-                switch sid {
-                case "658.33":
+        DispatchQueue.main.async {
+            switch sid {
+            case "658.33":
+                if val != nil {
                     self.lblGraph_SOH.text = String(format: "%.0f", val!)
-                case Sid.RealSoC:
+                }
+            case Sid.RealSoC:
+                if val != nil {
                     self.lblGraph_RealIndicatedSoc.text = String(format: "%.2f", val!)
                     self.realSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateSocChart()
-                case Sid.UserSoC:
+                }
+            case Sid.UserSoC:
+                if val != nil {
                     self.lblGraph_UserIndicatedSoc.text = String(format: "%.2f", val!)
                     self.userSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateSocChart()
-                case "7bb.6141.16":
+                }
+            case "7bb.6141.16":
+                if val != nil {
                     self.voltChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateVoltChart()
-                case "7bb.6104.32":
+                }
+            case "7bb.6104.32":
+                if val != nil {
                     self.tempChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateTempChart()
-                case Sid.BatterySerial:
-                    self.lblBatterySerial.text = "Serial: \(strVal!)"
-                default:
-                    print("?")
                 }
+            case Sid.BatterySerial:
+                if strVal != nil {
+                    self.lblBatterySerial.text = "Serial: \(strVal!)"
+                }
+            default:
+                print("unknown sid")
             }
         }
     }

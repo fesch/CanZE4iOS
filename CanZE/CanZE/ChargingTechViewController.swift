@@ -624,7 +624,7 @@ class ChargingTechViewController: CanZeViewController {
                         bcbVersionField?.resolution = Int(field!.getValue()) < 0x0800 ? 1.0 : 0.5
                     }
                 default:
-                    print("?")
+                    print("unknown sid")
                 }
             }
         }

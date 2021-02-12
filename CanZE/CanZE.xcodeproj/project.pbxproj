@@ -16,6 +16,7 @@
 		622B485125CAC29300F27323 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622B485025CAC29300F27323 /* UIColor.swift */; };
 		622B485425CB051400F27323 /* AuxBatteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622B485325CB051400F27323 /* AuxBatteryViewController.swift */; };
 		6255283F259CEA1300C2772E /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255283E259CEA1300C2772E /* AppSettings.swift */; };
+		625DF0F825D5871000AE2AAA /* FieldResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625DF0F725D5871000AE2AAA /* FieldResult.swift */; };
 		6267689625C99ECE00F05EA7 /* fragment_technical.png in Resources */ = {isa = PBXBuildFile; fileRef = 6267689425C99C4800F05EA7 /* fragment_technical.png */; };
 		6267689925C9A8F300F05EA7 /* fragment_experimental.png in Resources */ = {isa = PBXBuildFile; fileRef = 6267689825C9A8F300F05EA7 /* fragment_experimental.png */; };
 		6267689C25C9A95800F05EA7 /* fragment_experimental@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6267689B25C9A95800F05EA7 /* fragment_experimental@2x.png */; };
@@ -94,6 +95,7 @@
 		622B485025CAC29300F27323 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		622B485325CB051400F27323 /* AuxBatteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxBatteryViewController.swift; sourceTree = "<group>"; };
 		6255283E259CEA1300C2772E /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		625DF0F725D5871000AE2AAA /* FieldResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldResult.swift; sourceTree = "<group>"; };
 		6267689425C99C4800F05EA7 /* fragment_technical.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fragment_technical.png; sourceTree = "<group>"; };
 		6267689825C9A8F300F05EA7 /* fragment_experimental.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fragment_experimental.png; sourceTree = "<group>"; };
 		6267689B25C9A95800F05EA7 /* fragment_experimental@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fragment_experimental@2x.png"; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 			isa = PBXGroup;
 			children = (
 				62DFAB5F25924CF300B00C5C /* BlePeripheral.swift */,
+				625DF0F725D5871000AE2AAA /* FieldResult.swift */,
 				622A16A425B89567001D704E /* Sequence.swift */,
 				62DA73EC259493AD0068CDF8 /* Setting.swift */,
 			);
@@ -505,6 +508,7 @@
 				62FAC76725D3E0C800BA3AFD /* TiresViewController.swift in Sources */,
 				62D3F96125932F4B002CB6C7 /* Sid.swift in Sources */,
 				62D3F98225936032002CB6C7 /* None.swift in Sources */,
+				625DF0F825D5871000AE2AAA /* FieldResult.swift in Sources */,
 				62DFAB6025924CF300B00C5C /* BlePeripheral.swift in Sources */,
 				62D3F968259337B3002CB6C7 /* AnyDecodable.swift in Sources */,
 				62D3F93625926B5C002CB6C7 /* Ecu.swift in Sources */,
