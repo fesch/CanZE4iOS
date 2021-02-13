@@ -127,7 +127,7 @@ class LeakCurrentsViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             self.startQueue()
         }
     }
@@ -137,27 +137,27 @@ class LeakCurrentsViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 switch sid {
                 case "793.625057.24":
-                    self.text_LeakCurrentDc.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_LeakCurrentDc.text = String(format: "%.2f", val!)
                     self.leakCurrentDcEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateLeakCurrentDcChart()
                 case "793.62505a.24":
-                    self.text_LeakCurrentLf.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_LeakCurrentLf.text = String(format: "%.2f", val!)
                     self.leakCurrentLfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateLeakCurrentLfChart()
                 case "793.625059.24":
-                    self.text_LeakCurrentHf.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_LeakCurrentHf.text = String(format: "%.2f", val!)
                     self.leakCurrentHfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateLeakCurrentHfChart()
                 case "793.625058.24":
-                    self.text_LeakCurrentEhf.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_LeakCurrentEhf.text = String(format: "%.2f", val!)
                     self.leakCurrentEhfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateLeakCurrentEhfChart()
                 default:
-                    print("unknown sid")
+                    print("unknown sid \(sid!)")
                 }
             }
         }

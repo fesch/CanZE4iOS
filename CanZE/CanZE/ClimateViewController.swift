@@ -166,7 +166,9 @@ class ClimateViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -174,22 +176,22 @@ class ClimateViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 switch sid {
                 case Sid.EngineFanSpeed:
-                    self.text_EFS.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_EFS.text = String(format: "%.1f", val!)
                 case Sid.DcPowerOut:
-                    self.text_ClimatePower.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_ClimatePower.text = String(format: "%.1f", val!)
                 case Sid.HvCoolingState:
                     let i = Int(val!)
                     if i >= 0, i < self.cooling_Status!.count {
                         self.text_HCS.text = self.cooling_Status![i]
                     }
                 case Sid.HvEvaporationTemp:
-                    self.text_HET.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_HET.text = String(format: "%.1f", val!)
                 case Sid.Pressure:
-                    self.text_PRE.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_PRE.text = String(format: "%.1f", val!)
                 case Sid.BatteryConditioningMode:
                     let i = Int(val!)
                     if i >= 0, i < self.conditioning_Status!.count {
@@ -201,7 +203,7 @@ class ClimateViewController: CanZeViewController {
                         self.text_CLM.text = self.climate_Status![i]
                     }
                 case Sid.ThermalComfortPower:
-                    self.text_ClimatePower.text = String(format: "%.1f", val ?? Double.nan)
+                    self.text_ClimatePower.text = String(format: "%.1f", val!)
                      // case Sid.PtcRelay1:
                      //    value = (int) field.getValue();
                      //    tv = findViewById(R.id.text_PTC1);
@@ -225,7 +227,7 @@ class ClimateViewController: CanZeViewController {
                      //    break;
 
                 default:
-                    print("unknown sid")
+                    print("unknown sid \(sid!)")
                 }
             }
         }

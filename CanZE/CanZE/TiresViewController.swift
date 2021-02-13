@@ -178,7 +178,9 @@ class TiresViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -186,8 +188,7 @@ class TiresViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 /*   switch sid {
                                              // get the text field
@@ -400,7 +401,7 @@ class TiresViewController: CanZeViewController {
                           case 96: // CodeIdentite(4)_(0) --> IIdent code, left rear wheel (Wheel 4, set 0)
                               idsRead[3] = Int(field.getValue())
                           default:
-     print("unknown sid")
+     print("unknown sid \(sid!)")
                       }
                   }
                   idsRead = bit23on(idsRead)

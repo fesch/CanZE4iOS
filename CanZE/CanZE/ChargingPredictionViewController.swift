@@ -138,7 +138,9 @@ class ChargingPredictionViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -146,8 +148,7 @@ class ChargingPredictionViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 switch sid {
                 case Sid.AvailableChargingPower:
@@ -176,7 +177,7 @@ class ChargingPredictionViewController: CanZeViewController {
                     self.car_soh = val!
                     self.car_status |= 0x20
                 default:
-                    print("unknown sid")
+                    print("unknown sid \(sid!)")
                 }
 
                 if self.car_status == 0x3f {

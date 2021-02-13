@@ -2054,7 +2054,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vuj-BS-V7A" customClass="LineChartView" customModule="Charts">
-                                <rect key="frame" x="5" y="145" width="404" height="227"/>
+                                <rect key="frame" x="5" y="145" width="404" height="340.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aI2-WA-rWQ">
                                         <rect key="frame" x="0.0" y="0.0" width="31" height="14.5"/>
@@ -2091,7 +2091,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YRT-8m-1wV" customClass="LineChartView" customModule="Charts">
-                                <rect key="frame" x="5" y="377" width="404" height="227"/>
+                                <rect key="frame" x="5" y="490.5" width="404" height="340.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y68-LV-vDU">
                                         <rect key="frame" x="0.0" y="0.0" width="31" height="14.5"/>
@@ -2127,8 +2127,8 @@
                                     <constraint firstItem="y68-LV-vDU" firstAttribute="top" secondItem="YRT-8m-1wV" secondAttribute="top" id="tCl-dD-TDb"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wmn-f6-kRQ" customClass="LineChartView" customModule="Charts">
-                                <rect key="frame" x="5" y="609" width="404" height="227"/>
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wmn-f6-kRQ" customClass="LineChartView" customModule="Charts">
+                                <rect key="frame" x="5" y="836" width="404" height="0.0"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TAB-cd-L3f">
                                         <rect key="frame" x="0.0" y="0.0" width="31" height="14.5"/>
@@ -2158,6 +2158,7 @@
                                     <constraint firstItem="qHx-aR-Tyq" firstAttribute="top" secondItem="Wmn-f6-kRQ" secondAttribute="top" id="5cT-9e-zXL"/>
                                     <constraint firstItem="TAB-cd-L3f" firstAttribute="leading" secondItem="Wmn-f6-kRQ" secondAttribute="leading" id="I2D-hC-WfO"/>
                                     <constraint firstItem="2uK-ca-ICk" firstAttribute="trailing" secondItem="qHx-aR-Tyq" secondAttribute="trailing" id="IKI-tS-wA2"/>
+                                    <constraint firstAttribute="height" id="W2j-MR-fCw"/>
                                     <constraint firstItem="qHx-aR-Tyq" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="TAB-cd-L3f" secondAttribute="trailing" constant="8" symbolic="YES" id="rfS-CM-QOv"/>
                                     <constraint firstItem="2uK-ca-ICk" firstAttribute="top" secondItem="qHx-aR-Tyq" secondAttribute="bottom" id="ukf-Q9-7ri"/>
                                     <constraint firstItem="TAB-cd-L3f" firstAttribute="top" secondItem="Wmn-f6-kRQ" secondAttribute="top" id="yYJ-fj-gDZ"/>
@@ -2203,7 +2204,6 @@
                             <constraint firstItem="YRT-8m-1wV" firstAttribute="top" secondItem="Vuj-BS-V7A" secondAttribute="bottom" constant="5" id="N55-bg-QUX"/>
                             <constraint firstItem="qhI-5m-vLP" firstAttribute="top" secondItem="Wmn-f6-kRQ" secondAttribute="bottom" constant="5" id="Ocd-FG-RIZ"/>
                             <constraint firstItem="YRT-8m-1wV" firstAttribute="leading" secondItem="cy6-0w-Jmh" secondAttribute="leading" constant="5" id="TCY-6H-uIR"/>
-                            <constraint firstItem="Wmn-f6-kRQ" firstAttribute="height" secondItem="YRT-8m-1wV" secondAttribute="height" id="X9s-eK-KYl"/>
                             <constraint firstItem="XI6-83-n2T" firstAttribute="leading" secondItem="cy6-0w-Jmh" secondAttribute="leading" constant="10" id="XI7-i7-e57"/>
                             <constraint firstItem="Vuj-BS-V7A" firstAttribute="top" secondItem="XI6-83-n2T" secondAttribute="bottom" constant="5" id="aF0-M8-orD"/>
                             <constraint firstItem="XI6-83-n2T" firstAttribute="top" secondItem="lZt-MN-ER6" secondAttribute="bottom" id="cIL-Kn-lSm"/>
@@ -4958,6 +4958,7 @@ Ble Conn Sett</string>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
+                                <color key="backgroundColor" systemColor="systemYellowColor"/>
                                 <constraints>
                                     <constraint firstItem="Z9O-LT-sDo" firstAttribute="top" secondItem="CKl-Gu-HRu" secondAttribute="top" id="3WJ-tS-ijF"/>
                                     <constraint firstItem="Z9O-LT-sDo" firstAttribute="leading" secondItem="CKl-Gu-HRu" secondAttribute="leading" id="8e1-ld-W6s"/>
@@ -4986,6 +4987,7 @@ Ble Conn Sett</string>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
+                                <color key="backgroundColor" systemColor="systemYellowColor"/>
                                 <constraints>
                                     <constraint firstItem="mM8-xs-CDj" firstAttribute="top" secondItem="fwS-WU-6Df" secondAttribute="top" id="1Kc-aV-dvI"/>
                                     <constraint firstItem="mM8-xs-CDj" firstAttribute="leading" secondItem="fwS-WU-6Df" secondAttribute="leading" id="5jD-sZ-jer"/>
@@ -5003,6 +5005,7 @@ Ble Conn Sett</string>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
+                                <color key="backgroundColor" systemColor="systemYellowColor"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="aDS-GW-LGV" secondAttribute="trailing" id="2wH-K7-8FN"/>
                                     <constraint firstItem="aDS-GW-LGV" firstAttribute="leading" secondItem="FNc-VA-YUZ" secondAttribute="leading" id="gid-fK-2hi"/>

@@ -122,7 +122,6 @@ class BatteryViewController: CanZeViewController {
         if Utils.isPh2() {
             addField(Sid.EVC, intervalMs: 2000) // open EVC
         }
-        addField("658.33", intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
 
         addField(Sid.UserSoC, intervalMs: 5000)
         addField(Sid.RealSoC, intervalMs: 5000)
@@ -133,18 +132,20 @@ class BatteryViewController: CanZeViewController {
 
         if !doneOneTimeOnly {
             addField(Sid.BatterySerial, intervalMs: 5000)
+            addField("658.33", intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
             doneOneTimeOnly = true
         }
 
         addField("7bb.6141.16", intervalMs: 5000) // cell 1 volt
-
         addField("7bb.6104.32", intervalMs: 5000) // cell 1 temp
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -156,28 +157,28 @@ class BatteryViewController: CanZeViewController {
         DispatchQueue.main.async {
             switch sid {
             case "658.33":
-                if val != nil {
+                if val != nil, !val!.isNaN {
                     self.lblGraph_SOH.text = String(format: "%.0f", val!)
                 }
             case Sid.RealSoC:
-                if val != nil {
+                if val != nil, !val!.isNaN {
                     self.lblGraph_RealIndicatedSoc.text = String(format: "%.2f", val!)
                     self.realSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateSocChart()
                 }
             case Sid.UserSoC:
-                if val != nil {
+                if val != nil, !val!.isNaN {
                     self.lblGraph_UserIndicatedSoc.text = String(format: "%.2f", val!)
                     self.userSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateSocChart()
                 }
             case "7bb.6141.16":
-                if val != nil {
+                if val != nil, !val!.isNaN {
                     self.voltChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateVoltChart()
                 }
             case "7bb.6104.32":
-                if val != nil {
+                if val != nil, !val!.isNaN {
                     self.tempChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateTempChart()
                 }
@@ -186,7 +187,7 @@ class BatteryViewController: CanZeViewController {
                     self.lblBatterySerial.text = "Serial: \(strVal!)"
                 }
             default:
-                print("unknown sid")
+                print("unknown sid \(sid!)")
             }
         }
     }
@@ -226,25 +227,24 @@ class BatteryViewController: CanZeViewController {
         voltChartView.rightAxis.enabled = false
 
         let xAxis = voltChartView.xAxis
-//        xAxis.drawAxisLineEnabled = false
+//        xAxis.labelPosition = .bottom
+//        xAxis.labelFont = UIFont.systemFont(ofSize: 8.0)
+//        xAxis.labelTextColor = .black
+//        xAxis.drawAxisLineEnabled = true
         xAxis.drawGridLinesEnabled = false
-        /*        xAxis.labelPosition = .bottom
-         xAxis.labelFont = UIFont.systemFont(ofSize: 10.0)
-         xAxis.labelTextColor = .red
-         xAxis.valueFormatter = TimestampAxis()
-         xAxis.labelRotationAngle = -45.0*/
-//        xAxis.enabled = false
+//        xAxis.valueFormatter = TimestampAxis()
         xAxis.drawLabelsEnabled = false
 
         let yAxis = voltChartView.leftAxis
-        yAxis.drawLabelsEnabled = false
         yAxis.axisMinimum = 3
         yAxis.axisMaximum = 5
+        yAxis.drawLabelsEnabled = false
 
         voltChartLine = LineChartDataSet(entries: voltChartEntries, label: nil)
         voltChartLine.drawCirclesEnabled = false
         voltChartLine.drawValuesEnabled = false
         voltChartLine.colors = [.red]
+        // voltChartLine.drawFilledEnabled = false
 
         voltChartView.data = LineChartData(dataSet: voltChartLine)
     }
@@ -280,17 +280,17 @@ class BatteryViewController: CanZeViewController {
     func updateSocChart() {
         realSocChartLine.replaceEntries(realSocChartEntries)
         userSocChartLine.replaceEntries(userSocChartEntries)
-        socChartView.data = BarChartData(dataSets: [realSocChartLine, userSocChartLine])
+        socChartView.data = LineChartData(dataSets: [realSocChartLine, userSocChartLine])
     }
 
     func updateVoltChart() {
         voltChartLine.replaceEntries(voltChartEntries)
-        voltChartView.data = BarChartData(dataSet: voltChartLine)
+        voltChartView.data = LineChartData(dataSet: voltChartLine)
     }
 
     func updateTempChart() {
         tempChartLine.replaceEntries(tempChartEntries)
-        tempChartView.data = BarChartData(dataSet: tempChartLine)
+        tempChartView.data = LineChartData(dataSet: tempChartLine)
     }
 
     class TimestampAxis: IAxisValueFormatter {

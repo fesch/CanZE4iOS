@@ -836,7 +836,7 @@ class CanZeViewController: UIViewController {
                     tmpVal.append(String(c!))
                     i += 8
                 }
-                field.strVal = tmpVal
+                field.strVal = tmpVal.trim()
             } else if field.isHexString() {
                 var tmpVal = ""
                 var i = 0
@@ -849,7 +849,7 @@ class CanZeViewController: UIViewController {
                     tmpVal.append(s)
                     i += 8
                 }
-                field.strVal = tmpVal
+                field.strVal = tmpVal.trim()
             } else if binString.count <= 4 || binString.contains("0") {
                 // experiment with unavailable: any field >= 5 bits whose value contains only 1's
                 var val = 0 // long to avoid craze overflows with 0x8000 ofsets
@@ -915,7 +915,7 @@ class CanZeViewController: UIViewController {
                     self.centralManager.stopScan()
                     timer.invalidate()
                     self.disconnect(showToast: false)
-                    DispatchQueue.global(qos: .background).async {
+                    DispatchQueue.main.async {
                         self.view.hideAllToasts()
                         self.view.makeToast("can't connect to ble device: TIMEOUT")
                     }
@@ -986,7 +986,7 @@ class CanZeViewController: UIViewController {
 
         var contatore = 5
         #if targetEnvironment(simulator)
-            contatore = 500000
+            contatore = 50
         #endif
         timeoutTimerWifi = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { _ in
             print(contatore)
@@ -1096,7 +1096,7 @@ class CanZeViewController: UIViewController {
 
         let task = URLSession.shared.dataTask(with: request) { data, _, error in
             if error != nil {
-                DispatchQueue.global(qos: .background).async {
+                DispatchQueue.main.async {
                     self.view.makeToast(error?.localizedDescription)
                 }
                 return
@@ -1152,7 +1152,7 @@ class CanZeViewController: UIViewController {
         // cached ?
         if seq.field != nil {
             if let res = Globals.shared.resultsBySid[(seq.field.sid)!] {
-                if Date().timeIntervalSince1970 - res.lastTimestamp < 10000 {
+                if Date().timeIntervalSince1970 - res.lastTimestamp < 1 {  // CACHED
                     debug("cached")
 
                     let dic = ["debug": "Debug \(seq.field.sid ?? "?") cached"]
@@ -1180,7 +1180,7 @@ class CanZeViewController: UIViewController {
 
         var contatore = 5.0
         #if targetEnvironment(simulator)
-            contatore = 500000.0
+            contatore = 50.0
         #endif
         timeoutTimer = Timer.scheduledTimer(withTimeInterval: contatore, repeats: false) { timer in
             timer.invalidate()
@@ -1370,7 +1370,7 @@ extension CanZeViewController: StreamDelegate {
                             Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: f.getValue(), stringValue: nil)
                         }
 
-                        let dic = ["debug": "Defbug \(f.sid ?? "?") \(error)"]
+                        let dic = ["debug": "Debug \(f.sid ?? "?") \(error)"]
                         NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
 
                         // notify real field
@@ -1382,9 +1382,39 @@ extension CanZeViewController: StreamDelegate {
                             var result = 0.0
                             switch seq?.sidVirtual {
                             case Sid.Instant_Consumption:
-                                print("TODO VIRTUAL FIELD")
+                                // get real speed
+                                if let realSpeed = Globals.shared.fieldResultsDouble[Sid.RealSpeed] {
+                                    if realSpeed < 0 || realSpeed > 150 {
+                                        break
+                                    }
+                                    if realSpeed < 5 {
+                                        result = 0
+                                        break
+                                    }
+                                    // get voltage
+                                    if let dcVolt = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] {
+                                        // get current
+                                        if let dcCur = Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] {
+                                            if dcVolt < 300 || dcVolt > 450 || dcCur < -200 || dcCur > 100 {
+                                                break
+                                            }
+                                            // power in kW
+                                            let dcPwr = dcVolt * dcCur / 1000.0
+                                            let usage = -(round(1000.0 * dcPwr / realSpeed) / 10.0)
+                                            if usage < -150 {
+                                                result = -150
+                                            } else if usage > 150 {
+                                                result = 150
+                                            } else {
+                                                result = usage
+                                            }
+                                        }
+                                    }
+                                }
                             case Sid.FrictionTorque:
-                                print("TODO VIRTUAL FIELD")
+                                if let val = Globals.shared.fieldResultsDouble[Sid.HydraulicTorqueRequest] {
+                                    result = -val
+                                }
                             case Sid.DcPowerIn:
                                 if Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
                                     result = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]! * Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
@@ -1394,13 +1424,192 @@ extension CanZeViewController: StreamDelegate {
                                     result = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]! * Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
                                 }
                             case Sid.ElecBrakeTorque:
-                                print("TODO VIRTUAL FIELD")
+                                if Globals.shared.useIsoTpFields || Utils.isPh2() {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
+                                        let electricTorque = val * Globals.reduction
+                                        result = electricTorque <= 0 ? -electricTorque : 0
+                                    }
+                                } else {
+                                    if let val1 = Globals.shared.fieldResultsDouble[Sid.ElecBrakeWheelsTorqueApplied] {
+                                        let electricTorque = val1
+                                        if let val2 = Globals.shared.fieldResultsDouble[Sid.Coasting_Torque] {
+                                            result = electricTorque + val2 * Globals.reduction
+                                        }
+                                    }
+                                }
                             case Sid.TotalPositiveTorque:
-                                print("TODO VIRTUAL FIELD")
+                                if Globals.shared.useIsoTpFields || Utils.isPh2() {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
+                                        result = val >= 0 ? val * Globals.reduction : 0
+                                    }
+                                } else {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.MeanEffectiveTorque] {
+                                        result = val * Globals.reduction
+                                    }
+                                }
                             case Sid.TotalNegativeTorque:
-                                print("TODO VIRTUAL FIELD")
+                                if Globals.shared.useIsoTpFields || Utils.isPh2() {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.HydraulicTorqueRequest] {
+                                        let hydraulicTorqueRequest = val
+                                        if let val2 = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
+                                            let pebTorque = val2
+                                            result = pebTorque <= 0 ? -hydraulicTorqueRequest - pebTorque * Globals.reduction : -hydraulicTorqueRequest
+                                        }
+                                    }
+                                } else {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.DriverBrakeWheel_Torque_Request] {
+                                        result = val
+                                    }
+                                }
                             case Sid.ACPilot:
-                                print("TODO VIRTUAL FIELD")
+                                if Globals.shared.useIsoTpFields || Utils.isPh2() {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.ACPilotDutyCycle] {
+                                        let dutyCycle = val
+                                        result = dutyCycle < 80.0 ? dutyCycle * 0.6 : (dutyCycle - 64.0) * 2.5
+                                    }
+                                } else {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.ACPilotAmps] {
+                                        result = val
+                                    }
+                                }
+                            case "800.6100.24": //  SID_VirtualUsage
+                                let SID_VirtualUsage = "800.6100.24"
+                                if let value = Globals.shared.fieldResultsDouble[SID_VirtualUsage] {
+                                    if !value.isNaN {
+                                        let now = Date().timeIntervalSince1970
+                                        var since = now - Fields.getInstance.start
+                                        if since > 1000 {
+                                            since = 1000 // use a maximim of 1 second
+                                        }
+                                        Fields.getInstance.start = now
+                                        let factor = since * 0.00005 // 0.05 per second
+                                        Fields.getInstance.runningUsage = Fields.getInstance.runningUsage * (1 - factor) + value * factor
+                                    }
+                                    result = Fields.getInstance.runningUsage
+                                }
+                            case "800.6102.24": // FrictionPower
+                                let SID_DriverBrakeWheel_Torque_Request = "130.44" // UBP braking wheel torque the driver wants
+                                let SID_ElecBrakeWheelsTorqueApplied = "1f8.28" // 10ms
+                                let SID_ElecEngineRPM = "1f8.40" // 10ms
+                                if let val = Globals.shared.fieldResultsDouble[SID_DriverBrakeWheel_Torque_Request] {
+                                    var torque = val
+                                    if let val2 = Globals.shared.fieldResultsDouble[SID_ElecBrakeWheelsTorqueApplied] {
+                                        torque -= val2
+                                        if let val3 = Globals.shared.fieldResultsDouble[SID_ElecEngineRPM] {
+                                            result = torque * val3 / Globals.reduction
+                                        }
+                                    }
+                                }
+                            case "800.6105.24": // HeaterSetpoint
+                                if Utils.isPh2() {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.OH_ClimTempDisplay] {
+                                        if val == 0 {
+                                        } else if val == 4 {
+                                            result = -10.0
+                                        } else if val == 5 {
+                                            result = 40.0
+                                        }
+                                        result = val
+                                    }
+                                } else if Globals.shared.useIsoTpFields {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.OH_ClimTempDisplay] {
+                                        let value = val / 2
+                                        if value == 0 {
+                                        } else if value == 4 {
+                                            result = -10.0
+                                        } else if value == 5 {
+                                            result = 40.0
+                                        }
+                                        result = value
+                                    }
+                                } else {
+                                    if let val = Globals.shared.fieldResultsDouble[Sid.HeaterSetpoint] {
+                                        if val == 0 {
+                                        } else if val == 4 {
+                                            result = -10.0
+                                        } else if val == 5 {
+                                            result = 40.0
+                                        }
+                                        result = val
+                                    }
+                                }
+                            case "800.6106.24": // RealRange
+                                if let odo = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
+                                    if let gom = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
+                                        // timestamp of last inserted dot in MILLISECONDS
+                                        if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
+                                            if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference.isNaN { // timeout of 15 minutes
+                                                if !gom.isNaN && !odo.isNaN {
+                                                    Fields.getInstance.realRangeReference = odo + gom
+                                                    Fields.getInstance.realRangeReference2 = odo + gom
+                                                }
+                                            }
+                                        }
+                                        if Fields.getInstance.realRangeReference.isNaN {
+                                            result = 0.0 // Double.NaN
+                                        }
+                                        /*
+                                         double delta = realRangeReference - odo - gom;
+                                         if (delta > 12.0 || delta < -12.0) {
+                                             realRangeReference = odo + gom;
+                                         } */
+                                        result = Fields.getInstance.realRangeReference - odo
+                                    }
+                                }
+                            case "800.6107.24": // RealDelta
+                                if let val1 = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
+                                    let odo = val1
+                                    if let val2 = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
+                                        let gom = val2
+                                        // MainActivity.debug("realRange ODO: "+odo);
+                                        // MainActivity.debug("realRange GOM: "+gom);
+                                        // timestamp of last inserted dot in MILLISECONDS
+                                        if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
+                                            if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference.isNaN { // timeout of 15 minutes
+                                                if !gom.isNaN && !odo.isNaN {
+                                                    Fields.getInstance.realRangeReference = odo + gom
+                                                }
+                                            }
+                                            if Fields.getInstance.realRangeReference.isNaN {
+                                                // return Double.NaN;
+                                                break
+                                            }
+                                            var delta = Fields.getInstance.realRangeReference - odo - gom
+                                            if delta > 12.0 || delta < -12.0 {
+                                                Fields.getInstance.realRangeReference = odo + gom
+                                                delta = 0.0
+                                            }
+                                            result = delta
+                                        }
+                                    }
+                                }
+                            case "800.6108.24": // RealDeltaNoReset
+                                if let odo = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
+                                    if let gom = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
+                                        // MainActivity.debug("realRange ODO: "+odo);
+                                        // MainActivity.debug("realRange GOM: "+gom);
+
+                                        // timestamp of last inserted dot in MILLISECONDS
+                                        if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
+                                            if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference2.isNaN { // timeout of 15 minutes
+                                                if !gom.isNaN && !odo.isNaN {
+                                                    Fields.getInstance.realRangeReference2 = odo + gom
+                                                }
+                                            }
+                                            if Fields.getInstance.realRangeReference2.isNaN {
+//                                             return Double.NaN;
+                                                break
+                                            }
+                                            var delta = Fields.getInstance.realRangeReference2 - odo - gom
+                                            if delta > 500.0 || delta < -500.0 {
+                                                Fields.getInstance.realRangeReference2 = odo + gom
+                                                delta = 0.0
+                                            }
+                                            result = delta
+                                        }
+                                    }
+                                }
+
                             default:
                                 print("unknown virtual sid")
                             }

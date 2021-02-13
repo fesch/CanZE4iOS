@@ -138,16 +138,15 @@ class ConsumptionViewController: CanZeViewController {
         addField(Sid.UserSoC, intervalMs: 99999)
 
         addField(Sid.RealSpeed, intervalMs: 99999)
-        // addField("800.6104.24", intervalMs: 99999)  TODO: existing virtual field ?
-
-        // addField("800.6107.24", intervalMs: 99999)  TODO: existing virtual field ?
-        addField(Sid.RangeEstimate, intervalMs: 99999)
+        addField("800.6104.24", intervalMs: 99999)
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -155,7 +154,7 @@ class ConsumptionViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 switch sid {
                 case Sid.TotalPositiveTorque:
@@ -201,7 +200,7 @@ class ConsumptionViewController: CanZeViewController {
                     self.chartEntries1a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart1()
                 case Sid.UserSoC:
-                    self.lblGraphValue1b.text = String(format: "%.1f", val!)
+                    self.lblGraphValue1b.text = String(format: "%.2f", val!)
                     self.chartEntries1b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart1()
                 case Sid.RealSpeed:
@@ -221,7 +220,7 @@ class ConsumptionViewController: CanZeViewController {
                     self.chartEntries3b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart3()
                 default:
-                    print("unknown sid")
+                    print("unknown sid \(sid!)")
                 }
             }
         }

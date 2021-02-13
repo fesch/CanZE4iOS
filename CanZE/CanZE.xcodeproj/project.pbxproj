@@ -142,7 +142,7 @@
 		62D3F94825932BF5002CB6C7 /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		62D3F94F25932CF9002CB6C7 /* Dtc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dtc.swift; sourceTree = "<group>"; };
 		62D3F95325932D28002CB6C7 /* Dtcs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dtcs.swift; sourceTree = "<group>"; };
-		62D3F95625932DAE002CB6C7 /* Frames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frames.swift; sourceTree = "<group>"; };
+		62D3F95625932DAE002CB6C7 /* Frames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Frames.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		62D3F95925932DFA002CB6C7 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		62D3F95C25932E3E002CB6C7 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		62D3F96025932F4B002CB6C7 /* Sid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sid.swift; sourceTree = "<group>"; };
@@ -174,7 +174,7 @@
 		62EF1D0F25D2E60C00E59E77 /* RangeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeViewController.swift; sourceTree = "<group>"; };
 		62EF1D1225D2F68F00E59E77 /* ChargingPredictionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingPredictionViewController.swift; sourceTree = "<group>"; };
 		62FAC76225D3CFF700BA3AFD /* SpeedControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedControlViewController.swift; sourceTree = "<group>"; };
-		62FAC76625D3E0C800BA3AFD /* TiresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiresViewController.swift; sourceTree = "<group>"; };
+		62FAC76625D3E0C800BA3AFD /* TiresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiresViewController.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		6411126EFA1F31F14178CD9D /* Pods-CanZE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanZE.release.xcconfig"; path = "Target Support Files/Pods-CanZE/Pods-CanZE.release.xcconfig"; sourceTree = "<group>"; };
 		B04D1910E028049DD52CE67D /* Pods_CanZE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CanZE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1BAC1BA0DA5D12FBC36CFE7 /* Pods-CanZE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CanZE.debug.xcconfig"; path = "Target Support Files/Pods-CanZE/Pods-CanZE.debug.xcconfig"; sourceTree = "<group>"; };
@@ -738,7 +738,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CanZE/CanZE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = USQU9Q295J;
 				INFOPLIST_FILE = "$(SRCROOT)/CanZE/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -760,7 +760,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CanZE/CanZE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = USQU9Q295J;
 				INFOPLIST_FILE = "$(SRCROOT)/CanZE/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (

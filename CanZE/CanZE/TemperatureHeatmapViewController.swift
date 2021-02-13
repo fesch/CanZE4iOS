@@ -121,7 +121,7 @@ class TemperatureHeatmapViewController: CanZeViewController {
                                 if let tv = self.view.viewWithTag(i+1000) {
                                     let tv2 = tv as! UILabel
                                     // tv.setText(String.format("%.3f", lastVoltage[i]));
-                                    tv2.text = String(format: "%.0f", self.lastVal[i])
+                                    tv2.text = String(format: "%.1f", self.lastVal[i])
                                     let delta = Int(50 * (self.lastVal[i] - self.mean)) // color is temp minus mean
                                     tv2.backgroundColor = self.makeColor(delta)
                                 }

@@ -125,7 +125,9 @@ class ChargingGraphViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -133,7 +135,7 @@ class ChargingGraphViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 switch sid {
                 case Sid.ACPilot:
@@ -161,7 +163,7 @@ class ChargingGraphViewController: CanZeViewController {
                     self.energyTemperatureChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateEnergyTemperatureChart()
                 default:
-                    print("unknown sid")
+                    print("unknown sid \(sid!)")
                 }
             }
         }

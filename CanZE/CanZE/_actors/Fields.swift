@@ -410,7 +410,6 @@ struct Fields {
     }
 
     mutating func addVirtualFieldFrictionPower() {
-        // TODO:
 
         let SID_DriverBrakeWheel_Torque_Request = "130.44" // UBP braking wheel torque the driver wants
         let SID_ElecBrakeWheelsTorqueApplied = "1f8.28" // 10ms
@@ -546,7 +545,7 @@ struct Fields {
     }
 
     mutating func addVirtualFieldRealRange() {
-        //   TODO: if realRangeReference == Double.nan {
+        //    if realRangeReference == Double.nan {
 //            realRangeReference = CanzeDataSource.getInstance().getLast(Sid.RangeEstimate)
 //        }
 
@@ -698,7 +697,7 @@ struct Fields {
     }
 
     mutating func addVirtualFieldGps() {
-        /* TODO:
+        /*
          if locationManager == nil {
              locationManager = (LocationManager) MainActivity.getInstance().getBaseContext().getSystemService(Context.LOCATION_SERVICE);
              locationListener = new MyLocationListener();

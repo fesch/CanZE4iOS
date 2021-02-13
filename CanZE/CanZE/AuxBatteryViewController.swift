@@ -129,7 +129,9 @@ class AuxBatteryViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -137,7 +139,7 @@ class AuxBatteryViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 switch sid {
                 case Sid.Aux12V:
@@ -166,7 +168,7 @@ class AuxBatteryViewController: CanZeViewController {
                 case Sid.CurrentUnderLoad:
                     self.textCurrentUnderLoad.text = String(format: "%.1f", val!)
                 default:
-                    print("unknown sid")
+                    print("unknown sid \(sid!)")
                 }
             }
         }

@@ -102,19 +102,20 @@ class FirmwareViewController: CanZeViewController {
         startQueue2()
     }
 
-    @objc func endQueue2() { if multi == true {
-        if let v = view.viewWithTag(vBG_TAG) {
-            v.removeFromSuperview()
+    @objc func endQueue2() {
+        if multi == true {
+            if let v = view.viewWithTag(vBG_TAG) {
+                v.removeFromSuperview()
+            }
+            view.makeToast("_end")
         }
-        view.makeToast("_end")
-
-    }}
+    }
 
     func formatta(_ field: Field) -> String {
         var toDisplay = ""
 
         if field.isString() {
-            toDisplay = field.strVal.trim()
+            toDisplay = field.strVal
         } else if field.getValue().isNaN {
             print("nan")
         } else if (field.to - field.from) < 8 {

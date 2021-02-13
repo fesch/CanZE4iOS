@@ -117,7 +117,9 @@ class BrakingViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -125,7 +127,7 @@ class BrakingViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 switch sid {
                 case Sid.TotalPotentialResistiveWheelsTorque: // bluebar
@@ -137,7 +139,7 @@ class BrakingViewController: CanZeViewController {
                     self.diffFrictionTorqueChartEntries = [BarChartDataEntry(x: 1, y: val!)]
                     self.updateDiffFrictionTorqueChart()
                     let um = NSLocalizedString("string.unit_Nm", comment: "")
-                    self.text_diff_friction_torque.text = String(format: "%.0f \(um)", val ?? Double.nan)
+                    self.text_diff_friction_torque.text = String(format: "%.0f \(um)", val!)
                     self.torqueRequestChartEntries = [BarChartDataEntry(x: 1, y: self.frictionTorque + self.elecBrakeTorque)]
                     self.updateTorqueRequestChart()
                     self.text_driver_torque_request.text = String(format: "%.0f \(um)", self.frictionTorque + self.elecBrakeTorque)
@@ -146,12 +148,12 @@ class BrakingViewController: CanZeViewController {
                     self.torqueAppliedChartEntries = [BarChartDataEntry(x: 1, y: val!)]
                     self.updateTorqueAppliedChart()
                     let um = NSLocalizedString("string.unit_Nm", comment: "")
-                    self.text_ElecBrakeWheelsTorqueApplied.text = String(format: "%.0f \(um)", val ?? Double.nan)
+                    self.text_ElecBrakeWheelsTorqueApplied.text = String(format: "%.0f \(um)", val!)
                     self.torqueRequestChartEntries = [BarChartDataEntry(x: 1, y: self.frictionTorque + self.elecBrakeTorque)]
                     self.updateTorqueRequestChart()
                     self.text_driver_torque_request.text = String(format: "%.0f \(um)", self.frictionTorque + self.elecBrakeTorque)
                 default:
-                    print("unknown sid")
+                    print("unknown sid \(sid!)")
                 }
             }
         }

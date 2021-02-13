@@ -418,7 +418,9 @@ class ChargingTechViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            self.startQueue()
+        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -426,7 +428,7 @@ class ChargingTechViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.MaxCharge:
@@ -624,7 +626,7 @@ class ChargingTechViewController: CanZeViewController {
                         bcbVersionField?.resolution = Int(field!.getValue()) < 0x0800 ? 1.0 : 0.5
                     }
                 default:
-                    print("unknown sid")
+                    print("unknown sid \(sid!)")
                 }
             }
         }

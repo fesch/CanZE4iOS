@@ -896,7 +896,7 @@ class TestViewController: UIViewController {
                     tmpVal.append(String(c!))
                     i += 8
                 }
-                field.strVal = tmpVal
+                field.strVal = tmpVal.trim()
             } else if field.isHexString() {
                 var tmpVal = ""
                 var i = 0
@@ -908,7 +908,7 @@ class TestViewController: UIViewController {
                     tmpVal.append(s)
                     i += 8
                 }
-                field.strVal = tmpVal
+                field.strVal = tmpVal.trim()
             } else if binString.count <= 4 || binString.contains("0") {
                 // experiment with unavailable: any field >= 5 bits whose value contains only 1's
                 var val = 0 // long to avoid craze overflows with 0x8000 ofsets

@@ -57,4 +57,7 @@ class Globals: NSObject {
     var fieldResultsDouble: [String: Double] = [:]
     var fieldResultsString: [String: String] = [:]
     var resultsBySid: [String: FieldResult] = [:]
+
+    static let reduction = 9.32 // update suggested by Loc Dao
+    var lastTime: [String: Double] = [:]
 }

@@ -78,6 +78,42 @@ class ChargingHistoryViewController: CanZeViewController {
 
         label_CountPartial.text = NSLocalizedString("label_CountPartial", comment: "")
         textCountPartial.text = "-"
+
+        var s = "\(NSLocalizedString("label_distance", comment: "")) \n"
+        for i in 0 ..< 10 {
+            s += "\(km[i])\n"
+        }
+        label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        s = "\(NSLocalizedString("label_EndOfChargeStatus", comment: "")) \n"
+        for i in 0 ..< 10 {
+            s += "\(end[i])\n"
+        }
+        label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        s = "\(NSLocalizedString("label_TypeOfCharge", comment: "")) \n"
+        for i in 0 ..< 10 {
+            s += "\(typ[i])\n"
+        }
+        label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        s = "\(NSLocalizedString("label_EndSoc", comment: "")) \n"
+        for i in 0 ..< 10 {
+            s += "\(soc[i])\n"
+        }
+        label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        s = "\(NSLocalizedString("label_EndBatteryTemp", comment: "")) \n"
+        for i in 0 ..< 10 {
+            s += "\(tmp[i])\n"
+        }
+        label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        s = "\(NSLocalizedString("label_HistDuration", comment: "")) \n"
+        for i in 0 ..< 10 {
+            s += "\(dur[i])\n"
+        }
+        label_HistDuration.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -152,8 +188,9 @@ class ChargingHistoryViewController: CanZeViewController {
 
         let sidPreamble = sid!.subString(from: 0, to: 11) // 7e4.2233D4.
         let startBit = Int(sid!.subString(from: 11)) // 240 = 0 etc
+
         let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil {
+        if val != nil && !val!.isNaN {
             DispatchQueue.main.async {
                 switch sidPreamble {
                 case Sid.Preamble_KM:
@@ -225,7 +262,7 @@ class ChargingHistoryViewController: CanZeViewController {
                     case Sid.Counter_Partial:
                         self.textCountPartial.text = String(format: "%.0f", val!)
                     default:
-                        print("unknown sid")
+                        print("unknown sid \(sid!)")
                     }
                 }
             }
