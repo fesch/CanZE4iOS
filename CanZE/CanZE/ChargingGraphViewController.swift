@@ -143,7 +143,7 @@ class ChargingGraphViewController: CanZeViewController {
                     self.pilotPowerChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updatePilotPowerChart()
                 case Sid.AvailableChargingPower:
-                    self.graph_PilotPower2.text = String(format: "%.1f", val!)
+                    self.graph_PilotPower2.text = String(format: "%.2f", val!)
                     self.pilotPowerChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updatePilotPowerChart()
                 case Sid.MaxCharge:
@@ -155,11 +155,11 @@ class ChargingGraphViewController: CanZeViewController {
                     self.maxRealChPwrChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateMaxRealChPwrChart()
                 case Sid.AvailableEnergy:
-                    self.graph_EnergyTemperature1.text = String(format: "%.1f", val!)
+                    self.graph_EnergyTemperature1.text = String(format: "%.3f", val!)
                     self.energyTemperatureChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateEnergyTemperatureChart()
                 case Sid.HvTemp:
-                    self.graph_EnergyTemperature2.text = String(format: "%.0f", val!)
+                    self.graph_EnergyTemperature2.text = String(format: "%.2f", val!)
                     self.energyTemperatureChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateEnergyTemperatureChart()
                 default:
@@ -171,7 +171,7 @@ class ChargingGraphViewController: CanZeViewController {
 
     func initPilotPowerChart() {
         pilotPowerView.legend.enabled = false
-        pilotPowerView.rightAxis.enabled = false
+        //pilotPowerView.rightAxis.enabled = false
 
         let xAxis = pilotPowerView.xAxis
         xAxis.labelPosition = .bottom
@@ -182,14 +182,18 @@ class ChargingGraphViewController: CanZeViewController {
         xAxis.valueFormatter = TimestampAxis()
 //        xAxis.labelRotationAngle = -45.0
 
-        let yAxis = pilotPowerView.leftAxis
-        yAxis.axisMinimum = 0
-        yAxis.axisMaximum = 64
+        let yAxisLeft = pilotPowerView.leftAxis
+        yAxisLeft.axisMinimum = 0
+        yAxisLeft.axisMaximum = 64
 
         pilotPowerChartLine1 = LineChartDataSet(entries: pilotPowerChartEntries1, label: nil)
         pilotPowerChartLine1.colors = [.red]
         pilotPowerChartLine1.drawCirclesEnabled = false
         pilotPowerChartLine1.drawValuesEnabled = false
+
+        let yAxisRight = pilotPowerView.rightAxis
+        yAxisRight.axisMinimum = 0
+        yAxisRight.axisMaximum = 40
 
         pilotPowerChartLine2 = LineChartDataSet(entries: pilotPowerChartEntries2, label: nil)
         pilotPowerChartLine2.colors = [.blue]
@@ -201,7 +205,7 @@ class ChargingGraphViewController: CanZeViewController {
 
     func initMaxRealChPwrChart() {
         maxRealChPwrView.legend.enabled = false
-        maxRealChPwrView.rightAxis.enabled = false
+        //maxRealChPwrView.rightAxis.enabled = false
 
         let xAxis = maxRealChPwrView.xAxis
         xAxis.labelPosition = .bottom
@@ -212,14 +216,18 @@ class ChargingGraphViewController: CanZeViewController {
         xAxis.valueFormatter = TimestampAxis()
 //        xAxis.labelRotationAngle = -45.0
 
-        let yAxis = maxRealChPwrView.leftAxis
-        yAxis.axisMinimum = 0
-//        yAxis.axisMaximum = 100
+        let yAxisLeft = maxRealChPwrView.leftAxis
+        yAxisLeft.axisMinimum = 0
+        yAxisLeft.axisMaximum = 40
 
         maxRealChPwrChartLine1 = LineChartDataSet(entries: maxRealChPwrChartEntries1, label: nil)
         maxRealChPwrChartLine1.colors = [.red]
         maxRealChPwrChartLine1.drawCirclesEnabled = false
         maxRealChPwrChartLine1.drawValuesEnabled = false
+
+        let yAxisRight = pilotPowerView.rightAxis
+        yAxisRight.axisMinimum = 0
+        yAxisRight.axisMaximum = 40
 
         maxRealChPwrChartLine2 = LineChartDataSet(entries: maxRealChPwrChartEntries2, label: nil)
         maxRealChPwrChartLine2.colors = [.blue]
@@ -231,7 +239,7 @@ class ChargingGraphViewController: CanZeViewController {
 
     func initEnergyTemperatureChart() {
         energyTemperatureView.legend.enabled = false
-        energyTemperatureView.rightAxis.enabled = false
+        //energyTemperatureView.rightAxis.enabled = false
 
         let xAxis = energyTemperatureView.xAxis
         xAxis.labelPosition = .bottom
@@ -242,14 +250,18 @@ class ChargingGraphViewController: CanZeViewController {
         xAxis.valueFormatter = TimestampAxis()
 //        xAxis.labelRotationAngle = -45.0
 
-        let yAxis = energyTemperatureView.leftAxis
-        yAxis.axisMinimum = 0
-        yAxis.axisMaximum = 40
+        let yAxisLeft = energyTemperatureView.leftAxis
+        yAxisLeft.axisMinimum = 0
+        yAxisLeft.axisMaximum = 25
 
         energyTemperatureChartLine1 = LineChartDataSet(entries: energyTemperatureChartEntries1, label: nil)
         energyTemperatureChartLine1.colors = [.red]
         energyTemperatureChartLine1.drawCirclesEnabled = false
         energyTemperatureChartLine1.drawValuesEnabled = false
+
+        let yAxisRight = energyTemperatureView.rightAxis
+        yAxisRight.axisMinimum = 0
+        yAxisRight.axisMaximum = 40
 
         energyTemperatureChartLine2 = LineChartDataSet(entries: energyTemperatureChartEntries2, label: nil)
         energyTemperatureChartLine2.colors = [.blue]

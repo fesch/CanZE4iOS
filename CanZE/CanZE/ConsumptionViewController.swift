@@ -18,6 +18,13 @@ class ConsumptionViewController: CanZeViewController {
     @IBOutlet var label_InstantConsumption: UILabel!
     @IBOutlet var text_instant_consumption_negative: UILabel!
 
+    @IBOutlet var pb_driver_torque_request: UIProgressView!
+    @IBOutlet var MaxBrakeTorque: UIProgressView!
+    @IBOutlet var MeanEffectiveAccTorque: UIProgressView!
+
+    @IBOutlet var pb_instant_consumption_negative: UIProgressView!
+    @IBOutlet var pb_instant_consumption_positive: UIProgressView!
+
     @IBOutlet var lblGraphTitle1: UILabel!
     @IBOutlet var lblGraphValue1a: UILabel!
     @IBOutlet var lblGraphValue1b: UILabel!
@@ -52,7 +59,7 @@ class ConsumptionViewController: CanZeViewController {
     var driverBrakeWheel_Torque_Request = 0
     var posTorque = 0
     var negTorque = 0
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -84,6 +91,32 @@ class ConsumptionViewController: CanZeViewController {
         initChart1()
         initChart2()
         initChart3()
+
+        // init progressview
+        pb_driver_torque_request.trackImage = UIImage(view: GradientViewDecel(frame: pb_driver_torque_request.bounds)).withHorizontallyFlippedOrientation()
+        pb_driver_torque_request.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_driver_torque_request.progressTintColor = view.backgroundColor
+        pb_driver_torque_request.setProgress(1, animated: false)
+
+        MeanEffectiveAccTorque.trackImage = UIImage(view: GradientViewAccel(frame: MeanEffectiveAccTorque.bounds)).withHorizontallyFlippedOrientation()
+        MeanEffectiveAccTorque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        MeanEffectiveAccTorque.progressTintColor = view.backgroundColor
+        MeanEffectiveAccTorque.setProgress(1, animated: false)
+
+        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAim(frame: MaxBrakeTorque.bounds)).withHorizontallyFlippedOrientation()
+        MaxBrakeTorque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        MaxBrakeTorque.progressTintColor = view.backgroundColor
+        MaxBrakeTorque.setProgress(1, animated: false)
+
+        pb_instant_consumption_negative.trackImage = UIImage(view: GradientViewDecel(frame: pb_instant_consumption_negative.bounds)).withHorizontallyFlippedOrientation()
+        pb_instant_consumption_negative.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_instant_consumption_negative.progressTintColor = view.backgroundColor
+        pb_instant_consumption_negative.setProgress(1, animated: false)
+
+        pb_instant_consumption_positive.trackImage = UIImage(view: GradientViewAccel(frame: pb_instant_consumption_positive.bounds)).withHorizontallyFlippedOrientation()
+        pb_instant_consumption_positive.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_instant_consumption_positive.progressTintColor = view.backgroundColor
+        pb_instant_consumption_positive.setProgress(1, animated: false)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -158,45 +191,41 @@ class ConsumptionViewController: CanZeViewController {
             DispatchQueue.main.async {
                 switch sid {
                 case Sid.TotalPositiveTorque:
-                    let field = Fields.getInstance.fieldsBySid[sid!]
                     self.posTorque = Int(val!)
-//                pb = findViewById(R.id.MeanEffectiveAccTorque);
-//                pb.setProgress(posTorque);
-                    self.text_wheel_torque.text = "\(self.posTorque - self.negTorque) \(field?.unit ?? "")"
+                    let progress = Float(val!) / 2048.0
+                    self.MeanEffectiveAccTorque.setProgress(1 - progress, animated: false)
                 case Sid.TotalNegativeTorque:
                     let field = Fields.getInstance.fieldsBySid[sid!]
                     self.negTorque = Int(val!)
-//                pb = findViewById(R.id.pb_driver_torque_request)
-//                pb.setProgress(negTorque)
                     self.text_wheel_torque.text = "\(self.posTorque - self.negTorque) \(field?.unit ?? "")"
+                    let progress = Float(val!) / 1536.0
+                    self.pb_driver_torque_request.setProgress(1 - progress, animated: false)
                 case Sid.TotalPotentialResistiveWheelsTorque:
-                    var tprwt = -Int(val!)
-//                pb = findViewById(R.id.MaxBreakTorque)
-//                if (pb != null) pb.setProgress(tprwt < 2047 ? tprwt : 10)
-                // TODO:
-                /*
-                 case Sid.Instant_Consumption:
-                         double consumptionDbl = field.getValue();
-                         int consumptionInt = (int)consumptionDbl;
-                         tv = findViewById(R.id.text_instant_consumption_negative);
-                         if (!Double.isNaN(consumptionDbl)) {
-                             // progress bars are rescaled to miles by the layout
-                             ((ProgressBar) findViewById(R.id.pb_instant_consumption_negative)).setProgress(-(Math.min(0, consumptionInt)));
-                             ((ProgressBar) findViewById(R.id.pb_instant_consumption_positive)).setProgress(  Math.max(0, consumptionInt) );
-                             if (!MainActivity.milesMode) {
-                                 tv.setText(consumptionInt + " " + field.getUnit());
-                             } else if (consumptionDbl != 0.0) { // consumption is now in kWh/100mi, so rescale progress bar
-                                 // display the value in imperial format (100 / consumption, meaning mi/kwh)
-                                 tv.setText(String.format (Locale.getDefault(),"%.2f %s", (100.0 / consumptionDbl), MainActivity.getStringSingle(R.string.unit_ConsumptionMiAlt)));
-                             } else {
-                                 tv.setText("-");
-                             }
-                         } else {
-                             tv.setText("-");
-                         }
-                 */
+                    let tprwt = -Int(val!)
+                    let progress = tprwt < 2047 ? Float(tprwt) : 10 / 1536.0
+                    self.MaxBrakeTorque.setProgress(1 - progress, animated: false)
+                case Sid.Instant_Consumption:
+                    let field = Fields.getInstance.fieldsBySid[sid!]
+                    let consumptionDbl = val
+                    let consumptionInt = Int(consumptionDbl!)
+
+                    // progress bars are rescaled to miles by the layout
+                    var progress = -Float(min(0, consumptionInt)) / 150.0
+                    self.pb_instant_consumption_negative.setProgress(1 - progress, animated: false)
+
+                    progress = Float(max(0, consumptionInt)) / 150.0
+                    self.pb_instant_consumption_positive.setProgress(1 - progress, animated: false)
+
+                    if !Globals.shared.milesMode {
+                        self.text_instant_consumption_negative.text = "\(consumptionInt) \(field!.unit!)"
+                    } else if consumptionDbl != 0.0 { // consumption is now in kWh/100mi, so rescale progress bar
+                        // display the value in imperial format (100 / consumption, meaning mi/kwh)
+                        self.text_instant_consumption_negative.text = String(format: "%.2f \(NSLocalizedString("unit_ConsumptionMiAlt", comment: ""))", 100.0 / consumptionDbl!)
+                    } else {
+                        self.text_instant_consumption_negative.text = "-"
+                    }
                 case Sid.DcPowerOut:
-                    self.lblGraphValue1a.text = String(format: "%.1f", val!)
+                    self.lblGraphValue1a.text = String(format: "%.0f", val!)
                     self.chartEntries1a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart1()
                 case Sid.UserSoC:
@@ -204,7 +233,7 @@ class ConsumptionViewController: CanZeViewController {
                     self.chartEntries1b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart1()
                 case Sid.RealSpeed:
-                    self.lblGraphValue2a.text = String(format: "%.1f", val!)
+                    self.lblGraphValue2a.text = String(format: "%.2f", val!)
                     self.chartEntries2a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     self.updateChart2()
                 case "800.6104.24":

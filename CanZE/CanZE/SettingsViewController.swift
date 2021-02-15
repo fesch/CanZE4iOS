@@ -178,6 +178,9 @@ class SettingsViewController: CanZeViewController {
         s = Setting(tag: AppSettings.SETTING_LOGGING_USE_SD_CARD, type: .SWITCH, title: NSLocalizedString("Log to sdcard1", comment: ""), boolValue: Globals.shared.useSdCard)
         settingsArray.append(s)
 
+        s = Setting(tag: AppSettings.SETTING_LOGGING_WRITE_FOR_EMULATOR, type: .SWITCH, title: NSLocalizedString("Write for emulator", comment: ""), boolValue: Globals.shared.writeForEmulator)
+        settingsArray.append(s)
+
         settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
 
         // app version

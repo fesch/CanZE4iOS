@@ -137,7 +137,7 @@ class CanZeViewController: UIViewController {
     func debug(_ s: String) {
         print(s)
         if Globals.shared.useSdCard {
-            Globals.shared.logger.add(s: s)
+            Globals.shared.logger.add(s)
         }
     }
 
@@ -309,6 +309,11 @@ class CanZeViewController: UIViewController {
         Globals.shared.useSdCard = false
         if ud.exists(key: AppSettings.SETTING_LOGGING_USE_SD_CARD) {
             Globals.shared.useSdCard = ud.bool(forKey: AppSettings.SETTING_LOGGING_USE_SD_CARD)
+        }
+
+        Globals.shared.writeForEmulator = false
+        if ud.exists(key: AppSettings.SETTING_LOGGING_WRITE_FOR_EMULATOR) {
+            Globals.shared.writeForEmulator = ud.bool(forKey: AppSettings.SETTING_LOGGING_WRITE_FOR_EMULATOR)
         }
 
         /*
@@ -1395,6 +1400,15 @@ extension CanZeViewController: StreamDelegate {
                             let dic = ["debug": debugMessage]
                             lastDebugMessage = debugMessage
                             NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                        }
+                        if error == "ok" {
+                            let key = "\(f.frame.getFromIdHex()).\(f.frame.responseId!)"
+                            if !Globals.shared.sidFatti.contains(key) {
+                                Globals.shared.loggerEmulator.add("case: \"\(key)\":")
+                                Globals.shared.loggerEmulator.add("$RES = \"\(reply)\";")
+                                Globals.shared.loggerEmulator.add("break;")
+                                Globals.shared.sidFatti.append(key)
+                            }
                         }
 
                         // notify real field

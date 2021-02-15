@@ -51,7 +51,10 @@ class Globals: NSObject {
 
     // LOGGER
     var logger = Logger()
+    var loggerEmulator = LoggerEmulator()
+    var writeForEmulator = false
     var useSdCard = false
+    var sidFatti: [String] = []
 
     // RESULTS
     var fieldResultsDouble: [String: Double] = [:]

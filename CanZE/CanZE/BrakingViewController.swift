@@ -15,24 +15,16 @@ class BrakingViewController: CanZeViewController {
 
     @IBOutlet var label_driver_torque_request: UILabel!
     @IBOutlet var text_driver_torque_request: UILabel!
-    @IBOutlet var torqueRequestChartView: BarChartView!
-    var torqueRequestChartEntries = [ChartDataEntry]()
-    var torqueRequestChartLine: BarChartDataSet!
-    @IBOutlet var torqueRequestChartView2: BarChartView!
-    var torqueRequestChartEntries2 = [ChartDataEntry]()
-    var torqueRequestChartLine2: BarChartDataSet!
+    @IBOutlet var pb_driver_torque_request: UIProgressView!
+    @IBOutlet var MaxBrakeTorque: UIProgressView!
 
     @IBOutlet var label_ElecBrakeWheelsTorqueApplied: UILabel!
     @IBOutlet var text_ElecBrakeWheelsTorqueApplied: UILabel!
-    @IBOutlet var torqueAppliedChartView: BarChartView!
-    var torqueAppliedChartEntries = [ChartDataEntry]()
-    var torqueAppliedChartLine: BarChartDataSet!
+    @IBOutlet var pb_ElecBrakeWheelsTorqueApplied: UIProgressView!
 
     @IBOutlet var label_diff_friction_torque: UILabel!
     @IBOutlet var text_diff_friction_torque: UILabel!
-    @IBOutlet var diffFrictionTorqueChartView: BarChartView!
-    var diffFrictionTorqueChartEntries = [ChartDataEntry]()
-    var diffFrictionTorqueChartLine: BarChartDataSet!
+    @IBOutlet var pb_diff_friction_torque: UIProgressView!
 
     @IBOutlet var help_AllTorques: UILabel!
 
@@ -60,10 +52,26 @@ class BrakingViewController: CanZeViewController {
 
         help_AllTorques.text = NSLocalizedString("help_AllTorques", comment: "")
 
-        initTorqueRequestChart()
-        initTorqueRequestChart2()
-        initTorqueAppliedChart()
-        initDiffFrictionTorqueChart()
+        // init progressview
+        pb_driver_torque_request.trackImage = UIImage(view: GradientView(frame: pb_driver_torque_request.bounds)).withHorizontallyFlippedOrientation()
+        pb_driver_torque_request.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_driver_torque_request.progressTintColor = view.backgroundColor
+        pb_driver_torque_request.setProgress(1, animated: false)
+
+        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAimRight(frame: MaxBrakeTorque.bounds)).withHorizontallyFlippedOrientation()
+        MaxBrakeTorque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        MaxBrakeTorque.progressTintColor = view.backgroundColor
+        MaxBrakeTorque.setProgress(1, animated: false)
+
+        pb_ElecBrakeWheelsTorqueApplied.trackImage = UIImage(view: GradientViewAccel(frame: pb_ElecBrakeWheelsTorqueApplied.bounds)).withHorizontallyFlippedOrientation()
+        pb_ElecBrakeWheelsTorqueApplied.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_ElecBrakeWheelsTorqueApplied.progressTintColor = view.backgroundColor
+        pb_ElecBrakeWheelsTorqueApplied.setProgress(1, animated: false)
+
+        pb_diff_friction_torque.trackImage = UIImage(view: GradientViewAccel(frame: pb_diff_friction_torque.bounds)).withHorizontallyFlippedOrientation()
+        pb_diff_friction_torque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_diff_friction_torque.progressTintColor = view.backgroundColor
+        pb_diff_friction_torque.setProgress(1, animated: false)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -132,154 +140,34 @@ class BrakingViewController: CanZeViewController {
                 switch sid {
                 case Sid.TotalPotentialResistiveWheelsTorque: // bluebar
                     let tprwt = -val!
-                    self.torqueRequestChartEntries2 = [BarChartDataEntry(x: 1, y: tprwt < 2047 ? tprwt : 0.0)]
-                    self.updateTorqueRequestChart2()
+                    let progress = Float(tprwt < 2047 ? tprwt : 20 / 2048.0)
+                    self.MaxBrakeTorque.setProgress(1 - progress, animated: false)
                 case Sid.FrictionTorque:
                     self.frictionTorque = val!
-                    self.diffFrictionTorqueChartEntries = [BarChartDataEntry(x: 1, y: val!)]
-                    self.updateDiffFrictionTorqueChart()
-                    let um = NSLocalizedString("string.unit_Nm", comment: "")
+
+                    var progress = Float(val!) / 2048.0
+                    self.pb_diff_friction_torque.setProgress(1 - progress, animated: false)
+                    let um = NSLocalizedString("unit_Nm", comment: "")
                     self.text_diff_friction_torque.text = String(format: "%.0f \(um)", val!)
-                    self.torqueRequestChartEntries = [BarChartDataEntry(x: 1, y: self.frictionTorque + self.elecBrakeTorque)]
-                    self.updateTorqueRequestChart()
+
+                    progress = Float((self.frictionTorque + self.elecBrakeTorque) / 2048.0)
+                    self.pb_driver_torque_request.setProgress(1 - progress, animated: false)
                     self.text_driver_torque_request.text = String(format: "%.0f \(um)", self.frictionTorque + self.elecBrakeTorque)
                 case Sid.ElecBrakeTorque:
                     self.elecBrakeTorque = val!
-                    self.torqueAppliedChartEntries = [BarChartDataEntry(x: 1, y: val!)]
-                    self.updateTorqueAppliedChart()
-                    let um = NSLocalizedString("string.unit_Nm", comment: "")
+
+                    var progress = Float(val!) / 2048.0
+                    self.pb_ElecBrakeWheelsTorqueApplied.setProgress(1 - progress, animated: false)
+                    let um = NSLocalizedString("unit_Nm", comment: "")
                     self.text_ElecBrakeWheelsTorqueApplied.text = String(format: "%.0f \(um)", val!)
-                    self.torqueRequestChartEntries = [BarChartDataEntry(x: 1, y: self.frictionTorque + self.elecBrakeTorque)]
-                    self.updateTorqueRequestChart()
+
+                    progress = Float((self.frictionTorque + self.elecBrakeTorque) / 2048.0)
+                    self.pb_driver_torque_request.setProgress(1 - progress, animated: false)
                     self.text_driver_torque_request.text = String(format: "%.0f \(um)", self.frictionTorque + self.elecBrakeTorque)
                 default:
                     print("unknown sid \(sid!)")
                 }
             }
-        }
-    }
-
-    func initTorqueRequestChart() {
-        torqueRequestChartView.legend.enabled = false
-        torqueRequestChartView.xAxis.enabled = false
-        torqueRequestChartView.rightAxis.enabled = false
-        torqueRequestChartView.drawValueAboveBarEnabled = false
-        torqueRequestChartView.fitBars = true
-
-        let xAxis = torqueRequestChartView.xAxis
-        xAxis.enabled = false
-
-        let leftAxis = torqueRequestChartView.leftAxis
-        leftAxis.axisMinimum = 0
-        leftAxis.axisMaximum = 2048
-        leftAxis.enabled = false
-
-        torqueRequestChartLine = BarChartDataSet(entries: torqueRequestChartEntries, label: nil)
-        torqueRequestChartLine.drawValuesEnabled = false
-
-        torqueRequestChartLine.colors = [.brown]
-    }
-
-    func initTorqueRequestChart2() {
-        torqueRequestChartView2.legend.enabled = false
-        torqueRequestChartView2.xAxis.enabled = false
-        torqueRequestChartView2.rightAxis.enabled = false
-        torqueRequestChartView2.drawValueAboveBarEnabled = false
-        torqueRequestChartView2.fitBars = true
-
-        let xAxis = torqueRequestChartView2.xAxis
-        xAxis.enabled = false
-
-        let leftAxis = torqueRequestChartView2.leftAxis
-        leftAxis.axisMinimum = 0
-        leftAxis.axisMaximum = 2048
-        leftAxis.enabled = false
-
-        torqueRequestChartLine2 = BarChartDataSet(entries: torqueRequestChartEntries2, label: nil)
-        torqueRequestChartLine2.drawValuesEnabled = false
-
-        torqueRequestChartLine2.colors = [.red]
-    }
-
-    func initTorqueAppliedChart() {
-        torqueAppliedChartView.legend.enabled = false
-        torqueAppliedChartView.xAxis.enabled = false
-        torqueAppliedChartView.rightAxis.enabled = false
-        torqueAppliedChartView.drawValueAboveBarEnabled = false
-        torqueAppliedChartView.fitBars = true
-
-        let xAxis = torqueAppliedChartView.xAxis
-        xAxis.enabled = false
-
-        let leftAxis = torqueAppliedChartView.leftAxis
-        leftAxis.axisMinimum = 0
-        leftAxis.axisMaximum = 2048
-        leftAxis.enabled = false
-
-        torqueAppliedChartLine = BarChartDataSet(entries: torqueAppliedChartEntries, label: nil)
-        torqueAppliedChartLine.drawValuesEnabled = false
-
-        torqueAppliedChartLine.colors = [.brown]
-    }
-
-    func initDiffFrictionTorqueChart() {
-        diffFrictionTorqueChartView.legend.enabled = false
-        diffFrictionTorqueChartView.xAxis.enabled = false
-        diffFrictionTorqueChartView.rightAxis.enabled = false
-        diffFrictionTorqueChartView.drawValueAboveBarEnabled = false
-        diffFrictionTorqueChartView.fitBars = true
-
-        let xAxis = diffFrictionTorqueChartView.xAxis
-        xAxis.enabled = false
-
-        let leftAxis = diffFrictionTorqueChartView.leftAxis
-        leftAxis.axisMinimum = 0
-        leftAxis.axisMaximum = 2048
-        leftAxis.enabled = false
-
-        diffFrictionTorqueChartLine = BarChartDataSet(entries: torqueRequestChartEntries, label: nil)
-        diffFrictionTorqueChartLine.drawValuesEnabled = false
-
-        diffFrictionTorqueChartLine.colors = [.brown]
-    }
-
-    func updateTorqueRequestChart() {
-        torqueRequestChartLine.replaceEntries(torqueRequestChartEntries)
-        let data = BarChartData(dataSet: torqueRequestChartLine)
-        data.barWidth = 50.0
-        torqueRequestChartView.data = data
-    }
-
-    func updateTorqueRequestChart2() {
-        torqueRequestChartLine2.replaceEntries(torqueRequestChartEntries2)
-        let data = BarChartData(dataSet: torqueRequestChartLine2)
-        data.barWidth = 10.0
-        torqueRequestChartView2.data = data
-    }
-
-    func updateTorqueAppliedChart() {
-        torqueAppliedChartLine.replaceEntries(torqueAppliedChartEntries)
-        let data = BarChartData(dataSet: torqueAppliedChartLine)
-        data.barWidth = 50.0
-        torqueAppliedChartView.data = data
-    }
-
-    func updateDiffFrictionTorqueChart() {
-        diffFrictionTorqueChartLine.replaceEntries(diffFrictionTorqueChartEntries)
-        let data = BarChartData(dataSet: diffFrictionTorqueChartLine)
-        data.barWidth = 50.0
-        diffFrictionTorqueChartView.data = data
-    }
-
-    class TimestampAxis: IAxisValueFormatter {
-        func stringForValue(_ value: Double, axis: AxisBase?) -> String {
-            var s = ""
-            let df = DateFormatter()
-            df.dateStyle = .none
-            df.timeStyle = .short
-            let d = Date(timeIntervalSince1970: value)
-            s = df.string(from: d)
-            return s
         }
     }
 }

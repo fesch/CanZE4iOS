@@ -39,6 +39,10 @@
 		62A27E1725CEB390005F3DD5 /* ChargingHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A27E1625CEB390005F3DD5 /* ChargingHistoryViewController.swift */; };
 		62B1DFB025A9A255006454EE /* _assets in Resources */ = {isa = PBXBuildFile; fileRef = 62B1DFAF25A9A255006454EE /* _assets */; };
 		62B1DFC525A9BA3C006454EE /* BatteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1DFC425A9BA3C006454EE /* BatteryViewController.swift */; };
+		62B1FBEA25DA9B4D000BFBFB /* GradientViewRed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1FBE425DA9B4D000BFBFB /* GradientViewRed.swift */; };
+		62B1FBEB25DA9B4D000BFBFB /* GradientViewGreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1FBE525DA9B4D000BFBFB /* GradientViewGreen.swift */; };
+		62B1FC0225DAA772000BFBFB /* GradientViewDecelAimRight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1FBD725DA9AF3000BFBFB /* GradientViewDecelAimRight.swift */; };
+		62B1FC0525DAADDA000BFBFB /* LoggerEmulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1FC0425DAADDA000BFBFB /* LoggerEmulator.swift */; };
 		62B5A56225A8B10600C4F050 /* Localizable.plist in Resources */ = {isa = PBXBuildFile; fileRef = 62B5A56425A8B10600C4F050 /* Localizable.plist */; };
 		62D0A0B825A84B5400FB2EB7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 62D0A0BA25A84B5400FB2EB7 /* Localizable.strings */; };
 		62D1FFAE25C40E17006EDDA5 /* AllDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1FFAD25C40E17006EDDA5 /* AllDataViewController.swift */; };
@@ -125,6 +129,10 @@
 		62A27E1625CEB390005F3DD5 /* ChargingHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingHistoryViewController.swift; sourceTree = "<group>"; };
 		62B1DFAF25A9A255006454EE /* _assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = _assets; sourceTree = "<group>"; };
 		62B1DFC425A9BA3C006454EE /* BatteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryViewController.swift; sourceTree = "<group>"; };
+		62B1FBD725DA9AF3000BFBFB /* GradientViewDecelAimRight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientViewDecelAimRight.swift; sourceTree = "<group>"; };
+		62B1FBE425DA9B4D000BFBFB /* GradientViewRed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientViewRed.swift; sourceTree = "<group>"; };
+		62B1FBE525DA9B4D000BFBFB /* GradientViewGreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientViewGreen.swift; sourceTree = "<group>"; };
+		62B1FC0425DAADDA000BFBFB /* LoggerEmulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerEmulator.swift; sourceTree = "<group>"; };
 		62B5A55625A8AD4F00C4F050 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		62B5A55725A8AD5900C4F050 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		62B5A55925A8AE1600C4F050 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -279,17 +287,13 @@
 				62E602B125B9714A0018D36C /* _Test_Peripheral.swift */,
 				62E602A425B9704A0018D36C /* _Test_Picker.swift */,
 				62E602A725B970620018D36C /* _Test_Wifi.swift */,
-				621AC0E825C811D2004A293C /* Data.swift */,
 				62DB50B725DA6B80002FE369 /* GradientView.swift */,
 				62DB50BC25DA7711002FE369 /* GradientViewAccel.swift */,
 				62DB50BB25DA7711002FE369 /* GradientViewDecel.swift */,
 				62DB50BD25DA7711002FE369 /* GradientViewDecelAim.swift */,
-				62E602B425B971790018D36C /* String.swift */,
-				622B485025CAC29300F27323 /* UIColor.swift */,
-				626C004325B9C66000121456 /* UIDevice.swift */,
-				62DB50B425DA6B62002FE369 /* UIImage.swift */,
-				626C003F25B9B44000121456 /* UITextView.swift */,
-				6279AB0925BC3A36009DE847 /* UserDefaults.swift */,
+				62B1FBD725DA9AF3000BFBFB /* GradientViewDecelAimRight.swift */,
+				62B1FBE525DA9B4D000BFBFB /* GradientViewGreen.swift */,
+				62B1FBE425DA9B4D000BFBFB /* GradientViewRed.swift */,
 				62B1DFAF25A9A255006454EE /* _assets */,
 				62D3F93425926B20002CB6C7 /* _actors */,
 				62D3F96B259337F7002CB6C7 /* _devices */,
@@ -327,11 +331,19 @@
 		62D3F94B25932C00002CB6C7 /* _helpers */ = {
 			isa = PBXGroup;
 			children = (
+				621AC0E825C811D2004A293C /* Data.swift */,
+				62E602B425B971790018D36C /* String.swift */,
+				622B485025CAC29300F27323 /* UIColor.swift */,
+				626C004325B9C66000121456 /* UIDevice.swift */,
+				62DB50B425DA6B62002FE369 /* UIImage.swift */,
+				626C003F25B9B44000121456 /* UITextView.swift */,
+				6279AB0925BC3A36009DE847 /* UserDefaults.swift */,
 				6255283E259CEA1300C2772E /* AppSettings.swift */,
 				62D3F967259337B3002CB6C7 /* AnyDecodable.swift */,
 				62DFAB37259231C600B00C5C /* ButtonWithImage.swift */,
 				62D3F94825932BF5002CB6C7 /* Globals.swift */,
 				621AC0E325C7F673004A293C /* Logger.swift */,
+				62B1FC0425DAADDA000BFBFB /* LoggerEmulator.swift */,
 				62D3F96025932F4B002CB6C7 /* Sid.swift */,
 				62DFAB312592300500B00C5C /* Utils.swift */,
 			);
@@ -531,6 +543,7 @@
 				62D3F95725932DAE002CB6C7 /* Frames.swift in Sources */,
 				629204D5258BB05000288D1E /* AppDelegate.swift in Sources */,
 				62B1DFC525A9BA3C006454EE /* BatteryViewController.swift in Sources */,
+				62B1FC0225DAA772000BFBFB /* GradientViewDecelAimRight.swift in Sources */,
 				62E602B525B971790018D36C /* String.swift in Sources */,
 				621AC0E925C811D2004A293C /* Data.swift in Sources */,
 				62D3F95A25932DFA002CB6C7 /* Message.swift in Sources */,
@@ -560,6 +573,7 @@
 				62D3F970259339EE002CB6C7 /* ELM327.swift in Sources */,
 				62D3F96D2593380A002CB6C7 /* Device.swift in Sources */,
 				62D3F94025926FBC002CB6C7 /* Fields.swift in Sources */,
+				62B1FBEA25DA9B4D000BFBFB /* GradientViewRed.swift in Sources */,
 				62DB50BE25DA7711002FE369 /* GradientViewDecel.swift in Sources */,
 				629204D7258BB05000288D1E /* SceneDelegate.swift in Sources */,
 				62DFAB38259231C600B00C5C /* ButtonWithImage.swift in Sources */,
@@ -580,6 +594,8 @@
 				62D2649D25B5BE9200421F14 /* DisclaimerViewController.swift in Sources */,
 				621AC0E425C7F673004A293C /* Logger.swift in Sources */,
 				62D3F93D25926D36002CB6C7 /* Frame.swift in Sources */,
+				62B1FBEB25DA9B4D000BFBFB /* GradientViewGreen.swift in Sources */,
+				62B1FC0525DAADDA000BFBFB /* LoggerEmulator.swift in Sources */,
 				62D3F95025932CF9002CB6C7 /* Dtc.swift in Sources */,
 				62D3F97925934B6C002CB6C7 /* CanZeViewController.swift in Sources */,
 				62A01DE825CD92CA00D69A01 /* DrivingViewController.swift in Sources */,

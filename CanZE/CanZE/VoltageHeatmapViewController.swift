@@ -102,18 +102,18 @@ class VoltageHeatmapViewController: CanZeViewController {
 
         for i in 1 ..< 63 {
             let sid = "\(Sid.Preamble_CellVoltages1)\(i * 16)" // remember, first is pos 16, i starts s at 1
-            addField(sid, intervalMs: 99999)
+            addField(sid, intervalMs: 0)
         }
         for i in 63 ..< 97 {
             let sid = "\(Sid.Preamble_CellVoltages2)\((i - 62) * 16)" // remember, first is pos 16, i starts s at 1
-            addField(sid, intervalMs: 99999)
+            addField(sid, intervalMs: 0)
         }
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        // startQueue()
+        startQueue()
     }
 
     @objc func decoded(notification: Notification) {

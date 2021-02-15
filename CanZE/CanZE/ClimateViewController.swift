@@ -154,6 +154,7 @@ class ClimateViewController: CanZeViewController {
             addField(Sid.DcPowerOut, intervalMs: 0)
         }
 
+        // graph data
         addField("764.6144.107", intervalMs: 0)
         addField("764.6143.86", intervalMs: 0)
 
@@ -226,9 +227,32 @@ class ClimateViewController: CanZeViewController {
                      //    tv = null;
                      //    break;
 
-                
-                // TODO   mancano update charts....quali sono i dati da visualizzare ?
-                
+                case "764.6143.110":
+                    self.graph_Climatech1.text = String(format: "%.1f", val!)
+                    self.tempChartEntries4.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    self.updateTempChart()
+                case "764.6121.26":
+                    self.graph_Climatech2.text = String(format: "%.1f", val!)
+                    self.tempChartEntries3.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    self.updateTempChart()
+                case "800.6105.24":
+                    self.graph_Climatech3.text = String(format: "%.1f", val!)
+                    self.tempChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    self.updateTempChart()
+                case Sid.HvTemp:
+                    self.graph_Climatech4.text = String(format: "%.2f", val!)
+                    self.tempChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    self.updateTempChart()
+
+                case "764.6144.107":
+                    self.label_IH_ClimCompPWRStatus1.text = String(format: "%.0f", val!)
+                    self.compChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    self.updateCompChart()
+                case "764.6143.86":
+                    self.label_IH_ClimCompPWRStatus2.text = String(format: "%.0f", val!)
+                    self.compChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    self.updateCompChart()
+
                 default:
                     print("unknown sid \(sid!)")
                 }
@@ -275,11 +299,11 @@ class ClimateViewController: CanZeViewController {
         xAxis.drawGridLinesEnabled = false
         xAxis.labelPosition = .bottom
         xAxis.labelFont = UIFont.systemFont(ofSize: 10.0)
-        xAxis.labelTextColor = .red
+        xAxis.labelTextColor = .black
         xAxis.valueFormatter = TimestampAxis()
         // xAxis.labelRotationAngle = -45.0
         // xAxis.enabled = false
-        xAxis.drawLabelsEnabled = false
+        // xAxis.drawLabelsEnabled = false
 
         let yAxis = tempChartView.leftAxis
         // yAxis.drawLabelsEnabled = true
