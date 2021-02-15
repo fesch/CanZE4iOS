@@ -193,6 +193,10 @@ class SettingsViewController: CanZeViewController {
     }
 
     @IBAction func btnOBDTest() {
+        if Globals.shared.deviceType != .ELM327 {
+            return
+        }
+
         if Globals.shared.deviceType == .ELM327, !Globals.shared.deviceIsConnected {
             view.hideAllToasts()
             view.makeToast("_please connect")

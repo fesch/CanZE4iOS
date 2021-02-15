@@ -115,7 +115,7 @@ class LeakCurrentsViewController: CanZeViewController {
             addField(Sid.BcbTesterInit, intervalMs: 0)
             doneOneTimeOnly = true
         }
-        addField(Sid.BcbTesterAwake, intervalMs: 1500)
+        addField_(Sid.BcbTesterAwake, intervalMs: 1500)
 
         addField("793.625057.24", intervalMs: 0)
         addField("793.62505a.24", intervalMs: 0)
@@ -127,7 +127,7 @@ class LeakCurrentsViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }

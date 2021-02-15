@@ -163,22 +163,22 @@ class TiresViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(Sid.TpmsState, intervalMs: 1000)
-        addField(Sid.TireSpdPresMisadaption, intervalMs: 6000)
-        addField(Sid.TireFLState, intervalMs: 6000)
-        addField(Sid.TireFLPressure, intervalMs: 6000)
-        addField(Sid.TireFRState, intervalMs: 6000)
-        addField(Sid.TireFRPressure, intervalMs: 6000)
-        addField(Sid.TireRLState, intervalMs: 6000)
-        addField(Sid.TireRLPressure, intervalMs: 6000)
-        addField(Sid.TireRRState, intervalMs: 6000)
-        addField(Sid.TireRRPressure, intervalMs: 6000)
+        addField_(Sid.TpmsState, intervalMs: 1000)
+        addField_(Sid.TireSpdPresMisadaption, intervalMs: 6000)
+        addField_(Sid.TireFLState, intervalMs: 6000)
+        addField_(Sid.TireFLPressure, intervalMs: 6000)
+        addField_(Sid.TireFRState, intervalMs: 6000)
+        addField_(Sid.TireFRPressure, intervalMs: 6000)
+        addField_(Sid.TireRLState, intervalMs: 6000)
+        addField_(Sid.TireRLPressure, intervalMs: 6000)
+        addField_(Sid.TireRRState, intervalMs: 6000)
+        addField_(Sid.TireRRPressure, intervalMs: 6000)
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }

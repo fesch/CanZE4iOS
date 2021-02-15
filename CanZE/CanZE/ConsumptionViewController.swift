@@ -52,7 +52,7 @@ class ConsumptionViewController: CanZeViewController {
     var driverBrakeWheel_Torque_Request = 0
     var posTorque = 0
     var negTorque = 0
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -129,22 +129,22 @@ class ConsumptionViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(Sid.TotalPositiveTorque, intervalMs: 99999)
-        addField(Sid.TotalNegativeTorque, intervalMs: 99999)
-        addField(Sid.TotalPotentialResistiveWheelsTorque, intervalMs: 7200)
-        addField(Sid.Instant_Consumption, intervalMs: 99999)
+        addField(Sid.TotalPositiveTorque, intervalMs: 0)
+        addField(Sid.TotalNegativeTorque, intervalMs: 0)
+        addField_(Sid.TotalPotentialResistiveWheelsTorque, intervalMs: 7200)
+        addField(Sid.Instant_Consumption, intervalMs: 0)
 
-        addField(Sid.DcPowerOut, intervalMs: 99999)
-        addField(Sid.UserSoC, intervalMs: 99999)
+        addField(Sid.DcPowerOut, intervalMs: 0)
+        addField(Sid.UserSoC, intervalMs: 0)
 
-        addField(Sid.RealSpeed, intervalMs: 99999)
-        addField("800.6104.24", intervalMs: 99999)
+        addField(Sid.RealSpeed, intervalMs: 0)
+        addField("800.6104.24", intervalMs: 0)
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }

@@ -127,18 +127,18 @@ class ChargingPredictionViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(Sid.RangeEstimate, intervalMs: 10000) // 0x08
-        addField(Sid.AvailableChargingPower, intervalMs: 10000) // 0x01
-        addField(Sid.UserSoC, intervalMs: 10000) // 0x02
+        addField_(Sid.RangeEstimate, intervalMs: 10000) // 0x08
+        addField_(Sid.AvailableChargingPower, intervalMs: 10000) // 0x01
+        addField_(Sid.UserSoC, intervalMs: 10000) // 0x02
         // addField(Sid.ChargingStatusDisplay, 10000);
-        addField(Sid.AverageBatteryTemperature, intervalMs: 10000) // 0x04
-        addField(Sid.SOH, intervalMs: 10000) // 0x20
+        addField_(Sid.AverageBatteryTemperature, intervalMs: 10000) // 0x04
+        addField_(Sid.SOH, intervalMs: 10000) // 0x20
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }

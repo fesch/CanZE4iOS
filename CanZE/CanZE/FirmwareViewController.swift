@@ -162,7 +162,7 @@ class FirmwareViewController: CanZeViewController {
                     s.append("version:\(self.formatta(field))")
                     self.lblResult4.text = s
                 }
-                if self.multi {
+                if self.multi, !sid!.contains(".5003.") {
                     self.logger.add(s)
                 }
             }

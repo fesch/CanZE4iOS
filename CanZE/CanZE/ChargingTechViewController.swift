@@ -353,28 +353,28 @@ class ChargingTechViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(Sid.BcbTesterInit, intervalMs: 0) // INTERVAL_ONCE)
-        addField(Sid.MaxCharge, intervalMs: 5000)
-        addField(Sid.ACPilot, intervalMs: 5000)
-        addField(Sid.PlugConnected, intervalMs: 5000)
-        addField(Sid.UserSoC, intervalMs: 5000)
-        addField(Sid.RealSoC, intervalMs: 5000)
-        addField(Sid.AvailableChargingPower, intervalMs: 5000)
-        addField(Sid.AvailableEnergy, intervalMs: 5000)
-        addField(Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
-        addField(Sid.RangeEstimate, intervalMs: 5000)
-        addField(Sid.HvKilometers, intervalMs: 5000)
-        addField(Sid.TractionBatteryVoltage, intervalMs: 5000)
-        addField(Sid.TractionBatteryCurrent, intervalMs: 5000)
+        addField_(Sid.BcbTesterInit, intervalMs: 0) // INTERVAL_ONCE)
+        addField_(Sid.MaxCharge, intervalMs: 5000)
+        addField_(Sid.ACPilot, intervalMs: 5000)
+        addField_(Sid.PlugConnected, intervalMs: 5000)
+        addField_(Sid.UserSoC, intervalMs: 5000)
+        addField_(Sid.RealSoC, intervalMs: 5000)
+        addField_(Sid.AvailableChargingPower, intervalMs: 5000)
+        addField_(Sid.AvailableEnergy, intervalMs: 5000)
+        addField_(Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
+        addField_(Sid.RangeEstimate, intervalMs: 5000)
+        addField_(Sid.HvKilometers, intervalMs: 5000)
+        addField_(Sid.TractionBatteryVoltage, intervalMs: 5000)
+        addField_(Sid.TractionBatteryCurrent, intervalMs: 5000)
 
         for i in 0 ... 12 {
             var sid = "\(Sid.Preamble_CompartmentTemperatures)\(32 + i * 24)"
-            addField(sid, intervalMs: 5000)
+            addField_(sid, intervalMs: 5000)
             sid = "\(Sid.Preamble_BalancingBytes)\(16 + i * 8)"
-            addField(sid, intervalMs: 5000)
+            addField_(sid, intervalMs: 5000)
         }
 
-        addField(Sid.BcbTesterAwake, intervalMs: 1500)
+        addField_(Sid.BcbTesterAwake, intervalMs: 1500)
         addField(Sid.MainsCurrentType, intervalMs: 0)
         addField(Sid.Phase1currentRMS, intervalMs: 0)
         addField(Sid.Phase2CurrentRMS, intervalMs: 0)
@@ -418,7 +418,7 @@ class ChargingTechViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }

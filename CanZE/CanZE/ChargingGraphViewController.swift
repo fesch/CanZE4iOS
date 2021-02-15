@@ -112,20 +112,20 @@ class ChargingGraphViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(Sid.ACPilot, intervalMs: 10000)
-        addField(Sid.AvailableChargingPower, intervalMs: 10000)
+        addField_(Sid.ACPilot, intervalMs: 10000)
+        addField_(Sid.AvailableChargingPower, intervalMs: 10000)
 
-        addField(Sid.MaxCharge, intervalMs: 10000)
-        addField(Sid.DcPowerIn, intervalMs: 10000)
+        addField_(Sid.MaxCharge, intervalMs: 10000)
+        addField_(Sid.DcPowerIn, intervalMs: 10000)
 
-        addField(Sid.AvailableEnergy, intervalMs: 10000)
-        addField(Sid.HvTemp, intervalMs: 10000)
+        addField_(Sid.AvailableEnergy, intervalMs: 10000)
+        addField_(Sid.HvTemp, intervalMs: 10000)
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.startQueue()
         }
     }

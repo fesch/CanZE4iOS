@@ -22,6 +22,7 @@ class AllDataViewController: CanZeViewController {
     @IBOutlet var btnPickerCancel: UIButton!
     @IBOutlet var btnPickerDone: UIButton!
     var tmpPickerIndex = 0
+    var lastSid = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,16 +109,21 @@ class AllDataViewController: CanZeViewController {
         let sid = obj["sid"]
 
         let field = Fields.getInstance.fieldsBySid[sid!]
-        let val = Globals.shared.fieldResultsString[sid!]
 
         DispatchQueue.main.async {
-            if field!.isString() || field!.isHexString() {
-                self.tv.text += "\(sid!),\(field!.name ?? ""),\(val!)\n"
-            } else {
-//                self.tv.text += "\(sid!),\(field!.name ?? ""),\(val!)\n"
-                self.tv.text += "\(sid!),\(field!.name ?? ""),\(field!.getValue())\n"
+            if self.lastSid != sid {
+                if field!.isString() || field!.isHexString() {
+                    self.tv.text += "\(sid!),\(field!.name ?? ""),\(field?.strVal ?? "")\n"
+                    self.lastSid = sid!
+                } else if Globals.shared.fieldResultsDouble[sid!] != nil {
+                    self.tv.text += "\(sid!),\(field!.name ?? ""),\(field!.getValue())\n"
+                    self.lastSid = sid!
+                } else {
+                    self.tv.text += "\(sid!),\(field!.name ?? "")\n"
+                    self.lastSid = sid!
+                }
+                self.tv.scrollToBottom()
             }
-            self.tv.scrollToBottom()
         }
     }
 

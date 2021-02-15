@@ -33,6 +33,7 @@ class CanZeViewController: UIViewController {
     var indiceCmd = 0
     var lastRxString = ""
     var lastId = -1
+    var lastDebugMessage = ""
 
     var pickerTitles: [String]? = []
     var pickerValues: [Any]? = []
@@ -528,6 +529,14 @@ class CanZeViewController: UIViewController {
         }
     }
 
+    func addField_(_ sid: String, intervalMs: Int) {
+        if let f = Fields.getInstance.fieldsBySid[sid] {
+            if f.lastRequest + Double(intervalMs / 1000) < Date().timeIntervalSince1970 {
+                addField(sid, intervalMs: intervalMs)
+            }
+        }
+    }
+
     func requestFreeFrame(frame: Frame) {
         //  var command = ""
         switch Globals.shared.deviceType {
@@ -612,7 +621,7 @@ class CanZeViewController: UIViewController {
 
         let seq = Sequence()
 
-        if virtual != nil {
+        if virtual != nil { // } || field!.sid.starts(with: "800.") {
             seq.sidVirtual = virtual
         }
 
@@ -704,7 +713,6 @@ class CanZeViewController: UIViewController {
                 next += 1
             }
         }
-
         queue2.append(seq)
     }
 
@@ -1139,6 +1147,12 @@ class CanZeViewController: UIViewController {
         let seq = queue2.first! as Sequence
 
         if indiceCmd >= seq.cmd.count {
+//            if seq.frame != nil {
+//                seq.frame.lastRequest = Date().timeIntervalSince1970
+//            }
+            if seq.field != nil {
+                seq.field.lastRequest = Date().timeIntervalSince1970
+            }
             queue2.removeFirst()
             startQueue2()
             return
@@ -1149,27 +1163,29 @@ class CanZeViewController: UIViewController {
             //  debug(seq.field.sid)
         }
 
-        // cached ?
-        if seq.field != nil {
-            if let res = Globals.shared.resultsBySid[(seq.field.sid)!] {
-                if Date().timeIntervalSince1970 - res.lastTimestamp < 1 {  // CACHED
-                    debug("cached")
+        /*
+         // cached ?
+                if seq.field != nil {
+                    if let res = Globals.shared.resultsBySid[(seq.field.sid)!] {
+                        if Date().timeIntervalSince1970 - res.lastTimestamp < 1 { // TEST CACHED
+                            debug("cached")
 
-                    let dic = ["debug": "Debug \(seq.field.sid ?? "?") cached"]
-                    NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                            let dic = ["debug": "Debug \(seq.field.sid ?? "?") cached"]
+                            NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
 
-                    // notify real field
-                    var n: [String: String] = [:]
-                    n["sid"] = seq.field.sid
-                    NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
+                            // notify real field
+                            var n: [String: String] = [:]
+                            n["sid"] = seq.field.sid
+                            NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
 
-                    lastId = -1
-                    queue2.removeFirst()
-                    startQueue2()
-                    return
+                            lastId = -1
+                            queue2.removeFirst()
+                            startQueue2()
+                            return
+                        }
+                    }
                 }
-            }
-        }
+         */
 
         let cmd = seq.cmd[indiceCmd]
         write(s: cmd)
@@ -1315,8 +1331,12 @@ extension CanZeViewController: StreamDelegate {
                 }
                 NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
 
-                let dic = ["debug": "Debug \(field.sid ?? "?") \(error)"]
-                NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                let debugMessage = "Debug \(field.sid ?? "?") \(error)"
+                if debugMessage != lastDebugMessage {
+                    let dic = ["debug": debugMessage]
+                    lastDebugMessage = debugMessage
+                    NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                }
             }
 
         } else {
@@ -1370,8 +1390,12 @@ extension CanZeViewController: StreamDelegate {
                             Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: f.getValue(), stringValue: nil)
                         }
 
-                        let dic = ["debug": "Debug \(f.sid ?? "?") \(error)"]
-                        NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                        let debugMessage = "Debug \(f.sid ?? "?") \(error)"
+                        if debugMessage != lastDebugMessage {
+                            let dic = ["debug": debugMessage]
+                            lastDebugMessage = debugMessage
+                            NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                        }
 
                         // notify real field
                         var n = notification.object as! [String: String]
@@ -1616,8 +1640,12 @@ extension CanZeViewController: StreamDelegate {
                             Globals.shared.fieldResultsDouble[(seq?.sidVirtual)!] = result
                             Globals.shared.resultsBySid[field!.sid] = FieldResult(doubleValue: field!.getValue(), stringValue: nil)
 
-                            let dic = ["debug": "Debug \(field?.sid ?? "?") \(error)"]
-                            NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                            let debugMessage = "Debug \(field?.sid ?? "?") \(error)"
+                            if debugMessage != lastDebugMessage {
+                                let dic = ["debug": debugMessage]
+                                lastDebugMessage = debugMessage
+                                NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                            }
 
                             // notify real field
                             var n = notification.object as! [String: String]
@@ -1634,8 +1662,12 @@ extension CanZeViewController: StreamDelegate {
                 }
             }
 
-            let dic = ["debug": "Debug \(field?.sid ?? "?") \(error)"]
-            NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+            let debugMessage = "Debug \(field?.sid ?? "?") \(error)"
+            if debugMessage != lastDebugMessage {
+                let dic = ["debug": debugMessage]
+                lastDebugMessage = debugMessage
+                NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+            }
 
             // notify real field
             var n = notification.object as! [String: String]

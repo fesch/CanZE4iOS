@@ -120,17 +120,17 @@ class RangeViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(Sid.RangeEstimate, intervalMs: 2000)
-        addField(Sid.AvailableEnergy, intervalMs: 2000)
-        addField(Sid.AverageConsumption, intervalMs: 2000)
-        addField(Sid.WorstAverageConsumption, intervalMs: 8000)
-        addField(Sid.BestAverageConsumption, intervalMs: 8000)
+        addField_(Sid.RangeEstimate, intervalMs: 2000)
+        addField_(Sid.AvailableEnergy, intervalMs: 2000)
+        addField_(Sid.AverageConsumption, intervalMs: 2000)
+        addField_(Sid.WorstAverageConsumption, intervalMs: 8000)
+        addField_(Sid.BestAverageConsumption, intervalMs: 8000)
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }

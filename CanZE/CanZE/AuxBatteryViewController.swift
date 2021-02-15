@@ -116,20 +116,20 @@ class AuxBatteryViewController: CanZeViewController {
 
         queue2 = []
 
-        addField(Sid.Aux12V, intervalMs: 2000)
-        addField(Sid.Aux12A, intervalMs: 1000)
-        addField(Sid.DcLoad, intervalMs: 1000)
-        addField(Sid.AuxStatus, intervalMs: 1000)
-        addField(Sid.VehicleState, intervalMs: 99999)
+        addField_(Sid.Aux12V, intervalMs: 2000)
+        addField_(Sid.Aux12A, intervalMs: 1000)
+        addField_(Sid.DcLoad, intervalMs: 1000)
+        addField_(Sid.AuxStatus, intervalMs: 1000)
+        addField_(Sid.VehicleState, intervalMs: 1000)
         // addField(Sid.ChargingStatusDisplay, 1000)
-        addField(Sid.VoltageUnderLoad, intervalMs: 6000)
-        addField(Sid.CurrentUnderLoad, intervalMs: 6000)
+        addField_(Sid.VoltageUnderLoad, intervalMs: 6000)
+        addField_(Sid.CurrentUnderLoad, intervalMs: 6000)
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }

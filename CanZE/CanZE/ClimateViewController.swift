@@ -143,8 +143,8 @@ class ClimateViewController: CanZeViewController {
 
         addField(Sid.EngineFanSpeed, intervalMs: 0)
         addField(Sid.HvCoolingState, intervalMs: 0)
-        addField(Sid.HvEvaporationTemp, intervalMs: 10000)
-        addField(Sid.Pressure, intervalMs: 1000)
+        addField_(Sid.HvEvaporationTemp, intervalMs: 10000)
+        addField_(Sid.Pressure, intervalMs: 1000)
         addField(Sid.BatteryConditioningMode, intervalMs: 0)
         addField(Sid.ClimaLoopMode, intervalMs: 0)
 
@@ -157,16 +157,16 @@ class ClimateViewController: CanZeViewController {
         addField("764.6144.107", intervalMs: 0)
         addField("764.6143.86", intervalMs: 0)
 
-        addField("764.6143.110", intervalMs: 10000)
-        addField("764.6121.26", intervalMs: 10000)
-        addField("800.6105.24", intervalMs: 2000)
-        addField(Sid.HvTemp, intervalMs: 10000)
+        addField_("764.6143.110", intervalMs: 10000)
+        addField_("764.6121.26", intervalMs: 10000)
+        addField_("800.6105.24", intervalMs: 2000)
+        addField_(Sid.HvTemp, intervalMs: 10000)
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }
@@ -226,6 +226,9 @@ class ClimateViewController: CanZeViewController {
                      //    tv = null;
                      //    break;
 
+                
+                // TODO   mancano update charts....quali sono i dati da visualizzare ?
+                
                 default:
                     print("unknown sid \(sid!)")
                 }

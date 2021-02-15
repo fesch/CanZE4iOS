@@ -32,9 +32,15 @@ class DrivingViewController: CanZeViewController {
     @IBOutlet var label_UserSOC: UILabel!
     @IBOutlet var textSOC: UILabel!
 
-    @IBOutlet var pedalChartView: HorizontalBarChartView!
-    var pedalChartEntries = [BarChartDataEntry]()
-    var pedalLine: BarChartDataSet!
+//    @IBOutlet var pedalChartView: HorizontalBarChartView!
+//    var pedalChartEntries = [BarChartDataEntry]()
+//    var pedalLine: BarChartDataSet!
+
+    @IBOutlet var pedalBar: UIProgressView!
+
+    @IBOutlet var pb_driver_torque_request: UIProgressView!
+    @IBOutlet var MeanEffectiveAccTorque: UIProgressView!
+    @IBOutlet var MaxBrakeTorque: UIProgressView!
 
     var odo = 0.0
     var destOdo = 0.0 // have to init from save file
@@ -90,10 +96,29 @@ class DrivingViewController: CanZeViewController {
         label_UserSOC.text = NSLocalizedString("label_UserSOC", comment: "")
         textSOC.text = "-"
 
+        // init progressview
+        pedalBar.trackImage = UIImage(view: GradientView(frame: pedalBar.bounds)).withHorizontallyFlippedOrientation()
+        pedalBar.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pedalBar.progressTintColor = view.backgroundColor
+        pedalBar.setProgress(1, animated: false)
+
+        pb_driver_torque_request.trackImage = UIImage(view: GradientViewDecel(frame: pb_driver_torque_request.bounds)).withHorizontallyFlippedOrientation()
+        pb_driver_torque_request.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_driver_torque_request.progressTintColor = view.backgroundColor
+        pb_driver_torque_request.setProgress(1, animated: false)
+
+        MeanEffectiveAccTorque.trackImage = UIImage(view: GradientViewAccel(frame: MeanEffectiveAccTorque.bounds)).withHorizontallyFlippedOrientation()
+        MeanEffectiveAccTorque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        MeanEffectiveAccTorque.progressTintColor = view.backgroundColor
+        MeanEffectiveAccTorque.setProgress(1, animated: false)
+
+        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAim(frame: MaxBrakeTorque.bounds)).withHorizontallyFlippedOrientation()
+        MaxBrakeTorque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        MaxBrakeTorque.progressTintColor = view.backgroundColor
+        MaxBrakeTorque.setProgress(1, animated: false)
+
         getDestOdo()
         getSavedTripStart()
-
-        initPedalChartView()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -148,17 +173,17 @@ class DrivingViewController: CanZeViewController {
         addField(Sid.TotalNegativeTorque, intervalMs: 0)
         addField(Sid.TotalPotentialResistiveWheelsTorque, intervalMs: 0)
         addField(Sid.RealSpeed, intervalMs: 0)
-        addField(Sid.SoC, intervalMs: 7200)
-        addField(Sid.RangeEstimate, intervalMs: 7200)
-        addField(Sid.EVC_Odometer, intervalMs: 6000)
-        addField(Sid.TripMeterB, intervalMs: 6000)
-        addField(Sid.TripEnergyB, intervalMs: 6000)
+        addField_(Sid.SoC, intervalMs: 7200)
+        addField_(Sid.RangeEstimate, intervalMs: 7200)
+        addField_(Sid.EVC_Odometer, intervalMs: 6000)
+        addField_(Sid.TripMeterB, intervalMs: 6000)
+        addField_(Sid.TripEnergyB, intervalMs: 6000)
 
         startQueue2()
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
         }
     }
@@ -174,12 +199,11 @@ class DrivingViewController: CanZeViewController {
                 case Sid.SoC:
                     self.textSOC.text = String(format: "%.1f", val!)
                 case Sid.Pedal:
-                    self.pedalChartEntries = [BarChartDataEntry(x: 1, y: val!)]
-                    self.updatePedalChartView()
+                    let progress = Float(val!) / 125.0
+                    self.pedalBar.setProgress(1 - progress, animated: false)
                 case Sid.TotalPositiveTorque:
-                    print("TODO")
-//                 pb = findViewById(R.id.MeanEffectiveAccTorque);
-//                 pb.setProgress((int)field.getValue()); // --> translate from motor torque to wheel torque
+                    let progress = Float(val!) / 2048.0
+                    self.MeanEffectiveAccTorque.setProgress(1 - progress, animated: false)
                 case Sid.EVC_Odometer:
                     self.odo = val!
                 case Sid.TripMeterB:
@@ -219,14 +243,13 @@ class DrivingViewController: CanZeViewController {
                         self.displayDistToDest()
                     }
                 case Sid.TotalPotentialResistiveWheelsTorque: // blue bar
-                    print("TODO")
-                    var tprwt = -Int(val!)
-//                 pb = findViewById(R.id.MaxBrakeTorque);
-//                 if (pb != null) pb.setProgress(tprwt < 2047 ? tprwt : 10);
+                    let tprwt = -Int(val!)
+                    let progress = tprwt < 2047 ? Float(tprwt) : 10 / 1536.0
+                    self.MaxBrakeTorque.setProgress(1 - progress, animated: false)
                 case Sid.TotalNegativeTorque:
-                    print("TODO")
-//                 pb = findViewById(R.id.pb_driver_torque_request);
-//                 if (pb != null) pb.setProgress((int) field.getValue());
+                    let progress = Float(val!) / 1536.0
+                    self.pb_driver_torque_request.setProgress(1 - progress, animated: false)
+
                 // case Sid.DriverBrakeWheel_Torque_Request:
                 //    driverBrakeWheel_Torque_Request = field.getValue() + coasting_Torque;
                 //    pb = findViewById(R.id.pb_driver_torque_request);
@@ -236,6 +259,7 @@ class DrivingViewController: CanZeViewController {
                 // case Sid.Coasting_Torque:
                 //    coasting_Torque = field.getValue() * MainActivity.reduction; // this torque is given in motor torque, not in wheel torque
                 //    break;
+
                 default:
                     print("unknown sid \(sid!)")
                 }
@@ -358,33 +382,5 @@ class DrivingViewController: CanZeViewController {
 
     @IBAction func btnTripConsumption() {
         setSavedTripStart()
-    }
-
-    func initPedalChartView() {
-        pedalChartView.legend.enabled = false
-        pedalChartView.xAxis.enabled = false
-        pedalChartView.rightAxis.enabled = false
-        pedalChartView.drawValueAboveBarEnabled = false
-        pedalChartView.fitBars = true
-
-        let xAxis = pedalChartView.xAxis
-        xAxis.enabled = false
-
-        let leftAxis = pedalChartView.leftAxis
-        leftAxis.axisMinimum = 0
-        leftAxis.axisMaximum = 125
-        leftAxis.enabled = false
-
-        pedalLine = BarChartDataSet(entries: pedalChartEntries, label: nil)
-        pedalLine.drawValuesEnabled = false
-
-        pedalLine.colors = [.brown]
-    }
-
-    func updatePedalChartView() {
-        pedalLine.replaceEntries(pedalChartEntries)
-        let data = BarChartData(dataSet: pedalLine)
-        data.barWidth = 50.0
-        pedalChartView.data = data
     }
 }

@@ -61,7 +61,7 @@ class Field {
         self.name = name
         self.list = list
 
-        lastRequest = Date().timeIntervalSince1970
+        lastRequest = 0.0
     }
 
     /*
