@@ -9,7 +9,7 @@ import CoreBluetooth
 
 // MARK: CBCentralManagerDelegate
 
-extension TestViewController: CBCentralManagerDelegate {
+extension _TestViewController: CBCentralManagerDelegate {
     // CentralManager
     // CentralManager
     // CentralManager

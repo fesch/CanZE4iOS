@@ -10,7 +10,7 @@ import Foundation
 // MARK: StreamDelegate
 
 // wifi
-extension TestViewController: StreamDelegate {
+extension _TestViewController: StreamDelegate {
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         switch eventCode {
         case .hasBytesAvailable:

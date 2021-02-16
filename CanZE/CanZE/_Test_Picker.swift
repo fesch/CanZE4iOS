@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension TestViewController: UIPickerViewDelegate {
+extension _TestViewController: UIPickerViewDelegate {
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         tmpPickerIndex = row
     }
@@ -15,7 +15,7 @@ extension TestViewController: UIPickerViewDelegate {
 
 // MARK: UIPickerViewDataSource
 
-extension TestViewController: UIPickerViewDataSource {
+extension _TestViewController: UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         var label: UILabel
         if let view = view as? UILabel { label = view }

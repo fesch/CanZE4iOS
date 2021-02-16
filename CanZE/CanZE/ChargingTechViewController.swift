@@ -144,6 +144,8 @@ class ChargingTechViewController: CanZeViewController {
     let evse_state = Globals.localizableFromPlist?.value(forKey: "list_EVSEState") as? [String]
     let limit_reached = Globals.localizableFromPlist?.value(forKey: "list_EVSELimitReached") as? [String]
 
+    var doneOneTimeOnly = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -353,7 +355,10 @@ class ChargingTechViewController: CanZeViewController {
 
         queue2 = []
 
-        addField_(Sid.BcbTesterInit, intervalMs: 0) // INTERVAL_ONCE)
+        if !doneOneTimeOnly {
+            addField_(Sid.BcbTesterInit, intervalMs: 0) // INTERVAL_ONCE)
+            doneOneTimeOnly = true
+        }
         addField_(Sid.MaxCharge, intervalMs: 5000)
         addField_(Sid.ACPilot, intervalMs: 5000)
         addField_(Sid.PlugConnected, intervalMs: 5000)

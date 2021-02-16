@@ -712,11 +712,11 @@ class CanZeViewController: UIViewController {
             if endIndex > outgoingLength {
                 endIndex = outgoingLength
             }
-            if next == 15 {
-                next = 0
-            } else {
-                next += 1
-            }
+//            if next == 15 {
+//                next = 0
+//            } else {
+            next += 1
+//            }
         }
         queue2.append(seq)
     }
@@ -1280,11 +1280,21 @@ extension CanZeViewController: StreamDelegate {
                 }
             }
         } else if queue2.count > 0 {
-            NotificationCenter.default.post(name: Notification.Name("received2"), object: notification.object)
+            let dic = notification.object as! [String: Any]
+            let ss = dic["tag"] as! String
+            if ss == "", Globals.shared.deviceConnection == .WIFI {
+                // do nothing
+            } else {
+                NotificationCenter.default.post(name: Notification.Name("received2"), object: notification.object)
+            }
         } else {
             let dic = notification.object as! [String: Any]
             let ss = dic["tag"] as! String
-            debug("< \(ss)")
+            if ss == "", Globals.shared.deviceConnection == .WIFI {
+                // do nothing
+            } else {
+                debug("< \(ss)")
+            }
         }
     }
 

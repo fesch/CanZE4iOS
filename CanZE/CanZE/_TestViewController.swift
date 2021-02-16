@@ -9,7 +9,7 @@ import CoreBluetooth
 import SystemConfiguration
 import UIKit
 
-class TestViewController: UIViewController {
+class _TestViewController: UIViewController {
     enum PickerPhase: String {
         case PERIPHERAL
         case SERVICES
@@ -29,7 +29,7 @@ class TestViewController: UIViewController {
     var arraySequenze: [Sequence] = []
 
     @IBOutlet var seg: UISegmentedControl!
-    @IBOutlet var tf: UITextField!
+    // @IBOutlet var tf: UITextField!
     @IBOutlet var tv: UITextView!
 
     @IBOutlet var pickerView: UIView!
@@ -106,7 +106,7 @@ class TestViewController: UIViewController {
 
         tv.text = ""
         tv.layoutManager.allowsNonContiguousLayout = false
-        tf.text = "ATI"
+        // tf.text = "ATI"
         seg.selectedSegmentIndex = 0
 
         var f = pickerView.frame
@@ -141,7 +141,7 @@ class TestViewController: UIViewController {
     // DONGLE
     @IBAction func btnConnect() {
         deviceIsInitialized = false
-        tf.resignFirstResponder()
+        // tf.resignFirstResponder()
         switch seg.selectedSegmentIndex {
         case 0:
             // ELM327 BLE
@@ -168,7 +168,7 @@ class TestViewController: UIViewController {
 
     @IBAction func btnDisconnect() {
         deviceIsInitialized = false
-        tf.resignFirstResponder()
+        // tf.resignFirstResponder()
         switch seg.selectedSegmentIndex {
         case 0:
             // ELM327 BLE
@@ -201,7 +201,7 @@ class TestViewController: UIViewController {
     }
 
     func write_(s: String) {
-        tf.resignFirstResponder()
+        // tf.resignFirstResponder()
         switch seg.selectedSegmentIndex {
         case 0:
             // ELM327 BLE
@@ -446,6 +446,14 @@ class TestViewController: UIViewController {
         ud.setValue(Globals.shared.deviceBleWriteCharacteristicUuid, forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
 
         ud.synchronize()
+        
+        debug("\(Globals.shared.deviceBleName.rawValue)")
+        debug(Globals.shared.deviceBlePeripheralName)
+        debug(Globals.shared.deviceBlePeripheralUuid)
+        debug(Globals.shared.deviceBleServiceUuid)
+        debug(Globals.shared.deviceBleReadCharacteristicUuid)
+        debug(Globals.shared.deviceBleWriteCharacteristicUuid)
+
     }
 
     @IBAction func btnLoadBleConnectionParams() {
@@ -461,6 +469,13 @@ class TestViewController: UIViewController {
         Globals.shared.deviceBleReadCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID) ?? ""
         Globals.shared.deviceBleWriteCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID) ?? ""
 
+        debug("\(Globals.shared.deviceBleName.rawValue)")
+        debug(Globals.shared.deviceBlePeripheralName)
+        debug(Globals.shared.deviceBlePeripheralUuid)
+        debug(Globals.shared.deviceBleServiceUuid)
+        debug(Globals.shared.deviceBleReadCharacteristicUuid)
+        debug(Globals.shared.deviceBleWriteCharacteristicUuid)
+
         blePhase = .DISCOVERED
         Globals.shared.deviceConnection = .BLE
         Globals.shared.deviceType = .ELM327
@@ -472,7 +487,7 @@ class TestViewController: UIViewController {
     }
 
     @IBAction func btnTest() {
-        tf.resignFirstResponder()
+        // tf.resignFirstResponder()
         if indiceTest > test.count - 1 {
             indiceTest = 0
         }
@@ -485,16 +500,16 @@ class TestViewController: UIViewController {
     }
 
     @IBAction func btnSend() {
-        tf.resignFirstResponder()
-        if tf.text != nil {
-            write_(s: tf.text!)
-        }
+        // tf.resignFirstResponder()
+        //   if tf.text != nil {
+        //        write_(s: tf.text!)
+        //   }
     }
 
     // FUNZIONI FRAME
 
     @IBAction func requestIsoTpFrame() {
-        if true { // TEST TEST TEST
+/*        if true { // TEST TEST TEST
 //            lastId = -1
             queue = []
             if Utils.isPh2() {
@@ -518,7 +533,7 @@ class TestViewController: UIViewController {
             startQueue2()
 
         } else {
-            let field = Fields.getInstance.getBySID(Sid.UserSoC)
+           // let field = Fields.getInstance.getBySID(Sid.UserSoC)
 
             //  print("\(field?.from ?? -1) \(field?.to ?? -1)")
 
@@ -595,7 +610,7 @@ class TestViewController: UIViewController {
                                 }
                  */
             }
-        }
+        }*/
     }
 
     func addField(_ sid: String, intervalMs: Int) {
@@ -614,9 +629,9 @@ class TestViewController: UIViewController {
     func requestIsoTpFrame(frame2: Frame, field: Field) {
         // TEST
         // TEST
-        var frame = frame2
+        let frame = frame2
         if frame.sendingEcu.fromId == 0x18DAF1DA, frame.responseId == "5003" {
-            let ecu = Ecus.getInstance.getByFromId(fromId: 0x18DAF1D2)
+            let ecu = Ecus.getInstance.getByFromId(0x18DAF1D2)
             frame.sendingEcu = ecu
             frame.fromId = ecu.fromId
         }
@@ -732,11 +747,11 @@ class TestViewController: UIViewController {
             if endIndex > outgoingLength {
                 endIndex = outgoingLength
             }
-            if next == 15 {
-                next = 0
-            } else {
+//            if next == 15 {
+//                next = 0
+//            } else {
                 next += 1
-            }
+//            }
         }
 
         queue2.append(seq)
@@ -970,7 +985,7 @@ class TestViewController: UIViewController {
     // VARIE
 
     @IBAction func segmentedValue() {
-        tf.resignFirstResponder()
+        // tf.resignFirstResponder()
         btnDisconnect()
         print(seg.selectedSegmentIndex)
 
@@ -983,7 +998,7 @@ class TestViewController: UIViewController {
 
     // PICKER
     @IBAction func btnPickerCancel() {
-        tf.resignFirstResponder()
+        //    tf.resignFirstResponder()
         if pickerPhase == .PERIPHERAL {
             pickerView.alpha = 0
 
@@ -1028,7 +1043,7 @@ class TestViewController: UIViewController {
     }
 
     @IBAction func btnPickerDone() {
-        tf.resignFirstResponder()
+        //    tf.resignFirstResponder()
         // print(tmpPickerIndex)
         if pickerPhase == .PERIPHERAL {
             if peripheralsArray.count > tmpPickerIndex {
@@ -1110,6 +1125,8 @@ class TestViewController: UIViewController {
         timeoutTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
             print("queue timeout !!!")
             timer.invalidate()
+            self.view.hideAllToasts()
+            self.view.makeToast("TIMEOUT")
             return
         }
     }

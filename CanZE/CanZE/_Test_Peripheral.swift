@@ -9,7 +9,7 @@ import CoreBluetooth
 
 // MARK: CBPeripheralDelegate
 
-extension TestViewController: CBPeripheralDelegate {
+extension _TestViewController: CBPeripheralDelegate {
     // Services
     // Services
     // Services

@@ -144,7 +144,11 @@ class SettingsViewController: CanZeViewController {
         settingsArray.append(s)
 
         if Globals.shared.deviceConnection == .WIFI {
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString("label_DeviceAddress", comment: ""), stringValue: Globals.shared.deviceWifiAddress, placeholder: "192.168.0.10")
+            var placeHolder = "192.168.0.10"
+            if Globals.shared.deviceType == .CANSEE {
+                placeHolder = "192.168.4.1"
+            }
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString("label_DeviceAddress", comment: ""), stringValue: Globals.shared.deviceWifiAddress, placeholder: placeHolder)
             settingsArray.append(s)
             s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_PORT, type: .TEXTFIELD, title: "_device port:", stringValue: Globals.shared.deviceWifiPort, placeholder: "35000")
             settingsArray.append(s)
@@ -231,12 +235,20 @@ class SettingsViewController: CanZeViewController {
         let f2 = Fields.getInstance.getBySID(sid2)
 
         if f1 != nil, v1 != nil, f2 != nil, v2 != nil {
-            view.hideAllToasts()
-            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)", duration: 5.0, position: ToastPosition.center, title: nil, image: nil, style: ToastStyle(), completion: nil)
+//            view.hideAllToasts()
+//            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)", duration: 5.0, position: ToastPosition.center, title: nil, image: nil, style: ToastStyle(), completion: nil)
 //            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)")
+            let msg = "\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)"
+            let ac = UIAlertController(title: "TEST ELM327", message: msg, preferredStyle: .alert)
+            let ac1 = UIAlertAction(title: "OK", style: .default, handler: nil)
+            ac.addAction(ac1)
+            present(ac, animated: true, completion: nil)
+
         } else {
-            view.hideAllToasts()
-            view.makeToast("_test ko :-(")
+            let ac = UIAlertController(title: "TEST ELM327", message: "_test ko :-(", preferredStyle: .alert)
+            let ac1 = UIAlertAction(title: "OK", style: .default, handler: nil)
+            ac.addAction(ac1)
+            present(ac, animated: true, completion: nil)
         }
     }
 
