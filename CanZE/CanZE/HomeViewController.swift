@@ -42,26 +42,6 @@ class HomeViewController: CanZeViewController {
     var msg = ""
     var isHtml = false
 
-//    var last = "button_bluetooth_connected"
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        var max: CGFloat = 0.0
-        for v in cv.subviews {
-            for vv in v.subviews {
-                if vv.frame.origin.y + vv.frame.size.height > max {
-                    max = vv.frame.origin.y + vv.frame.size.height
-                }
-            }
-        }
-
-        var f = cv.frame
-        f.size.height = max //+ 20
-        cv.frame = f
-
-        sv.contentSize = cv.frame.size
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -171,6 +151,7 @@ class HomeViewController: CanZeViewController {
         btnLeakCurrents.setImage(#imageLiteral(resourceName: "button_leak"), for: .normal)
         btnTires.setTitle(NSLocalizedString("button_Tires", comment: "").uppercased(), for: .normal)
         btnTires.setImage(#imageLiteral(resourceName: "button_tire"), for: .normal)
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -196,7 +177,7 @@ class HomeViewController: CanZeViewController {
             view.makeToast(NSLocalizedString("toast_AdjustSettings", comment: ""))
         }
     }
-
+    
     func getNews() {
         if firstRun {
             var request = URLRequest(url: URL(string: "https://raw.githubusercontent.com/fesch/CanZE/Development/NEWS.json")!, timeoutInterval: 5)
