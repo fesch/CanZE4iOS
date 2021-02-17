@@ -102,8 +102,8 @@ class DrivingViewController: CanZeViewController {
         pedalBar.progressTintColor = view.backgroundColor
         pedalBar.setProgress(1, animated: false)
 
-        pb_driver_torque_request.trackImage = UIImage(view: GradientViewDecel(frame: pb_driver_torque_request.bounds)).withHorizontallyFlippedOrientation()
-        pb_driver_torque_request.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_driver_torque_request.trackImage = UIImage(view: GradientViewDecel(frame: pb_driver_torque_request.bounds))
+        pb_driver_torque_request.transform = CGAffineTransform(scaleX: 1.0, y: -1.0)
         pb_driver_torque_request.progressTintColor = view.backgroundColor
         pb_driver_torque_request.setProgress(1, animated: false)
 
@@ -112,13 +112,41 @@ class DrivingViewController: CanZeViewController {
         MeanEffectiveAccTorque.progressTintColor = view.backgroundColor
         MeanEffectiveAccTorque.setProgress(1, animated: false)
 
-        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAim(frame: MaxBrakeTorque.bounds)).withHorizontallyFlippedOrientation()
-        MaxBrakeTorque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAim(frame: MaxBrakeTorque.bounds))
+        MaxBrakeTorque.transform = CGAffineTransform(scaleX: 1.0, y: -1.0)
         MaxBrakeTorque.progressTintColor = view.backgroundColor
         MaxBrakeTorque.setProgress(1, animated: false)
 
         getDestOdo()
         getSavedTripStart()
+
+        // TEST
+        /*
+         var t: Float = 0.0
+         var senso = "su"
+         Timer.scheduledTimer(withTimeInterval: 0.075, repeats: true) { _ in
+
+             if t > 1 {
+                 senso = "giu"
+                 t = 1.0
+             }
+             if t < 0 {
+                 senso = "su"
+                 t = 0.0
+             }
+
+             if senso == "su" {
+                 t += 0.0125
+             } else {
+                 t -= 0.0125
+             }
+
+             self.pb_driver_torque_request.setProgress(1.0 - t, animated: false)
+             self.MaxBrakeTorque.setProgress(1.0 - t, animated: false)
+             self.pedalBar.setProgress(1.0 - t, animated: false)
+             self.MeanEffectiveAccTorque.setProgress(1.0 - t, animated: false)
+         }
+         */
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -183,9 +211,9 @@ class DrivingViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.125) {
             self.startQueue()
-        }
+//        }
     }
 
     @objc func decoded(notification: Notification) {

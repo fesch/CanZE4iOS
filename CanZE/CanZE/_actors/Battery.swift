@@ -25,7 +25,6 @@ struct Battery {
     var tempxsocy: Double!
     var soh = 100.0
 
-    // TODO:
     mutating func predictMaxDcPower() {
         // if the state of charge (in kW) exceeds the capacity of the battery
         if stateOfCharge >= capacity {

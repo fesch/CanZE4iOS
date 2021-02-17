@@ -58,20 +58,48 @@ class BrakingViewController: CanZeViewController {
         pb_driver_torque_request.progressTintColor = view.backgroundColor
         pb_driver_torque_request.setProgress(1, animated: false)
 
-        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAimRight(frame: MaxBrakeTorque.bounds)).withHorizontallyFlippedOrientation()
+        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAimRight(frame: MaxBrakeTorque.bounds))
         MaxBrakeTorque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
         MaxBrakeTorque.progressTintColor = view.backgroundColor
         MaxBrakeTorque.setProgress(1, animated: false)
 
-        pb_ElecBrakeWheelsTorqueApplied.trackImage = UIImage(view: GradientViewAccel(frame: pb_ElecBrakeWheelsTorqueApplied.bounds)).withHorizontallyFlippedOrientation()
+        pb_ElecBrakeWheelsTorqueApplied.trackImage = UIImage(view: GradientViewGreen(frame: pb_ElecBrakeWheelsTorqueApplied.bounds))
         pb_ElecBrakeWheelsTorqueApplied.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
         pb_ElecBrakeWheelsTorqueApplied.progressTintColor = view.backgroundColor
         pb_ElecBrakeWheelsTorqueApplied.setProgress(1, animated: false)
 
-        pb_diff_friction_torque.trackImage = UIImage(view: GradientViewAccel(frame: pb_diff_friction_torque.bounds)).withHorizontallyFlippedOrientation()
+        pb_diff_friction_torque.trackImage = UIImage(view: GradientViewRed(frame: pb_diff_friction_torque.bounds)).withHorizontallyFlippedOrientation()
         pb_diff_friction_torque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
         pb_diff_friction_torque.progressTintColor = view.backgroundColor
         pb_diff_friction_torque.setProgress(1, animated: false)
+
+        // TEST
+        /*
+                var t: Float = 0.0
+                var senso = "su"
+                Timer.scheduledTimer(withTimeInterval: 0.075, repeats: true) { _ in
+
+                    if t > 1 {
+                        senso = "giu"
+                        t = 1.0
+                    }
+                    if t < 0 {
+                        senso = "su"
+                        t = 0.0
+                    }
+
+                    if senso == "su" {
+                        t += 0.0125
+                    } else {
+                        t -= 0.0125
+                    }
+
+                    self.pb_driver_torque_request.setProgress(1.0 - t, animated: false)
+                    self.MaxBrakeTorque.setProgress(1.0 - t, animated: false)
+                    self.pb_ElecBrakeWheelsTorqueApplied.setProgress(1.0 - t, animated: false)
+                    self.pb_diff_friction_torque.setProgress(1.0 - t, animated: false)
+                }
+         */
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -125,9 +153,9 @@ class BrakingViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.startQueue()
-        }
+//        }
     }
 
     @objc func decoded(notification: Notification) {

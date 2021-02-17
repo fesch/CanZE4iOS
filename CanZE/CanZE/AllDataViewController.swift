@@ -181,7 +181,7 @@ class AllDataViewController: CanZeViewController {
     func showPicker() {
         let vBG = UIView(frame: view.frame)
         vBG.backgroundColor = UIColor.black.withAlphaComponent(0.85)
-        vBG.tag = vBG_TAG
+        vBG.tag = Globals.K_TAG_vBG
         view.insertSubview(vBG, belowSubview: pickerView)
 
         pickerView.alpha = 1.0
@@ -190,7 +190,7 @@ class AllDataViewController: CanZeViewController {
 
     func hidePicker() {
         pickerView.alpha = 0.0
-        let vBG = view.viewWithTag(vBG_TAG)
+        let vBG = view.viewWithTag(Globals.K_TAG_vBG)
         vBG?.removeFromSuperview()
     }
 

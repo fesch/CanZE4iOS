@@ -63,4 +63,7 @@ class Globals: NSObject {
 
     static let reduction = 9.32 // update suggested by Loc Dao
     var lastTime: [String: Double] = [:]
+    
+    static let K_TAG_vBG = 99999
+
 }

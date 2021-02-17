@@ -93,8 +93,8 @@ class ConsumptionViewController: CanZeViewController {
         initChart3()
 
         // init progressview
-        pb_driver_torque_request.trackImage = UIImage(view: GradientViewDecel(frame: pb_driver_torque_request.bounds)).withHorizontallyFlippedOrientation()
-        pb_driver_torque_request.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_driver_torque_request.trackImage = UIImage(view: GradientViewDecel(frame: pb_driver_torque_request.bounds))
+        pb_driver_torque_request.transform = CGAffineTransform(scaleX: 1.0, y: -1.0)
         pb_driver_torque_request.progressTintColor = view.backgroundColor
         pb_driver_torque_request.setProgress(1, animated: false)
 
@@ -103,13 +103,13 @@ class ConsumptionViewController: CanZeViewController {
         MeanEffectiveAccTorque.progressTintColor = view.backgroundColor
         MeanEffectiveAccTorque.setProgress(1, animated: false)
 
-        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAim(frame: MaxBrakeTorque.bounds)).withHorizontallyFlippedOrientation()
-        MaxBrakeTorque.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        MaxBrakeTorque.trackImage = UIImage(view: GradientViewDecelAim(frame: MaxBrakeTorque.bounds))
+        MaxBrakeTorque.transform = CGAffineTransform(scaleX: 1.0, y: -1.0)
         MaxBrakeTorque.progressTintColor = view.backgroundColor
         MaxBrakeTorque.setProgress(1, animated: false)
 
-        pb_instant_consumption_negative.trackImage = UIImage(view: GradientViewDecel(frame: pb_instant_consumption_negative.bounds)).withHorizontallyFlippedOrientation()
-        pb_instant_consumption_negative.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
+        pb_instant_consumption_negative.trackImage = UIImage(view: GradientViewDecel(frame: pb_instant_consumption_negative.bounds))
+        pb_instant_consumption_negative.transform = CGAffineTransform(scaleX: 1.0, y: -1.0)
         pb_instant_consumption_negative.progressTintColor = view.backgroundColor
         pb_instant_consumption_negative.setProgress(1, animated: false)
 
@@ -117,6 +117,35 @@ class ConsumptionViewController: CanZeViewController {
         pb_instant_consumption_positive.transform = CGAffineTransform(scaleX: -1.0, y: -1.0)
         pb_instant_consumption_positive.progressTintColor = view.backgroundColor
         pb_instant_consumption_positive.setProgress(1, animated: false)
+
+        // TEST
+        /*
+                var t: Float = 0.0
+                var senso = "su"
+                Timer.scheduledTimer(withTimeInterval: 0.025, repeats: true) { _ in
+
+                    if t > 1 {
+                        senso = "giu"
+                        t = 1.0
+                    }
+                    if t < 0 {
+                        senso = "su"
+                        t = 0.0
+                    }
+
+                    if senso == "su" {
+                        t += 0.0125
+                    } else {
+                        t -= 0.0125
+                    }
+
+                    self.pb_driver_torque_request.setProgress(1.0 - t, animated: false)
+                    self.MaxBrakeTorque.setProgress(1.0 - t, animated: false)
+                    self.pb_instant_consumption_negative.setProgress(1.0 - t, animated: false)
+                    self.pb_instant_consumption_positive.setProgress(1.0 - t, animated: false)
+                    self.MeanEffectiveAccTorque.setProgress(1.0 - t, animated: false)
+                }
+         */
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -177,9 +206,9 @@ class ConsumptionViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
-        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+        startQueue()
+//        }
     }
 
     @objc func decoded(notification: Notification) {
@@ -226,28 +255,82 @@ class ConsumptionViewController: CanZeViewController {
                     }
                 case Sid.DcPowerOut:
                     self.lblGraphValue1a.text = String(format: "%.0f", val!)
-                    self.chartEntries1a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateChart1()
+                    var add = true
+                    if self.chartEntries1a.count > 0 {
+                        let last = self.chartEntries1a.last
+                        if last!.x + 5 > Date().timeIntervalSince1970 {
+                            add = false
+                        }
+                    }
+                    if add {
+                        self.chartEntries1a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        self.updateChart1()
+                    }
                 case Sid.UserSoC:
                     self.lblGraphValue1b.text = String(format: "%.2f", val!)
-                    self.chartEntries1b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateChart1()
+                    var add = true
+                    if self.chartEntries1b.count > 0 {
+                        let last = self.chartEntries1b.last
+                        if last!.x + 5 > Date().timeIntervalSince1970 {
+                            add = false
+                        }
+                    }
+                    if add {
+                        self.chartEntries1b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        self.updateChart1()
+                    }
                 case Sid.RealSpeed:
                     self.lblGraphValue2a.text = String(format: "%.2f", val!)
-                    self.chartEntries2a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateChart2()
+                    var add = true
+                    if self.chartEntries2a.count > 0 {
+                        let last = self.chartEntries2a.last
+                        if last!.x + 5 > Date().timeIntervalSince1970 {
+                            add = false
+                        }
+                    }
+                    if add {
+                        self.chartEntries2a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        self.updateChart2()
+                    }
                 case "800.6104.24":
                     self.lblGraphValue2b.text = String(format: "%.1f", val!)
-                    self.chartEntries2b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateChart2()
+                    var add = true
+                    if self.chartEntries2b.count > 0 {
+                        let last = self.chartEntries2b.last
+                        if last!.x + 5 > Date().timeIntervalSince1970 {
+                            add = false
+                        }
+                    }
+                    if add {
+                        self.chartEntries2b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        self.updateChart2()
+                    }
                 case "800.6107.24":
                     self.lblGraphValue3a.text = String(format: "%.1f", val!)
-                    self.chartEntries3a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateChart3()
+                    var add = true
+                    if self.chartEntries3a.count > 0 {
+                        let last = self.chartEntries3a.last
+                        if last!.x + 5 > Date().timeIntervalSince1970 {
+                            add = false
+                        }
+                    }
+                    if add {
+                        self.chartEntries3a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        self.updateChart3()
+                    }
                 case Sid.RangeEstimate:
                     self.lblGraphValue3b.text = String(format: "%.1f", val!)
-                    self.chartEntries3b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateChart3()
+                    var add = true
+                    if self.chartEntries3b.count > 0 {
+                        let last = self.chartEntries3b.last
+                        if last!.x + 5 > Date().timeIntervalSince1970 {
+                            add = false
+                        }
+                    }
+                    if add {
+                        self.chartEntries3b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        self.updateChart3()
+                    }
                 default:
                     print("unknown sid \(sid!)")
                 }

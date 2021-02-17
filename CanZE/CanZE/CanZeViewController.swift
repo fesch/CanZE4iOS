@@ -11,8 +11,6 @@ import UIKit
 class CanZeViewController: UIViewController {
     let ud = UserDefaults.standard
 
-    let vBG_TAG = 99999
-
     // WIFI
     let maxReadLength = 4096
     var timeoutTimerWifi: Timer!
@@ -82,7 +80,7 @@ class CanZeViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(received2(notification:)), name: Notification.Name("received2"), object: nil)
 
-        if let vBG = view.viewWithTag(vBG_TAG) {
+        if let vBG = view.viewWithTag(Globals.K_TAG_vBG) {
             vBG.removeFromSuperview()
         }
     }
@@ -164,7 +162,7 @@ class CanZeViewController: UIViewController {
             NotificationCenter.default.addObserver(self, selector: #selector(autoInit), name: Notification.Name("autoInit"), object: nil)
             initDeviceELM327()
         } else {
-            if let vBG = view.viewWithTag(vBG_TAG) {
+            if let vBG = view.viewWithTag(Globals.K_TAG_vBG) {
                 vBG.removeFromSuperview()
             }
             view.hideAllToasts()
@@ -184,7 +182,7 @@ class CanZeViewController: UIViewController {
         Globals.shared.deviceIsInitialized = true
         NotificationCenter.default.removeObserver(self, name: Notification.Name("autoInit"), object: nil)
 
-        if let vBG = view.viewWithTag(vBG_TAG) {
+        if let vBG = view.viewWithTag(Globals.K_TAG_vBG) {
             vBG.removeFromSuperview()
         }
 
@@ -349,7 +347,7 @@ class CanZeViewController: UIViewController {
 
         let vBG = UIView(frame: view.frame)
         vBG.backgroundColor = UIColor.black.withAlphaComponent(0.75)
-        vBG.tag = vBG_TAG
+        vBG.tag = Globals.K_TAG_vBG
         view.addSubview(vBG)
 
         view.hideAllToasts()
@@ -403,7 +401,7 @@ class CanZeViewController: UIViewController {
             Globals.shared.deviceIsConnected = true
             Globals.shared.deviceIsInitialized = true
             deviceConnected()
-            if let vBG = view.viewWithTag(vBG_TAG) {
+            if let vBG = view.viewWithTag(Globals.K_TAG_vBG) {
                 vBG.removeFromSuperview()
             }
             view.hideAllToasts()
@@ -417,7 +415,7 @@ class CanZeViewController: UIViewController {
             Globals.shared.deviceIsConnected = true
             Globals.shared.deviceIsInitialized = true
             deviceConnected()
-            if let vBG = view.viewWithTag(vBG_TAG) {
+            if let vBG = view.viewWithTag(Globals.K_TAG_vBG) {
                 vBG.removeFromSuperview()
             }
             view.hideAllToasts()
@@ -448,7 +446,7 @@ class CanZeViewController: UIViewController {
         Globals.shared.fieldResultsString = [:]
         Globals.shared.resultsBySid = [:]
 
-        if let vBG = view.viewWithTag(vBG_TAG) {
+        if let vBG = view.viewWithTag(Globals.K_TAG_vBG) {
             vBG.removeFromSuperview()
         }
     }
@@ -546,8 +544,6 @@ class CanZeViewController: UIViewController {
         //  var command = ""
         switch Globals.shared.deviceType {
         case .ELM327:
-
-            // TODO:
 
             //  var hexData = ""
 
@@ -1221,53 +1217,6 @@ class CanZeViewController: UIViewController {
             self.processQueue2()
         }
     }
-}
-
-// MARK: StreamDelegate
-
-// wifi
-extension CanZeViewController: StreamDelegate {
-    func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
-        switch eventCode {
-        case .hasBytesAvailable:
-            if aStream == Globals.shared.inputStream {
-                readAvailableBytes(stream: aStream as! InputStream)
-            }
-        case .endEncountered:
-            debug("\(aStream) endEncountered")
-        case .hasSpaceAvailable:
-            if aStream == Globals.shared.outputStream {}
-        case .errorOccurred:
-            debug("\(aStream) errorOccurred")
-        case .openCompleted:
-            debug("\(aStream) openCompleted")
-        default:
-            debug("\(aStream) \(eventCode.rawValue)")
-        }
-    }
-
-    private func readAvailableBytes(stream: InputStream) {
-        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: maxReadLength)
-        while stream.hasBytesAvailable {
-            let numberOfBytesRead = Globals.shared.inputStream.read(buffer, maxLength: maxReadLength)
-            if numberOfBytesRead < 0, let error = stream.streamError {
-                debug(error.localizedDescription)
-                break
-            }
-            var string = String(
-                bytesNoCopy: buffer,
-                length: numberOfBytesRead,
-                encoding: .utf8,
-                freeWhenDone: true)
-            if string != nil, string!.count > 0 {
-                string = string?.trimmingCharacters(in: .whitespacesAndNewlines)
-                string = String(string!.filter { !">".contains($0) })
-                string = String(string!.filter { !"\r".contains($0) })
-                let dic: [String: String] = ["tag": string!]
-                NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
-            }
-        }
-    }
 
     @objc func received(notification: Notification) {
         if queue.count > 0 || queueInit.count > 0 {
@@ -1734,6 +1683,55 @@ extension CanZeViewController: StreamDelegate {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 self.queueInit.remove(at: 0)
                 self.processQueueInit()
+            }
+        }
+    }
+}
+
+// MARK: StreamDelegate
+
+// wifi
+extension CanZeViewController: StreamDelegate {
+    func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
+        switch eventCode {
+        case .hasBytesAvailable:
+            if aStream == Globals.shared.inputStream {
+                readAvailableBytes(stream: aStream as! InputStream)
+            }
+        case .endEncountered:
+            debug("\(aStream) endEncountered")
+        case .hasSpaceAvailable:
+            if aStream == Globals.shared.outputStream {}
+        case .errorOccurred:
+            debug("\(aStream) errorOccurred")
+        case .openCompleted:
+            debug("\(aStream) openCompleted")
+        default:
+            debug("\(aStream) \(eventCode.rawValue)")
+        }
+    }
+
+    private func readAvailableBytes(stream: InputStream) {
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: maxReadLength)
+        while stream.hasBytesAvailable {
+            let numberOfBytesRead = Globals.shared.inputStream.read(buffer, maxLength: maxReadLength)
+            if numberOfBytesRead < 0, let error = stream.streamError {
+                debug(error.localizedDescription)
+                break
+            }
+            var string = String(
+                bytesNoCopy: buffer,
+                length: numberOfBytesRead,
+                encoding: .utf8,
+                freeWhenDone: true)
+            if string != nil, string!.count > 0 {
+                string = string!.trimmingCharacters(in: .whitespacesAndNewlines)
+                string = String(string!.filter { !">".contains($0) })
+                string = String(string!.filter { !"\r".contains($0) })
+                if string!.count > 0 {
+                    let dic: [String: String] = ["tag": string!]
+                    NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
+                }
             }
         }
     }

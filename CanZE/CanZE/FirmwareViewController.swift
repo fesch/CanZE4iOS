@@ -104,7 +104,7 @@ class FirmwareViewController: CanZeViewController {
 
     @objc func endQueue2() {
         if multi == true {
-            if let v = view.viewWithTag(vBG_TAG) {
+            if let v = view.viewWithTag(Globals.K_TAG_vBG) {
                 v.removeFromSuperview()
             }
             view.makeToast("_end")
@@ -253,7 +253,7 @@ class FirmwareViewController: CanZeViewController {
 
         let vBG = UIView(frame: view.frame)
         vBG.backgroundColor = UIColor.black.withAlphaComponent(0.75)
-        vBG.tag = vBG_TAG
+        vBG.tag = Globals.K_TAG_vBG
         view.addSubview(vBG)
 
         startQueue2()

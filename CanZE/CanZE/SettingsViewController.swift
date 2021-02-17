@@ -73,7 +73,7 @@ class SettingsViewController: CanZeViewController {
     func showPicker() {
         let vBG = UIView(frame: view.frame)
         vBG.backgroundColor = UIColor.black.withAlphaComponent(0.85)
-        vBG.tag = vBG_TAG
+        vBG.tag = Globals.K_TAG_vBG
         view.insertSubview(vBG, belowSubview: pickerView)
 
         pickerView.alpha = 1.0
@@ -82,7 +82,7 @@ class SettingsViewController: CanZeViewController {
 
     func hidePicker() {
         pickerView.alpha = 0.0
-        let vBG = view.viewWithTag(vBG_TAG)
+        let vBG = view.viewWithTag(Globals.K_TAG_vBG)
         vBG?.removeFromSuperview()
     }
 
@@ -283,9 +283,11 @@ class SettingsViewController: CanZeViewController {
 
             if Globals.shared.deviceType == .HTTP { // http gw is only supported via http
                 ud.setValue(AppSettings.DEVICE_CONNECTION.HTTP.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+                ud.setValue("192.168.0.10", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
             }
             if Globals.shared.deviceType == .CANSEE { // cansee is only supported with wifi
                 ud.setValue(AppSettings.DEVICE_CONNECTION.WIFI.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+                ud.setValue("192.168.4.1", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
             }
             ud.synchronize()
 
@@ -341,7 +343,7 @@ class SettingsViewController: CanZeViewController {
         textField.resignFirstResponder()
         // print("done")
         textFieldView.alpha = 0.0
-        let vBG = view.viewWithTag(vBG_TAG)
+        let vBG = view.viewWithTag(Globals.K_TAG_vBG)
         vBG?.removeFromSuperview()
 
         let sortedKeys = Array(settingsDic.keys).sorted(by: <)
@@ -387,7 +389,7 @@ class SettingsViewController: CanZeViewController {
         // print("cancel")
         textFieldView.alpha = 0.0
         textField.text = ""
-        let vBG = view.viewWithTag(vBG_TAG)
+        let vBG = view.viewWithTag(Globals.K_TAG_vBG)
         vBG?.removeFromSuperview()
     }
 }
@@ -542,7 +544,7 @@ extension SettingsViewController: UITableViewDelegate {
 
             let vBG = UIView(frame: view.frame)
             vBG.backgroundColor = UIColor.black.withAlphaComponent(0.75)
-            vBG.tag = vBG_TAG
+            vBG.tag = Globals.K_TAG_vBG
             view.insertSubview(vBG, belowSubview: textFieldView)
 
             textFieldView.center = view.center

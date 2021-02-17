@@ -156,7 +156,7 @@ struct Fields {
                 }
             }
         }
-        // TODO: registerApplicationFields()
+        // registerApplicationFields()
     }
 
     mutating func addVirtualFields() {
@@ -212,7 +212,7 @@ struct Fields {
     }
 
     struct VirtualFieldAction {
-        // TODO: func updateValue(HashMap<String,Field> dependantFields)
+        // func updateValue(HashMap<String,Field> dependantFields)
     }
 
     mutating func addVirtualFieldCommon(virtualId: String, decimals: Int?, unit: String, dependantSids: String) { // , virtualFieldAction: VirtualFieldAction?) {
@@ -229,7 +229,7 @@ struct Fields {
                 }
             } else {
                 allOk = false
-                // TODO: MainActivity.toast(MainActivity.TOAST_NONE, String.format(Locale.getDefault(), MainActivity.getStringSingle(R.string.format_NoSid), "Fields", sid))
+                //  MainActivity.toast(MainActivity.TOAST_NONE, String.format(Locale.getDefault(), MainActivity.getStringSingle(R.string.format_NoSid), "Fields", sid))
                 print("field \(sid) not found")
             }
         }
