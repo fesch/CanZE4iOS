@@ -189,9 +189,9 @@ class RangeViewController: CanZeViewController {
         yAxis.axisMinimum = 0
         yAxis.axisMaximum = 180
 
-        let yAxis2 = distanceEnergyChartView.rightAxis
-        yAxis2.axisMinimum = 0
-        yAxis2.axisMaximum = 30
+        let yAxisRight = distanceEnergyChartView.rightAxis
+        yAxisRight.axisMinimum = 0
+        yAxisRight.axisMaximum = 30
 
         distanceEnergyLine1 = LineChartDataSet(entries: distanceEnergyEntries1, label: nil)
         distanceEnergyLine1.colors = [.red]
@@ -199,6 +199,7 @@ class RangeViewController: CanZeViewController {
         distanceEnergyLine1.drawValuesEnabled = false
 
         distanceEnergyLine2 = LineChartDataSet(entries: distanceEnergyEntries2, label: nil)
+        distanceEnergyLine1.axisDependency = .right
         distanceEnergyLine2.colors = [.blue]
         distanceEnergyLine2.drawCirclesEnabled = false
         distanceEnergyLine2.drawValuesEnabled = false

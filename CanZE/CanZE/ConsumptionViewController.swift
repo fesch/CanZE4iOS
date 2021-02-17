@@ -78,10 +78,12 @@ class ConsumptionViewController: CanZeViewController {
 
         lblGraphTitle1.text = NSLocalizedString("graph_PowerSoc", comment: "")
         lblGraphValue1a.text = "-"
+        lblGraphValue1a.textColor = .purple
         lblGraphValue1b.text = "-"
 
         lblGraphTitle2.text = NSLocalizedString("graph_SpeedConsumption", comment: "")
         lblGraphValue2a.text = "-"
+        lblGraphValue2a.textColor = UIColor(rgb: 0x008a1d)
         lblGraphValue2b.text = "-"
 
         lblGraphTitle3.text = NSLocalizedString("_Delta with reality (km), Range (km)", comment: "")
@@ -355,41 +357,44 @@ class ConsumptionViewController: CanZeViewController {
         yAxisLeft.axisMinimum = -30
         yAxisLeft.axisMaximum = 70
 
+        line1a = LineChartDataSet(entries: chartEntries1a, label: nil)
+        //        line1.lineWidth = 0
+        line1a.drawCirclesEnabled = false
+        line1a.drawValuesEnabled = false
+        line1a.lineWidth = 5.0
+//        line1a.colors = [.purple]
+
+        let gradientColors1a = [ChartColorTemplates.colorFromString("#cc00ff").cgColor,
+                                ChartColorTemplates.colorFromString("#3ee9ff").cgColor,
+                                ChartColorTemplates.colorFromString("#008a1d").cgColor,
+                                ChartColorTemplates.colorFromString("#ffaa17").cgColor,
+                                ChartColorTemplates.colorFromString("#FF0000").cgColor]
+        let gradient1a = CGGradient(colorsSpace: nil, colors: gradientColors1a as CFArray, locations: [0.0, 0.3, 0.5, 0.66, 1.0])
+        line1a.fill = Fill.fillWithLinearGradient(gradient1a!, angle: 90)
+        line1a.fillAlpha = 1
+        line1a.drawFilledEnabled = true
+
         let yAxisRight = chartView1.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 100
 
-        line1a = LineChartDataSet(entries: chartEntries1a, label: nil)
-
-        //        line1.lineWidth = 0
-        line1a.drawCirclesEnabled = false
-        line1a.drawValuesEnabled = false
-
-        //        let gradientColors1 = [ChartColorTemplates.colorFromString("#5050ff").cgColor,
-        //                               ChartColorTemplates.colorFromString("#50ff50").cgColor,
-        //                               ChartColorTemplates.colorFromString("#ff5050").cgColor]
-        //        let gradient1 = CGGradient(colorsSpace: nil, colors: gradientColors1 as CFArray, locations: [0.0, 0.75, 1.0])
-        //        line1.fill = Fill.fillWithLinearGradient(gradient1!, angle: 90)
-        //        line1.fillAlpha = 1
-        //        line1.drawFilledEnabled = true
-
         line1b = LineChartDataSet(entries: chartEntries1b, label: nil)
+        line1b.axisDependency = .right
         //        line2.lineWidth = 0
         line1b.drawCirclesEnabled = false
         line1b.drawValuesEnabled = false
+        line1b.colors = [.red]
+//        line1b.lineWidth = 2.0
 
-        //        let gradientColors2 = [ChartColorTemplates.colorFromString("#ff0000").cgColor,
-        //                               ChartColorTemplates.colorFromString("#00ff00").cgColor,
-        //                               ChartColorTemplates.colorFromString("#0000ff").cgColor,
-        //                               ChartColorTemplates.colorFromString("#ffff00").cgColor,
-        //                               ChartColorTemplates.colorFromString("#00ffff").cgColor,
-        //                               ChartColorTemplates.colorFromString("#ff00ff").cgColor,
-        //                               ChartColorTemplates.colorFromString("#000000").cgColor,
-        //                               ChartColorTemplates.colorFromString("#808080").cgColor]
-        //        let gradient2 = CGGradient(colorsSpace: nil, colors: gradientColors2 as CFArray, locations: [0.0, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0])
-        //        line2.fill = Fill.fillWithLinearGradient(gradient2!, angle: 90)
-        //        line2.fillAlpha = 1
-        //        line2.drawFilledEnabled = true
+//        let gradientColors1b = [ChartColorTemplates.colorFromString("#cc00ff").cgColor,
+//                                ChartColorTemplates.colorFromString("#3ee9ff").cgColor,
+//                                ChartColorTemplates.colorFromString("#008a1d").cgColor,
+//                                ChartColorTemplates.colorFromString("#ffaa17").cgColor,
+//                                ChartColorTemplates.colorFromString("#FF0000").cgColor]
+//        let gradient1b = CGGradient(colorsSpace: nil, colors: gradientColors1b as CFArray, locations: [0.0, 0.3, 0.5, 0.66, 1.0])
+//        line1b.fill = Fill.fillWithLinearGradient(gradient1b!, angle: 90)
+//        line1b.fillAlpha = 1
+//        line1b.drawFilledEnabled = true
 
         chartView1.data = LineChartData(dataSets: [line1a, line1b])
     }
@@ -411,26 +416,25 @@ class ConsumptionViewController: CanZeViewController {
         yAxisLeft.axisMinimum = 0
         yAxisLeft.axisMaximum = 160
 
+        line2a = LineChartDataSet(entries: chartEntries2a, label: nil)
+//        line3.lineWidth = 0
+        line2a.drawCirclesEnabled = false
+        line2a.drawValuesEnabled = false
+        let gradientColors2a = [ChartColorTemplates.colorFromString("#008a1d").cgColor,
+                                ChartColorTemplates.colorFromString("#ffaa17").cgColor,
+                                ChartColorTemplates.colorFromString("#FF0000").cgColor,
+                                ChartColorTemplates.colorFromString("#cc00ff").cgColor]
+        let gradient2a = CGGradient(colorsSpace: nil, colors: gradientColors2a as CFArray, locations: [0.0, 0.35, 0.65, 1.0])
+        line2a.fill = Fill.fillWithLinearGradient(gradient2a!, angle: 90)
+        line2a.fillAlpha = 1
+        line2a.drawFilledEnabled = true
+
         let yAxisRight = chartView2.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 40
 
-        line2a = LineChartDataSet(entries: chartEntries2a, label: nil)
-
-//        line3.lineWidth = 0
-        line2a.drawCirclesEnabled = false
-        line2a.drawValuesEnabled = false
-
-//        let gradientColors3 = [ChartColorTemplates.colorFromString("#5050ff").cgColor,
-//                               ChartColorTemplates.colorFromString("#50ff50").cgColor,
-//                               ChartColorTemplates.colorFromString("#ff5050").cgColor]
-//        let gradient3 = CGGradient(colorsSpace: nil, colors: gradientColors3 as CFArray, locations: [0.0, 0.75, 1.0])
-//        line3.fill = Fill.fillWithLinearGradient(gradient31!, angle: 90)
-//        line3.fillAlpha = 1
-//        line3.drawFilledEnabled = true
-
         line2b = LineChartDataSet(entries: chartEntries2b, label: nil)
-//        line4.lineWidth = 0
+        line2b.axisDependency = .right
         line2b.drawCirclesEnabled = false
         line2b.drawValuesEnabled = false
 
@@ -467,15 +471,16 @@ class ConsumptionViewController: CanZeViewController {
         yAxisLeft.axisMinimum = -12
         yAxisLeft.axisMaximum = 12
 
-        let yAxisRight = chartView3.rightAxis
-        yAxisRight.axisMinimum = 0
-        yAxisRight.axisMaximum = 180
-
         line3a = LineChartDataSet(entries: chartEntries3a, label: nil)
         line3a.drawCirclesEnabled = false
         line3a.drawValuesEnabled = false
 
+        let yAxisRight = chartView3.rightAxis
+        yAxisRight.axisMinimum = 0
+        yAxisRight.axisMaximum = 180
+
         line3b = LineChartDataSet(entries: chartEntries3b, label: nil)
+        line3b.axisDependency = .right
         line3b.drawCirclesEnabled = false
         line3b.drawValuesEnabled = false
 

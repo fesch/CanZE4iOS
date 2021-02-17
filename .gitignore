@@ -91,3 +91,4 @@ iOSInjectionProject/
 
 _assets/
 GoogleService-Info.plist
+.DS_Store

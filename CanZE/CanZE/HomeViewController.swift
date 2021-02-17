@@ -50,41 +50,6 @@ class HomeViewController: CanZeViewController {
 
         sv.delegate = self
 
-//         if navigationItem.rightBarButtonItems != nil && navigationItem.rightBarButtonItems!.count > 1 {
-//             for b in navigationItem.rightBarButtonItems! {
-//                b.tintColor = .orange
-//             }
-//         } else if navigationItem.rightBarButtonItem != nil {
-//        navigationItem.rightBarButtonItem!.tintColor = .green
-//         }
-
-        /*
-                 let b = navigationItem.rightBarButtonItems?.last
-                 b!.tintColor = .blue
-
-                 Timer.scheduledTimer(withTimeInterval: 0.15, repeats: true) { _ in
-                     let b = self.navigationItem.rightBarButtonItems?.last
-                     var n = ""
-                     if self.last == "button_bluetooth_disconnected" {
-                         n = "button_bluetooth_searching_1"
-         //                b!.tintColor = .blue
-                     } else if self.last == "button_bluetooth_searching_1" {
-                         n = "button_bluetooth_searching_2"
-         //                b!.tintColor = .blue
-                     } else if self.last == "button_bluetooth_searching_2" {
-                         n = "button_bluetooth_searching_3"
-         //                b!.tintColor = .blue
-                     } else {
-                         n = "button_bluetooth_disconnected"
-         //                b!.tintColor = UIColor(white: 0.0, alpha: 0.4)
-         //                b!.tintColor = .blue
-                     }
-                     self.last = n
-                     print(n)
-                     b?.image = UIImage(named: n)
-                 }
-                  */
-
         // icona
         let v = UIImageView(image: UIImage(named: "CanZEiconSmall.jpg"))
         let item1 = UIBarButtonItem(customView: v)
@@ -151,7 +116,6 @@ class HomeViewController: CanZeViewController {
         btnLeakCurrents.setImage(#imageLiteral(resourceName: "button_leak"), for: .normal)
         btnTires.setTitle(NSLocalizedString("button_Tires", comment: "").uppercased(), for: .normal)
         btnTires.setImage(#imageLiteral(resourceName: "button_tire"), for: .normal)
-        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -177,7 +141,7 @@ class HomeViewController: CanZeViewController {
             view.makeToast(NSLocalizedString("toast_AdjustSettings", comment: ""))
         }
     }
-    
+
     func getNews() {
         if firstRun {
             var request = URLRequest(url: URL(string: "https://raw.githubusercontent.com/fesch/CanZE/Development/NEWS.json")!, timeoutInterval: 5)

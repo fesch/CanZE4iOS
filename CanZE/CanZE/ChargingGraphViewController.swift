@@ -196,6 +196,7 @@ class ChargingGraphViewController: CanZeViewController {
         yAxisRight.axisMaximum = 40
 
         pilotPowerChartLine2 = LineChartDataSet(entries: pilotPowerChartEntries2, label: nil)
+        pilotPowerChartLine2.axisDependency = .right
         pilotPowerChartLine2.colors = [.blue]
         pilotPowerChartLine2.drawCirclesEnabled = false
         pilotPowerChartLine2.drawValuesEnabled = false
@@ -230,6 +231,7 @@ class ChargingGraphViewController: CanZeViewController {
         yAxisRight.axisMaximum = 40
 
         maxRealChPwrChartLine2 = LineChartDataSet(entries: maxRealChPwrChartEntries2, label: nil)
+        maxRealChPwrChartLine2.axisDependency = .right
         maxRealChPwrChartLine2.colors = [.blue]
         maxRealChPwrChartLine2.drawCirclesEnabled = false
         maxRealChPwrChartLine2.drawValuesEnabled = false
@@ -264,6 +266,7 @@ class ChargingGraphViewController: CanZeViewController {
         yAxisRight.axisMaximum = 40
 
         energyTemperatureChartLine2 = LineChartDataSet(entries: energyTemperatureChartEntries2, label: nil)
+        energyTemperatureChartLine2.axisDependency = .right
         energyTemperatureChartLine2.colors = [.blue]
         energyTemperatureChartLine2.drawCirclesEnabled = false
         energyTemperatureChartLine2.drawValuesEnabled = false
