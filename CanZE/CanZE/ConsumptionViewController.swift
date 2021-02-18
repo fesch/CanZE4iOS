@@ -203,6 +203,7 @@ class ConsumptionViewController: CanZeViewController {
         addField(Sid.UserSoC, intervalMs: 0)
 
         addField(Sid.RealSpeed, intervalMs: 0)
+        addField("800.6100.24", intervalMs: 0)
         addField("800.6104.24", intervalMs: 0)
 
         startQueue2()
@@ -238,8 +239,7 @@ class ConsumptionViewController: CanZeViewController {
                     self.MaxBrakeTorque.setProgress(1 - progress, animated: false)
                 case Sid.Instant_Consumption:
                     let field = Fields.getInstance.fieldsBySid[sid!]
-                    let consumptionDbl = val
-                    let consumptionInt = Int(consumptionDbl!)
+                    let consumptionInt = Int(val!)
 
                     // progress bars are rescaled to miles by the layout
                     var progress = -Float(min(0, consumptionInt)) / 150.0
@@ -250,9 +250,9 @@ class ConsumptionViewController: CanZeViewController {
 
                     if !Globals.shared.milesMode {
                         self.text_instant_consumption_negative.text = "\(consumptionInt) \(field!.unit!)"
-                    } else if consumptionDbl != 0.0 { // consumption is now in kWh/100mi, so rescale progress bar
+                    } else if val != 0.0 { // consumption is now in kWh/100mi, so rescale progress bar
                         // display the value in imperial format (100 / consumption, meaning mi/kwh)
-                        self.text_instant_consumption_negative.text = String(format: "%.2f \(NSLocalizedString("unit_ConsumptionMiAlt", comment: ""))", 100.0 / consumptionDbl!)
+                        self.text_instant_consumption_negative.text = String(format: "%.2f \(NSLocalizedString("unit_ConsumptionMiAlt", comment: ""))", 100.0 / val!)
                     } else {
                         self.text_instant_consumption_negative.text = "-"
                     }

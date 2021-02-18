@@ -4133,8 +4133,8 @@ Conn Sett</string>
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wYu-PB-kr3">
-                                <rect key="frame" x="0.0" y="88" width="390" height="140"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wYu-PB-kr3">
+                                <rect key="frame" x="0.0" y="88" width="390" height="756"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="100" id="EXN-gt-plp" customClass="SettingsTableViewCell" customModule="CanZE" customModuleProvider="target">
@@ -4252,8 +4252,8 @@ Conn Sett</string>
                                     <constraint firstItem="ky0-h4-Ihx" firstAttribute="leading" secondItem="Xmj-oI-qq9" secondAttribute="trailing" constant="2" id="hGk-lB-d5n"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RK4-Um-kYZ">
-                                <rect key="frame" x="0.0" y="490" width="390" height="264"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RK4-Um-kYZ">
+                                <rect key="frame" x="0.0" y="290" width="390" height="264"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wio-TD-FzP">
                                         <rect key="frame" x="1" y="1" width="193" height="45"/>
