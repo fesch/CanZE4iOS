@@ -90,9 +90,13 @@ class ClimateViewController: CanZeViewController {
         label_Temperatures.text = NSLocalizedString("label_Temperatures", comment: "")
         graph_Climatech.text = NSLocalizedString("graph_Climatech", comment: "")
         graph_Climatech1.text = "-"
+        graph_Climatech1.textColor = .red
         graph_Climatech2.text = "-"
+        graph_Climatech1.textColor = .blue
         graph_Climatech3.text = "-"
+        graph_Climatech1.textColor = .green
         graph_Climatech4.text = "-"
+        graph_Climatech1.textColor = .brown
 
         initCompChart()
         initTempChart()
@@ -282,7 +286,12 @@ class ClimateViewController: CanZeViewController {
         compChartLine1.drawCirclesEnabled = false
         compChartLine1.drawValuesEnabled = false
 
+        let yAxisRight = compChartView.rightAxis
+        yAxisRight.axisMinimum = 0
+        yAxisRight.axisMaximum = 1
+
         compChartLine2 = LineChartDataSet(entries: compChartEntries2, label: nil)
+        compChartLine2.axisDependency = .right
         compChartLine2.colors = [.blue]
         compChartLine2.drawCirclesEnabled = false
         compChartLine2.drawValuesEnabled = false
@@ -328,7 +337,7 @@ class ClimateViewController: CanZeViewController {
         tempChartLine4 = LineChartDataSet(entries: tempChartEntries4, label: nil)
         tempChartLine4.drawCirclesEnabled = false
         tempChartLine4.drawValuesEnabled = false
-        tempChartLine4.colors = [.yellow]
+        tempChartLine4.colors = [.brown]
 
         tempChartView.data = LineChartData(dataSets: [tempChartLine1, tempChartLine2, tempChartLine3, tempChartLine4])
     }

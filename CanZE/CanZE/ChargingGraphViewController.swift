@@ -171,7 +171,7 @@ class ChargingGraphViewController: CanZeViewController {
 
     func initPilotPowerChart() {
         pilotPowerView.legend.enabled = false
-        //pilotPowerView.rightAxis.enabled = false
+        // pilotPowerView.rightAxis.enabled = false
 
         let xAxis = pilotPowerView.xAxis
         xAxis.labelPosition = .bottom
@@ -206,7 +206,7 @@ class ChargingGraphViewController: CanZeViewController {
 
     func initMaxRealChPwrChart() {
         maxRealChPwrView.legend.enabled = false
-        //maxRealChPwrView.rightAxis.enabled = false
+        // maxRealChPwrView.rightAxis.enabled = false
 
         let xAxis = maxRealChPwrView.xAxis
         xAxis.labelPosition = .bottom
@@ -219,16 +219,16 @@ class ChargingGraphViewController: CanZeViewController {
 
         let yAxisLeft = maxRealChPwrView.leftAxis
         yAxisLeft.axisMinimum = 0
-        yAxisLeft.axisMaximum = 40
+        yAxisLeft.axisMaximum = 50
 
         maxRealChPwrChartLine1 = LineChartDataSet(entries: maxRealChPwrChartEntries1, label: nil)
         maxRealChPwrChartLine1.colors = [.red]
         maxRealChPwrChartLine1.drawCirclesEnabled = false
         maxRealChPwrChartLine1.drawValuesEnabled = false
 
-        let yAxisRight = pilotPowerView.rightAxis
+        let yAxisRight = maxRealChPwrView.rightAxis
         yAxisRight.axisMinimum = 0
-        yAxisRight.axisMaximum = 40
+        yAxisRight.axisMaximum = 50
 
         maxRealChPwrChartLine2 = LineChartDataSet(entries: maxRealChPwrChartEntries2, label: nil)
         maxRealChPwrChartLine2.axisDependency = .right
@@ -241,7 +241,7 @@ class ChargingGraphViewController: CanZeViewController {
 
     func initEnergyTemperatureChart() {
         energyTemperatureView.legend.enabled = false
-        //energyTemperatureView.rightAxis.enabled = false
+        // energyTemperatureView.rightAxis.enabled = false
 
         let xAxis = energyTemperatureView.xAxis
         xAxis.labelPosition = .bottom
@@ -254,12 +254,19 @@ class ChargingGraphViewController: CanZeViewController {
 
         let yAxisLeft = energyTemperatureView.leftAxis
         yAxisLeft.axisMinimum = 0
-        yAxisLeft.axisMaximum = 25
+        yAxisLeft.axisMaximum = 56
 
         energyTemperatureChartLine1 = LineChartDataSet(entries: energyTemperatureChartEntries1, label: nil)
-        energyTemperatureChartLine1.colors = [.red]
+        //energyTemperatureChartLine1.colors = [.red]
         energyTemperatureChartLine1.drawCirclesEnabled = false
         energyTemperatureChartLine1.drawValuesEnabled = false
+        let gradientColors1 = [ChartColorTemplates.colorFromString("#3ee9ff").cgColor,
+                               ChartColorTemplates.colorFromString("#008a1d").cgColor,
+                               ChartColorTemplates.colorFromString("#ffaa17").cgColor]
+        let gradient1 = CGGradient(colorsSpace: nil, colors: gradientColors1 as CFArray, locations: [0.0, 0.33, 0.66])
+        energyTemperatureChartLine1.fill = Fill.fillWithLinearGradient(gradient1!, angle: 90)
+        energyTemperatureChartLine1.fillAlpha = 1
+        energyTemperatureChartLine1.drawFilledEnabled = true
 
         let yAxisRight = energyTemperatureView.rightAxis
         yAxisRight.axisMinimum = 0

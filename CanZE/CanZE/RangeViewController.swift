@@ -64,17 +64,21 @@ class RangeViewController: CanZeViewController {
 
         graph_DistanceEnergy.text = NSLocalizedString("graph_DistanceEnergy", comment: "")
         text_DistanceEnergy1.text = "-"
+        text_DistanceEnergy1.textColor = .red
         text_DistanceEnergy2.text = "-"
+        text_DistanceEnergy2.textColor = .blue
 
         initChart()
 
         if ud.exists(key: "loss") {
             loss = Double(ud.integer(forKey: "loss")) / 100.0
         } else {
-            loss = 10.0 / 100.0
+            loss = 60.0
         }
 
-        slider.value = Float(loss * 100.0) + 50.0
+        let progressPosition = loss
+        slider.value = Float(progressPosition)
+        updateSeekBar()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -189,17 +193,17 @@ class RangeViewController: CanZeViewController {
         yAxis.axisMinimum = 0
         yAxis.axisMaximum = 180
 
-        let yAxisRight = distanceEnergyChartView.rightAxis
-        yAxisRight.axisMinimum = 0
-        yAxisRight.axisMaximum = 30
-
         distanceEnergyLine1 = LineChartDataSet(entries: distanceEnergyEntries1, label: nil)
         distanceEnergyLine1.colors = [.red]
         distanceEnergyLine1.drawCirclesEnabled = false
         distanceEnergyLine1.drawValuesEnabled = false
 
+        let yAxisRight = distanceEnergyChartView.rightAxis
+        yAxisRight.axisMinimum = 0
+        yAxisRight.axisMaximum = 30
+
         distanceEnergyLine2 = LineChartDataSet(entries: distanceEnergyEntries2, label: nil)
-        distanceEnergyLine1.axisDependency = .right
+        distanceEnergyLine2.axisDependency = .right
         distanceEnergyLine2.colors = [.blue]
         distanceEnergyLine2.drawCirclesEnabled = false
         distanceEnergyLine2.drawValuesEnabled = false
@@ -234,8 +238,8 @@ class RangeViewController: CanZeViewController {
 
     func updateSeekBar() {
         let progressPosition = Double(slider.value)
-        loss = (progressPosition - 50.0) / 100.0
-        lossView.text = String(format: "%d%%", progressPosition - 50.0)
+        loss = (progressPosition - 50.0)
+        lossView.text = String(format: "%.0f%%", progressPosition - 50.0)
         updateRange()
     }
 

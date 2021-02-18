@@ -159,7 +159,7 @@ class BatteryViewController: CanZeViewController {
             switch sid {
             case "658.33":
                 if val != nil, !val!.isNaN {
-                    self.lblGraph_SOH.text = String(format: "%.2f", val!)
+                    self.lblGraph_SOH.text = String(format: "%.1f", val!)
                 }
             case Sid.RealSoC:
                 if val != nil, !val!.isNaN {
