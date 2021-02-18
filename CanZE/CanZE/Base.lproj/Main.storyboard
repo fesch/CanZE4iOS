@@ -4214,7 +4214,7 @@ Conn Sett</string>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="45" id="bgS-B8-dDd"/>
                                         </constraints>
-                                        <state key="normal" title="cancel"/>
+                                        <state key="normal" title="_cancel"/>
                                         <connections>
                                             <action selector="btnTextFieldCancel_" destination="11r-au-vS8" eventType="touchUpInside" id="BIl-l6-lk1"/>
                                         </connections>
@@ -4229,7 +4229,7 @@ Conn Sett</string>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ky0-h4-Ihx">
                                         <rect key="frame" x="196" y="1" width="193" height="45"/>
-                                        <state key="normal" title="DONE"/>
+                                        <state key="normal" title="_done"/>
                                         <connections>
                                             <action selector="btnTextFieldDone_" destination="11r-au-vS8" eventType="touchUpInside" id="nen-Z0-oF6"/>
                                         </connections>
@@ -4250,57 +4250,59 @@ Conn Sett</string>
                                     <constraint firstItem="ky0-h4-Ihx" firstAttribute="leading" secondItem="Xmj-oI-qq9" secondAttribute="trailing" constant="2" id="hGk-lB-d5n"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" id="MSg-9i-vqj">
-                                <rect key="frame" x="0.0" y="426" width="414" height="308"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RK4-Um-kYZ">
+                                <rect key="frame" x="0.0" y="290" width="390" height="264"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dcE-Rg-OjK">
-                                        <rect key="frame" x="208" y="1" width="205" height="45"/>
-                                        <state key="normal" title="DONE"/>
-                                        <connections>
-                                            <action selector="btnPickerDone_" destination="11r-au-vS8" eventType="touchUpInside" id="WVM-dv-MuM"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qp5-5T-gaw">
-                                        <rect key="frame" x="1" y="1" width="205" height="45"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wio-TD-FzP">
+                                        <rect key="frame" x="1" y="1" width="193" height="45"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="45" id="mAb-Sp-2zF"/>
+                                            <constraint firstAttribute="height" constant="45" id="bkk-vR-Anl"/>
                                         </constraints>
-                                        <state key="normal" title="cancel"/>
+                                        <state key="normal" title="_cancel"/>
                                         <connections>
-                                            <action selector="btnPickerCancel_" destination="11r-au-vS8" eventType="touchUpInside" id="tgX-jp-SaF"/>
+                                            <action selector="btnPickerDone_" destination="11r-au-vS8" eventType="touchUpInside" id="Cyx-gP-1xq"/>
                                         </connections>
                                     </button>
-                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Rf-xb-Smj">
-                                        <rect key="frame" x="1" y="47" width="412" height="260"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Ra-YC-D0S">
+                                        <rect key="frame" x="196" y="1" width="193" height="45"/>
+                                        <state key="normal" title="_done"/>
+                                        <connections>
+                                            <action selector="btnPickerCancel_" destination="11r-au-vS8" eventType="touchUpInside" id="Qhn-PL-3hp"/>
+                                        </connections>
+                                    </button>
+                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BJ8-WR-Qof">
+                                        <rect key="frame" x="0.0" y="47" width="390" height="216"/>
+                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
                                     </pickerView>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstItem="Qp5-5T-gaw" firstAttribute="width" secondItem="dcE-Rg-OjK" secondAttribute="width" id="2A5-Tf-vjc"/>
-                                    <constraint firstItem="6Rf-xb-Smj" firstAttribute="leading" secondItem="MSg-9i-vqj" secondAttribute="leading" constant="1" id="336-vR-f34"/>
-                                    <constraint firstItem="dcE-Rg-OjK" firstAttribute="leading" secondItem="Qp5-5T-gaw" secondAttribute="trailing" constant="2" id="4Ef-bj-I37"/>
-                                    <constraint firstAttribute="trailing" secondItem="6Rf-xb-Smj" secondAttribute="trailing" constant="1" id="4vm-vH-UtJ"/>
-                                    <constraint firstItem="Qp5-5T-gaw" firstAttribute="height" secondItem="dcE-Rg-OjK" secondAttribute="height" id="9os-kt-exp"/>
-                                    <constraint firstItem="Qp5-5T-gaw" firstAttribute="top" secondItem="MSg-9i-vqj" secondAttribute="top" constant="1" id="B76-VB-nvH"/>
-                                    <constraint firstAttribute="trailing" secondItem="dcE-Rg-OjK" secondAttribute="trailing" constant="1" id="OT1-rO-6aT"/>
-                                    <constraint firstItem="Qp5-5T-gaw" firstAttribute="leading" secondItem="MSg-9i-vqj" secondAttribute="leading" constant="1" id="Pnd-Gq-cHa"/>
-                                    <constraint firstItem="dcE-Rg-OjK" firstAttribute="centerY" secondItem="Qp5-5T-gaw" secondAttribute="centerY" id="QJS-nJ-I1I"/>
-                                    <constraint firstItem="6Rf-xb-Smj" firstAttribute="top" secondItem="Qp5-5T-gaw" secondAttribute="bottom" constant="1" id="Yo4-qZ-7Lg"/>
-                                    <constraint firstAttribute="bottom" secondItem="6Rf-xb-Smj" secondAttribute="bottom" constant="1" id="pEU-c4-thp"/>
+                                    <constraint firstItem="Wio-TD-FzP" firstAttribute="top" secondItem="RK4-Um-kYZ" secondAttribute="top" constant="1" id="17K-DW-yii"/>
+                                    <constraint firstItem="5Ra-YC-D0S" firstAttribute="width" secondItem="Wio-TD-FzP" secondAttribute="width" id="Bu4-dH-zHh"/>
+                                    <constraint firstItem="BJ8-WR-Qof" firstAttribute="centerX" secondItem="RK4-Um-kYZ" secondAttribute="centerX" id="CgA-DV-H9j"/>
+                                    <constraint firstItem="5Ra-YC-D0S" firstAttribute="leading" secondItem="Wio-TD-FzP" secondAttribute="trailing" constant="2" id="KRN-OA-Ym4"/>
+                                    <constraint firstItem="BJ8-WR-Qof" firstAttribute="width" secondItem="RK4-Um-kYZ" secondAttribute="width" id="S0y-cy-fIb"/>
+                                    <constraint firstItem="5Ra-YC-D0S" firstAttribute="height" secondItem="Wio-TD-FzP" secondAttribute="height" id="Ubm-YL-9WN"/>
+                                    <constraint firstItem="BJ8-WR-Qof" firstAttribute="top" secondItem="Wio-TD-FzP" secondAttribute="bottom" constant="1" id="YWH-de-0WM"/>
+                                    <constraint firstAttribute="trailing" secondItem="5Ra-YC-D0S" secondAttribute="trailing" constant="1" id="cFp-SY-7iB"/>
+                                    <constraint firstAttribute="bottom" secondItem="BJ8-WR-Qof" secondAttribute="bottom" constant="1" id="fQs-36-keI"/>
+                                    <constraint firstItem="Wio-TD-FzP" firstAttribute="leading" secondItem="RK4-Um-kYZ" secondAttribute="leading" constant="1" id="jj4-ib-Vh9"/>
+                                    <constraint firstItem="5Ra-YC-D0S" firstAttribute="centerY" secondItem="Wio-TD-FzP" secondAttribute="centerY" id="zSs-ev-nbv"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ZKu-vF-29e"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="RK4-Um-kYZ" firstAttribute="width" secondItem="ZKu-vF-29e" secondAttribute="width" id="45T-Wk-Lam"/>
+                            <constraint firstItem="BeS-8K-n9u" firstAttribute="centerX" secondItem="ZKu-vF-29e" secondAttribute="centerX" id="DnM-QX-sNO"/>
                             <constraint firstItem="wYu-PB-kr3" firstAttribute="top" secondItem="ZKu-vF-29e" secondAttribute="top" id="RlO-pj-Y5f"/>
                             <constraint firstItem="wYu-PB-kr3" firstAttribute="leading" secondItem="ZKu-vF-29e" secondAttribute="leading" id="XFy-fz-ITZ"/>
                             <constraint firstItem="BeS-8K-n9u" firstAttribute="centerY" secondItem="ZKu-vF-29e" secondAttribute="centerY" id="XUu-Ud-dgd"/>
                             <constraint firstAttribute="bottom" secondItem="wYu-PB-kr3" secondAttribute="bottom" id="aCk-9M-Fk9"/>
                             <constraint firstItem="wYu-PB-kr3" firstAttribute="trailing" secondItem="ZKu-vF-29e" secondAttribute="trailing" id="bZw-yh-bzX"/>
-                            <constraint firstItem="BeS-8K-n9u" firstAttribute="leading" secondItem="ZKu-vF-29e" secondAttribute="leading" id="hoc-Qf-g8V"/>
-                            <constraint firstItem="BeS-8K-n9u" firstAttribute="trailing" secondItem="ZKu-vF-29e" secondAttribute="trailing" id="pR3-ea-Y2N"/>
+                            <constraint firstItem="BeS-8K-n9u" firstAttribute="width" secondItem="ZKu-vF-29e" secondAttribute="width" id="bbK-fC-5Dp"/>
+                            <constraint firstItem="RK4-Um-kYZ" firstAttribute="centerY" secondItem="pUq-Tf-NF4" secondAttribute="centerY" id="flc-u5-3wq"/>
+                            <constraint firstItem="RK4-Um-kYZ" firstAttribute="centerX" secondItem="pUq-Tf-NF4" secondAttribute="centerX" id="zzc-HE-Mvd"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="aor-dT-GLC">
@@ -4318,12 +4320,12 @@ Conn Sett</string>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
-                        <outlet property="btnPickerCancel" destination="Qp5-5T-gaw" id="It2-To-kL7"/>
-                        <outlet property="btnPickerDone" destination="dcE-Rg-OjK" id="8X0-wt-PGw"/>
+                        <outlet property="btnPickerCancel" destination="Wio-TD-FzP" id="elx-dS-64T"/>
+                        <outlet property="btnPickerDone" destination="5Ra-YC-D0S" id="Jhz-48-SDR"/>
                         <outlet property="btnTextFieldCancel" destination="Xmj-oI-qq9" id="EYo-CJ-e0U"/>
                         <outlet property="btnTextFieldDone" destination="ky0-h4-Ihx" id="ew8-py-EBS"/>
-                        <outlet property="picker" destination="6Rf-xb-Smj" id="iIS-hL-eJu"/>
-                        <outlet property="pickerView" destination="MSg-9i-vqj" id="Pyx-XP-j48"/>
+                        <outlet property="picker" destination="BJ8-WR-Qof" id="L7A-oO-2a3"/>
+                        <outlet property="pickerView" destination="RK4-Um-kYZ" id="p0d-jn-YmA"/>
                         <outlet property="settingsTableView" destination="wYu-PB-kr3" id="dtc-Gl-rTP"/>
                         <outlet property="textField" destination="PxU-Vc-G2R" id="NgI-ap-aBg"/>
                         <outlet property="textFieldView" destination="BeS-8K-n9u" id="6u5-lX-NPG"/>
@@ -4331,7 +4333,7 @@ Conn Sett</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Yw3-tU-xiW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-471" y="-98"/>
+            <point key="canvasLocation" x="-472.30769230769226" y="-98.104265402843595"/>
         </scene>
         <!--Speed Control View Controller-->
         <scene sceneID="Q94-Ma-ivz">

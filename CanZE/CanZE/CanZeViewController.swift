@@ -167,7 +167,18 @@ class CanZeViewController: UIViewController {
             }
             view.hideAllToasts()
             view.makeToast("connected")
+            Globals.shared.deviceIsInitialized = true
+            NotificationCenter.default.post(name: Notification.Name("autoInit"), object: nil)
         }
+    }
+
+    @objc func autoInit2() {
+        autoInit()
+        startQueue()
+    }
+
+    func startQueue() {
+        // stub
     }
 
     func initDeviceELM327() {
@@ -406,6 +417,7 @@ class CanZeViewController: UIViewController {
             }
             view.hideAllToasts()
             view.makeToast("connected")
+            NotificationCenter.default.post(name: Notification.Name("autoInit"), object: nil)
             return
         default:
             break
@@ -420,6 +432,7 @@ class CanZeViewController: UIViewController {
             }
             view.hideAllToasts()
             view.makeToast("connected")
+            NotificationCenter.default.post(name: Notification.Name("autoInit"), object: nil)
         }
     }
 
@@ -1049,7 +1062,7 @@ class CanZeViewController: UIViewController {
     }
 
     func writeWifi(s: String) {
-        if Globals.shared.outputStream != nil {
+        if Globals.shared.outputStream != nil, Globals.shared.outputStream.streamStatus == .open {
             let s2 = s.appending("\r")
             let data = s2.data(using: .utf8)!
             data.withUnsafeBytes {

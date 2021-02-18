@@ -445,15 +445,26 @@ extension SettingsViewController: UITableViewDataSource {
             if setting?.stringValue != "" {
                 cell.valueLabel.text = setting?.stringValue
                 cell.valueLabel.textColor = .black
+                cell.contentView.backgroundColor = .clear
+                if cell.timerWarning.isValid {
+                    cell.timerWarning.invalidate()
+                }
             } else {
                 cell.valueLabel.text = "?"
-                cell.valueLabel.textColor = .red
+                if cell.timerWarning.isValid {
+                    cell.timerWarning.invalidate()
+                }
+                cell.warning()
             }
             return cell
         case .PICKER:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell")! as! SettingsTableViewCell
             cell.valueLabel.text = "?"
-            cell.valueLabel.textColor = .red
+            if cell.timerWarning.isValid {
+                cell.timerWarning.invalidate()
+            }
+            cell.warning()
+
             if setting?.intValue != -1 {
                 var indice = 0
                 while indice < (setting?.listValues!.count)! {
@@ -461,6 +472,10 @@ extension SettingsViewController: UITableViewDataSource {
                     if z == (setting?.intValue)! {
                         cell.valueLabel.text = setting?.listTitles![indice] ?? ""
                         cell.valueLabel.textColor = .black
+                        cell.contentView.backgroundColor = .clear
+                        if cell.timerWarning.isValid {
+                            cell.timerWarning.invalidate()
+                        }
                         break
                     }
                     indice += 1
@@ -472,6 +487,10 @@ extension SettingsViewController: UITableViewDataSource {
                     if z == (setting?.stringValue)! {
                         cell.valueLabel.text = setting?.listTitles![indice] ?? ""
                         cell.valueLabel.textColor = .black
+                        cell.contentView.backgroundColor = .clear
+                        if cell.timerWarning.isValid {
+                            cell.timerWarning.invalidate()
+                        }
                         break
                     }
                     indice += 1

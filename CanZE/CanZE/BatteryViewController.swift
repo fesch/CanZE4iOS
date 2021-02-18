@@ -85,6 +85,7 @@ class BatteryViewController: CanZeViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(decoded(notification:)), name: Notification.Name("decoded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(endQueue2), name: Notification.Name("endQueue2"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(autoInit2), name: Notification.Name("autoInit"), object: nil)
 
         startQueue()
     }
@@ -92,9 +93,9 @@ class BatteryViewController: CanZeViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("decoded"), object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name("received2"), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("updateDebugLabel"), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("endQueue2"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name("autoInit"), object: nil)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -109,7 +110,7 @@ class BatteryViewController: CanZeViewController {
         debug((dic?["debug"])!)
     }
 
-    func startQueue() {
+    override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async {
                 self.view.makeToast("_device not connected")
