@@ -33,13 +33,10 @@ class SettingsViewController: CanZeViewController {
 
         title = NSLocalizedString("title_activity_settings", comment: "")
 
-        pickerView.alpha = 0.0
-        textFieldView.alpha = 0.0
-
         settingsTableView.delegate = self
         settingsTableView.dataSource = self
 
-        setupPicker()
+        setupPickers()
 
         loadSettings()
         organizeSettings()
@@ -62,12 +59,21 @@ class SettingsViewController: CanZeViewController {
         picker.reloadAllComponents()
     }
 
-    func setupPicker() {
-        pickerView.center = view.center
+    func setupPickers() {
+        // picker
         pickerView.alpha = 0.0
         picker.delegate = self
         btnPickerDone.backgroundColor = .lightGray
         btnPickerCancel.backgroundColor = .lightGray
+        btnPickerDone.setTitle(NSLocalizedString("default_Ok", comment: "").uppercased(), for: .normal)
+        btnPickerCancel.setTitle(NSLocalizedString("default_Cancel", comment: "").lowercased(), for: .normal)
+
+        // textfield
+        textFieldView.alpha = 0.0
+        btnTextFieldDone.backgroundColor = .lightGray
+        btnTextFieldCancel.backgroundColor = .lightGray
+        btnTextFieldDone.setTitle(NSLocalizedString("default_Ok", comment: "").uppercased(), for: .normal)
+        btnTextFieldCancel.setTitle(NSLocalizedString("default_Cancel", comment: "").lowercased(), for: .normal)
     }
 
     func showPicker() {
