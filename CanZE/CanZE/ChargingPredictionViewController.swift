@@ -47,24 +47,24 @@ class ChargingPredictionViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_prediction", comment: "")
+        title = NSLocalizedString_("title_activity_prediction", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        label_ChargingPrediction.text = NSLocalizedString("label_ChargingPrediction", comment: "")
-        label_Duration.text = NSLocalizedString("label_Duration", comment: "")
-        label_Soc.text = NSLocalizedString("label_Soc", comment: "")
-        label_Range.text = NSLocalizedString("label_Range", comment: "")
-        label_DcPower.text = NSLocalizedString("label_DcPower", comment: "")
+        label_ChargingPrediction.text = NSLocalizedString_("label_ChargingPrediction", comment: "")
+        label_Duration.text = NSLocalizedString_("label_Duration", comment: "")
+        label_Soc.text = NSLocalizedString_("label_Soc", comment: "")
+        label_Range.text = NSLocalizedString_("label_Range", comment: "")
+        label_DcPower.text = NSLocalizedString_("label_DcPower", comment: "")
 
-        HeaderDC.text = NSLocalizedString("label_StateAtThisMoment", comment: "")
-        label_BatteryTemperature.text = NSLocalizedString("label_BatteryTemperature", comment: "")
+        HeaderDC.text = NSLocalizedString_("label_StateAtThisMoment", comment: "")
+        label_BatteryTemperature.text = NSLocalizedString_("label_BatteryTemperature", comment: "")
         texttemp.text = "-"
-        label_ACPower.text = NSLocalizedString("label_ACPower", comment: "")
+        label_ACPower.text = NSLocalizedString_("label_ACPower", comment: "")
         textacpwr.text = "-"
-        label_StateOfCharge.text = NSLocalizedString("label_StateOfCharge", comment: "")
+        label_StateOfCharge.text = NSLocalizedString_("label_StateOfCharge", comment: "")
         textsoc.text = "-"
 
         battery = Battery()
@@ -111,17 +111,17 @@ class ChargingPredictionViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -139,8 +139,8 @@ class ChargingPredictionViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
@@ -150,41 +150,41 @@ class ChargingPredictionViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.AvailableChargingPower:
-                    self.car_charger_ac_power = val!
-                    self.car_status |= 0x01
-                    if self.car_charger_ac_power > 1 {
-                        self.car_status |= 0x10
-                        self.charging_status = 1
+                    car_charger_ac_power = val!
+                    car_status |= 0x01
+                    if car_charger_ac_power > 1 {
+                        car_status |= 0x10
+                        charging_status = 1
                     } else {
-                        self.charging_status = 0
+                        charging_status = 0
                     }
                 case Sid.UserSoC:
-                    self.car_soc = val!
-                    self.car_status |= 0x02
+                    car_soc = val!
+                    car_status |= 0x02
                 case Sid.AverageBatteryTemperature:
-                    self.car_bat_temp = val!
-                    self.car_status |= 0x04
+                    car_bat_temp = val!
+                    car_status |= 0x04
                 case Sid.RangeEstimate:
-                    self.car_range_est = val!
-                    self.car_status |= 0x08
+                    car_range_est = val!
+                    car_status |= 0x08
                 // case Sid.ChargingStatusDisplay:
                 //    charging_status = (fieldVal == 3) ? 1 : 0;
                 //    car_status |= 0x10;
                 //    break;
                 case Sid.SOH:
-                    self.car_soh = val!
-                    self.car_status |= 0x20
+                    car_soh = val!
+                    car_status |= 0x20
                 default:
                     print("unknown sid \(sid!)")
                 }
 
-                if self.car_status == 0x3f {
+                if car_status == 0x3f {
                     // dropDebugMessage2 (String.format(Locale.getDefault(), "go %02X", car_status));
-                    self.runPrediction()
-                    self.car_status = 0
+                    runPrediction()
+                    car_status = 0
                 } // else {
                 // dropDebugMessage2 (String.format(Locale.getDefault(), ".. %02X", car_status));
                 // }
@@ -193,14 +193,14 @@ class ChargingPredictionViewController: CanZeViewController {
     }
 
     func runPrediction() {
-        DispatchQueue.main.async {
-            self.texttemp.text = "\(Int(self.car_bat_temp))°C"
-            self.textsoc.text = "\(Int(self.car_soc))%"
+        DispatchQueue.main.async { [self] in
+            texttemp.text = "\(Int(car_bat_temp))°C"
+            textsoc.text = "\(Int(car_soc))%"
         }
         // if there is no charging going on, erase all fields in the table
         if charging_status == 0 {
-            DispatchQueue.main.async {
-                self.textacpwr.text = "Not charging"
+            DispatchQueue.main.async { [self] in
+                textacpwr.text = "Not charging"
             }
             for t in 0 ..< 10 {
                 tim_[t] = "00:00"
@@ -226,8 +226,8 @@ class ChargingPredictionViewController: CanZeViewController {
 
         // set the external maximum charger capacity
 
-        DispatchQueue.main.async {
-            self.textacpwr.text = "\(Int(self.car_charger_ac_power * 10) / 10) kW)"
+        DispatchQueue.main.async { [self] in
+            textacpwr.text = "\(Int(car_charger_ac_power * 10) / 10) kW)"
         }
 
         battery.setChargerPower(car_charger_ac_power)
@@ -275,10 +275,10 @@ class ChargingPredictionViewController: CanZeViewController {
     }
 
     func updatePrediction() {
-        var tim = "\(NSLocalizedString("label_Duration", comment: ""))\n"
-        var soc = "\(NSLocalizedString("label_Soc", comment: ""))\n"
-        var ran = "\(NSLocalizedString("label_Range", comment: ""))\n"
-        var pow = "\(NSLocalizedString("label_DcPower", comment: ""))\n"
+        var tim = "\(NSLocalizedString_("label_Duration", comment: ""))\n"
+        var soc = "\(NSLocalizedString_("label_Soc", comment: ""))\n"
+        var ran = "\(NSLocalizedString_("label_Range", comment: ""))\n"
+        var pow = "\(NSLocalizedString_("label_DcPower", comment: ""))\n"
 
         for t in 0 ..< 10 {
             tim.append("\(tim_[t])\n")
@@ -287,11 +287,11 @@ class ChargingPredictionViewController: CanZeViewController {
             pow.append("\(pow_[t])\n")
         }
 
-        DispatchQueue.main.async {
-            self.label_Duration.text = tim.trimmingCharacters(in: .whitespacesAndNewlines)
-            self.label_Soc.text = soc.trimmingCharacters(in: .whitespacesAndNewlines)
-            self.label_Range.text = ran.trimmingCharacters(in: .whitespacesAndNewlines)
-            self.label_DcPower.text = pow.trimmingCharacters(in: .whitespacesAndNewlines)
+        DispatchQueue.main.async { [self] in
+            label_Duration.text = tim.trimmingCharacters(in: .whitespacesAndNewlines)
+            label_Soc.text = soc.trimmingCharacters(in: .whitespacesAndNewlines)
+            label_Range.text = ran.trimmingCharacters(in: .whitespacesAndNewlines)
+            label_DcPower.text = pow.trimmingCharacters(in: .whitespacesAndNewlines)
         }
     }
 

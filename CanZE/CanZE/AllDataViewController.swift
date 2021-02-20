@@ -29,7 +29,7 @@ class AllDataViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_alldata", comment: "")
+        title = NSLocalizedString_("title_activity_alldata", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
@@ -38,7 +38,7 @@ class AllDataViewController: CanZeViewController {
         tv.text = ""
         setupPicker()
 
-        btnDownload_.setTitle(NSLocalizedString("button_alldata", comment: "").uppercased(), for: .normal)
+        btnDownload_.setTitle(NSLocalizedString_("button_alldata", comment: "").uppercased(), for: .normal)
 
         arrayEcu = []
         for ecu in Ecus.getInstance.getAllEcus() {
@@ -48,6 +48,9 @@ class AllDataViewController: CanZeViewController {
             {
                 arrayEcu.append(ecu) // all reachable ECU's plus the Free Fields Computer. We skip the Virtual Fields Computer for now as it requires real fields and thus frames.
             }
+        }
+        arrayEcu.sort { (a: Ecu, b: Ecu) -> Bool in
+            a.mnemonic < b.mnemonic
         }
 
         btnSelect_.setTitle(arrayEcu.first?.mnemonic, for: .normal)
@@ -63,6 +66,8 @@ class AllDataViewController: CanZeViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(decoded(notification:)), name: Notification.Name("decoded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(endQueue2), name: Notification.Name("endQueue2"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(autoInit2), name: Notification.Name("autoInit"), object: nil)
+
+        btnSelect()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -81,17 +86,17 @@ class AllDataViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -111,19 +116,19 @@ class AllDataViewController: CanZeViewController {
 
         let field = Fields.getInstance.fieldsBySid[sid!]
 
-        DispatchQueue.main.async {
-            if self.lastSid != sid {
+        DispatchQueue.main.async { [self] in
+            if lastSid != sid {
                 if field!.isString() || field!.isHexString() {
-                    self.tv.text += "\(sid!),\(field!.name ?? ""),\(field?.strVal ?? "")\n"
-                    self.lastSid = sid!
+                    tv.text += "\(sid!),\(field!.name ?? ""),\(field?.strVal ?? "")\n"
+                    lastSid = sid!
                 } else if Globals.shared.fieldResultsDouble[sid!] != nil {
-                    self.tv.text += "\(sid!),\(field!.name ?? ""),\(field!.getValue())\n"
-                    self.lastSid = sid!
+                    tv.text += "\(sid!),\(field!.name ?? ""),\(field!.getValue())\n"
+                    lastSid = sid!
                 } else {
-                    self.tv.text += "\(sid!),\(field!.name ?? "")\n"
-                    self.lastSid = sid!
+                    tv.text += "\(sid!),\(field!.name ?? "")\n"
+                    lastSid = sid!
                 }
-                self.tv.scrollToBottom()
+                tv.scrollToBottom()
             }
         }
     }
@@ -147,7 +152,7 @@ class AllDataViewController: CanZeViewController {
 
         /*
          } catch {
-         tv.text += NSLocalizedString("message_NoEcuDefinition", comment: "")
+         tv.text += NSLocalizedString_("message_NoEcuDefinition", comment: "")
          tv.scrollToBottom()
          // Reload the default frame & timings
          Frames.getInstance().load()
@@ -172,11 +177,12 @@ class AllDataViewController: CanZeViewController {
     }
 
     func setupPicker() {
-        pickerView.center = view.center
         pickerView.alpha = 0.0
         picker.delegate = self
-        btnPickerDone.backgroundColor = .lightGray
-        btnPickerCancel.backgroundColor = .lightGray
+        //btnPickerDone.backgroundColor = .lightGray
+        //btnPickerCancel.backgroundColor = .lightGray
+        btnPickerDone.setTitle(NSLocalizedString_("default_Ok", comment: "").uppercased(), for: .normal)
+        btnPickerCancel.setTitle(NSLocalizedString_("default_Cancel", comment: "").lowercased(), for: .normal)
     }
 
     func showPicker() {

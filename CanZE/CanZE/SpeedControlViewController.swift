@@ -26,10 +26,10 @@ class SpeedControlViewController: CanZeViewController {
     var distanceInterpolated = 0.0
     var speed = 0.0
     var go = false
-    let km = NSLocalizedString("unit_Km", comment: "").replacingOccurrences(of: "u0020", with: " ")
-    let mi = NSLocalizedString("unit_Mi", comment: "").replacingOccurrences(of: "u0020", with: " ")
-    let kmh = NSLocalizedString("unit_SpeedKm", comment: "").replacingOccurrences(of: "u0020", with: " ")
-    let mih = NSLocalizedString("unit_SpeedMi", comment: "").replacingOccurrences(of: "u0020", with: " ")
+    var km = ""
+    var mi = ""
+    var kmh = ""
+    var mih = ""
     let speedformat = "%.0f" // feel free to change back. Experiment to make less jumpy
 
     override func viewDidLoad() {
@@ -37,15 +37,20 @@ class SpeedControlViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_speedcontrol", comment: "")
+        title = NSLocalizedString_("title_activity_speedcontrol", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        title_.text = NSLocalizedString("label_averageSpeed", comment: "")
+        km = NSLocalizedString_("unit_Km", comment: "")
+        mi = NSLocalizedString_("unit_Mi", comment: "")
+        kmh = NSLocalizedString_("unit_SpeedKm", comment: "")
+        mih = NSLocalizedString_("unit_SpeedMi", comment: "")
+
+        title_.text = NSLocalizedString_("label_averageSpeed", comment: "")
         speed_.text = "-"
-        unit.text = NSLocalizedString("label_TapToStart", comment: "")
+        unit.text = NSLocalizedString_("label_TapToStart", comment: "")
         textLog.text = ""
         textDetails.text = ""
     }
@@ -77,17 +82,17 @@ class SpeedControlViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -101,8 +106,8 @@ class SpeedControlViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
+            startQueue()
         }
     }
 
@@ -112,70 +117,70 @@ class SpeedControlViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.RealSpeed:
-                    self.speed = val!
+                    speed = val!
                 case Sid.TripMeterB:
-                    self.distanceEnd = val!
+                    distanceEnd = val!
                     let timeEnd = Date().timeIntervalSince1970
                     // if starting time has been set
-                    if self.go {
+                    if go {
                         // speed measuring has been started normally
-                        if self.timeStart != 0 {
+                        if timeStart != 0 {
                             var speedCalc = 0.0
 
                             // only update if distance changed ...
-                            if self.distanceLast != self.distanceEnd {
-                                self.distanceInterpolated = self.distanceEnd
+                            if distanceLast != distanceEnd {
+                                distanceInterpolated = distanceEnd
                                 // calculate avg speed
-                                let speed = ((self.distanceEnd - self.distanceStart) * 3600.0) / (timeEnd - Double(self.timeStart))
+                                let speed = ((distanceEnd - distanceStart) * 3600.0) / (timeEnd - Double(timeStart))
                                 // show it
-                                self.speed_.text = String(format: self.speedformat, speed)
+                                speed_.text = String(format: speedformat, speed)
                             } else { // interpolate distance using the speed
                                 // get difference in distance
-                                let distanceDelta = self.speed * (timeEnd - Double(self.timeLast)) / 3600.0
+                                let distanceDelta = speed * (timeEnd - Double(timeLast)) / 3600.0
                                 // add it to the last interpolated distance
-                                self.distanceInterpolated += distanceDelta
+                                distanceInterpolated += distanceDelta
 
                                 // at least 100m should have been driven in order to
                                 // avoid "jumping" values
-                                if self.distanceEnd - self.distanceStart > 0.1 {
+                                if distanceEnd - distanceStart > 0.1 {
                                     // calculate avg speed
-                                    speedCalc = ((self.distanceInterpolated - self.distanceStart) * 3600.0) / (timeEnd - Double(self.timeStart))
+                                    speedCalc = ((distanceInterpolated - distanceStart) * 3600.0) / (timeEnd - Double(timeStart))
                                     // show it
-                                    self.speed_.text = String(format: self.speedformat, speedCalc)
+                                    speed_.text = String(format: speedformat, speedCalc)
                                 }
                             }
 
                             // clear the clutter
                             #if targetEnvironment(simulator)
-                            let x = "\(String(format: "Distance:%.2f", self.distanceEnd - self.distanceStart))\(Globals.shared.milesMode ? self.mi : self.km)"
-                            let y = "Time:\(self.timeToStr(self.timeStart)) > \(self.timeToStr(Int(timeEnd))) = \(self.timeToStr(Int(timeEnd) - self.timeStart))"
-                            let z1 = "\(String(format: "Speed:%.2f", self.speed))\(Globals.shared.milesMode ? self.mih : self.kmh)"
-                            let z2 = "\(String(format: "SpeedCalc:%.2f", speedCalc))\(Globals.shared.milesMode ? self.mih : self.kmh)"
-                            self.textDetails.text = "\(x) - \(y) - \(z1) - \(z2)"
+                            let x = "\(String(format: "Distance:%.2f", distanceEnd - distanceStart))\(Globals.shared.milesMode ? mi : km)"
+                            let y = "Time:\(timeToStr(timeStart)) > \(timeToStr(Int(timeEnd))) = \(timeToStr(Int(timeEnd) - timeStart))"
+                            let z1 = "\(String(format: "Speed:%.2f", speed))\(Globals.shared.milesMode ? mih : kmh)"
+                            let z2 = "\(String(format: "SpeedCalc:%.2f", speedCalc))\(Globals.shared.milesMode ? mih : kmh)"
+                            textDetails.text = "\(x) - \(y) - \(z1) - \(z2)"
                             #else
                             // added to remove "waiting for second value" when on master branch
-                            self.textDetails.text = ""
+                            textDetails.text = ""
                             #endif
-                            self.distanceLast = self.distanceEnd
-                            self.timeLast = Int(timeEnd)
-                        } else if self.distanceLast == 0 {
+                            distanceLast = distanceEnd
+                            timeLast = Int(timeEnd)
+                        } else if distanceLast == 0 {
                             // do nothing ...
-                            self.textDetails.text = NSLocalizedString("message_gotfirst", comment: "")
-                            self.distanceLast = self.distanceEnd
-                        } else if self.distanceLast != self.distanceEnd {
+                            textDetails.text = NSLocalizedString_("message_gotfirst", comment: "")
+                            distanceLast = distanceEnd
+                        } else if distanceLast != distanceEnd {
                             // set starting distance as long as starting time is not set
-                            self.distanceStart = self.distanceEnd
-                            self.distanceLast = self.distanceEnd
-                            self.distanceInterpolated = self.distanceEnd
+                            distanceStart = distanceEnd
+                            distanceLast = distanceEnd
+                            distanceInterpolated = distanceEnd
                             // set start time
-                            self.timeStart = Int(timeEnd)
-                            self.timeLast = Int(timeEnd)
-                            self.textDetails.text = NSLocalizedString("message_gotsecond", comment: "")
+                            timeStart = Int(timeEnd)
+                            timeLast = Int(timeEnd)
+                            textDetails.text = NSLocalizedString_("message_gotsecond", comment: "")
                         } else {
-                            self.textDetails.text = NSLocalizedString("message_waitsecond", comment: "")
+                            textDetails.text = NSLocalizedString_("message_waitsecond", comment: "")
                         }
                     }
                 default:

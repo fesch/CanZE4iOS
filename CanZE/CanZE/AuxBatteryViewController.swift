@@ -37,33 +37,36 @@ class AuxBatteryViewController: CanZeViewController {
     var line1: LineChartDataSet!
     var line2: LineChartDataSet!
 
-    let aux_Status = Globals.localizableFromPlist?.value(forKey: "list_AuxStatus") as? [String]
-    let vehicle_Status = Globals.localizableFromPlist?.value(forKey: Utils.isPh2() ? "list_VehicleStatePh2" : "list_VehicleState") as? [String]
+    var aux_Status: [String] = []
+    var vehicle_Status: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_auxbatt", comment: "")
+        title = NSLocalizedString_("title_activity_auxbatt", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        label_12V.text = NSLocalizedString("label_12V", comment: "")
+        aux_Status = localizableFromPlist("list_AuxStatus")
+        vehicle_Status = localizableFromPlist(Utils.isPh2() ? "list_VehicleStatePh2" : "list_VehicleState")
+
+        label_12V.text = NSLocalizedString_("label_12V", comment: "")
         text12V.text = "-"
-        label_12A.text = NSLocalizedString("label_12A", comment: "")
+        label_12A.text = NSLocalizedString_("label_12A", comment: "")
         text12A.text = "-"
-        label_DcLoad.text = NSLocalizedString("label_DcLoad", comment: "")
+        label_DcLoad.text = NSLocalizedString_("label_DcLoad", comment: "")
         textDcLoad.text = "-"
-        label_vehiclestate.text = NSLocalizedString("label_vehiclestate", comment: "")
+        label_vehiclestate.text = NSLocalizedString_("label_vehiclestate", comment: "")
         text_vehicle_state.text = "-"
-        label_VoltageUnderLoad.text = NSLocalizedString("label_VoltageLoad", comment: "")
+        label_VoltageUnderLoad.text = NSLocalizedString_("label_VoltageLoad", comment: "")
         textVoltageUnderLoad.text = "-"
-        label_CurrentUnderLoad.text = NSLocalizedString("label_CurrentUnderLoad", comment: "")
+        label_CurrentUnderLoad.text = NSLocalizedString_("label_CurrentUnderLoad", comment: "")
         textCurrentUnderLoad.text = "-"
-        label_AuxStatus.text = NSLocalizedString("label_AuxStatus", comment: "")
+        label_AuxStatus.text = NSLocalizedString_("label_AuxStatus", comment: "")
         textAuxStatus.text = "-"
 
         lblGraphTitle.text = "_Voltage, Vehicle state"
@@ -100,17 +103,17 @@ class AuxBatteryViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -130,8 +133,8 @@ class AuxBatteryViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
@@ -141,33 +144,33 @@ class AuxBatteryViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.Aux12V:
-                    self.text12V.text = String(format: "%.1f", val!)
-                    self.lblVoltage.text = String(format: "%.2f", val!)
-                    self.chartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateChart()
+                    text12V.text = String(format: "%.1f", val!)
+                    lblVoltage.text = String(format: "%.2f", val!)
+                    chartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateChart()
                 case Sid.Aux12A:
-                    self.text12A.text = String(format: "%.1f", val!)
+                    text12A.text = String(format: "%.1f", val!)
                 case Sid.DcLoad:
-                    self.textDcLoad.text = String(format: "%.1f", val!)
+                    textDcLoad.text = String(format: "%.1f", val!)
                 case Sid.AuxStatus:
                     let i = Int(val!)
-                    if i >= 0, i < self.aux_Status!.count {
-                        self.textAuxStatus.text = self.aux_Status![i]
+                    if i >= 0, i < aux_Status.count {
+                        textAuxStatus.text = aux_Status[i]
                     }
                 case Sid.VehicleState:
                     let i = Int(val!)
-                    if i >= 0, i < self.vehicle_Status!.count {
-                        self.text_vehicle_state.text = self.vehicle_Status![i]
-                        self.chartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: Double(i)))
-                        self.updateChart()
+                    if i >= 0, i < vehicle_Status.count {
+                        text_vehicle_state.text = vehicle_Status[i]
+                        chartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: Double(i)))
+                        updateChart()
                     }
                 case Sid.VoltageUnderLoad:
-                    self.textVoltageUnderLoad.text = String(format: "%.1f", val!)
+                    textVoltageUnderLoad.text = String(format: "%.1f", val!)
                 case Sid.CurrentUnderLoad:
-                    self.textCurrentUnderLoad.text = String(format: "%.1f", val!)
+                    textCurrentUnderLoad.text = String(format: "%.1f", val!)
                 default:
                     print("unknown sid \(sid!)")
                 }

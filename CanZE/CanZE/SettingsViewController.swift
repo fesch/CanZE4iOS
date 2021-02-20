@@ -6,6 +6,7 @@
 //
 
 import CoreBluetooth
+import FirebaseAnalytics
 import Toast_Swift
 import UIKit
 
@@ -31,7 +32,7 @@ class SettingsViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_settings", comment: "")
+        title = NSLocalizedString_("title_activity_settings", comment: "")
 
         settingsTableView.delegate = self
         settingsTableView.dataSource = self
@@ -46,34 +47,90 @@ class SettingsViewController: CanZeViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadPicker(notification:)), name: Notification.Name("reloadPicker"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(reloadPicker(notification:)), name: Notification.Name("reloadPicker"), object: nil)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name("reloadPicker"), object: nil)
+//        NotificationCenter.default.removeObserver(self, name: Notification.Name("reloadPicker"), object: nil)
+
+        var p: [String: Any] = [:]
+
+        var car = ""
+
+        switch Globals.shared.car {
+        case AppSettings.CAR_TWINGO:
+            car = "CAR_TWINGO"
+        case AppSettings.CAR_TWIZY:
+            car = "CAR_TWIZY"
+        case AppSettings.CAR_X10PH2:
+            car = "CAR_X10PH2"
+        case AppSettings.CAR_ZOE_Q90:
+            car = "CAR_ZOE_Q90"
+        case AppSettings.CAR_ZOE_R90:
+            car = "CAR_ZOE_R90"
+        case AppSettings.CAR_ZOE_Q210:
+            car = "CAR_ZOE_Q210"
+        case AppSettings.CAR_ZOE_R240:
+            car = "CAR_ZOE_R240"
+        default:
+            car = "unknown"
+        }
+        p["car"] = car
+
+        switch Globals.shared.deviceConnection {
+        case .WIFI:
+            p["deviceConnection"] = "WIFI"
+        case .BLE:
+            p["deviceConnection"] = "BLE"
+
+            switch Globals.shared.deviceBleName {
+            case .VGATE:
+                p["deviceBleName"] = "VGATE"
+            case .LELINK:
+                p["deviceBleName"] = "LELINK"
+            default:
+                p["deviceBleName"] = "unknown"
+            }
+        case .HTTP:
+            p["deviceConnection"] = "HTTP"
+        default:
+            p["deviceConnection"] = "unknown"
+        }
+
+        switch Globals.shared.deviceType {
+        case .ELM327:
+            p["deviceType"] = "ELM327"
+        case .CANSEE:
+            p["deviceType"] = "_CANSEE"
+        case .HTTP_GW:
+            p["deviceType"] = "HTTP_GW"
+        default:
+            p["deviceType"] = "unknown"
+        }
+
+        Analytics.logEvent("settings", parameters: p)
     }
 
-    // ricezione dati wifi
-    @objc func reloadPicker(notification: Notification) {
-        picker.reloadAllComponents()
-    }
+//    @objc func reloadPicker(notification: Notification) {
+//        picker.reloadAllComponents()
+//    }
 
     func setupPickers() {
         // picker
         pickerView.alpha = 0.0
         picker.delegate = self
-        btnPickerDone.backgroundColor = .lightGray
-        btnPickerCancel.backgroundColor = .lightGray
-        btnPickerDone.setTitle(NSLocalizedString("default_Ok", comment: "").uppercased(), for: .normal)
-        btnPickerCancel.setTitle(NSLocalizedString("default_Cancel", comment: "").lowercased(), for: .normal)
+        //btnPickerDone.backgroundColor = .lightGray
+        //btnPickerCancel.backgroundColor = .lightGray
+        btnPickerDone.setTitle(NSLocalizedString_("default_Ok", comment: "").uppercased(), for: .normal)
+        btnPickerCancel.setTitle(NSLocalizedString_("default_Cancel", comment: "").lowercased(), for: .normal)
 
         // textfield
         textFieldView.alpha = 0.0
-        btnTextFieldDone.backgroundColor = .lightGray
-        btnTextFieldCancel.backgroundColor = .lightGray
-        btnTextFieldDone.setTitle(NSLocalizedString("default_Ok", comment: "").uppercased(), for: .normal)
-        btnTextFieldCancel.setTitle(NSLocalizedString("default_Cancel", comment: "").lowercased(), for: .normal)
+        //btnTextFieldDone.backgroundColor = .lightGray
+        //btnTextFieldCancel.backgroundColor = .lightGray
+        btnTextFieldDone.setTitle(NSLocalizedString_("default_Ok", comment: "").uppercased(), for: .normal)
+        btnTextFieldCancel.setTitle(NSLocalizedString_("default_Cancel", comment: "").lowercased(), for: .normal)
     }
 
     func showPicker() {
@@ -97,9 +154,9 @@ class SettingsViewController: CanZeViewController {
 
         // car
         var settingsArray: [Setting] = []
-        var titolo = NSLocalizedString("label_Car", comment: "")
+        var titolo = NSLocalizedString_("label_Car", comment: "")
 
-        var s = Setting(tag: AppSettings.SETTINGS_CAR, type: .PICKER, title: NSLocalizedString("label_CarModel", comment: ""), listTitles: [
+        var s = Setting(tag: AppSettings.SETTINGS_CAR, type: .PICKER, title: NSLocalizedString_("label_CarModel", comment: ""), listTitles: [
             "ZOE Q210",
             "ZOE R240",
             "ZOE Q90",
@@ -118,23 +175,23 @@ class SettingsViewController: CanZeViewController {
         ], intValue: Globals.shared.car)
         settingsArray.append(s)
 
-        s = Setting(tag: AppSettings.SETTINGS_CAR_USE_MILES, type: .SWITCH, title: NSLocalizedString("label_DistanceUnit", comment: ""), subTitle: Globals.shared.milesMode ? NSLocalizedString("label_Miles", comment: "") : NSLocalizedString("label_Kilometers", comment: ""), boolValue: Globals.shared.milesMode)
+        s = Setting(tag: AppSettings.SETTINGS_CAR_USE_MILES, type: .SWITCH, title: NSLocalizedString_("label_DistanceUnit", comment: ""), subTitle: Globals.shared.milesMode ? NSLocalizedString_("label_Miles", comment: "") : NSLocalizedString_("label_Kilometers", comment: ""), boolValue: Globals.shared.milesMode)
         settingsArray.append(s)
 
         settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
 
         // device
         settingsArray = []
-        titolo = NSLocalizedString("label_Settings_Device", comment: "")
+        titolo = NSLocalizedString_("label_Settings_Device", comment: "")
 
-        s = Setting(tag: AppSettings.SETTINGS_DEVICE_TYPE, type: .PICKER, title: NSLocalizedString("label_DeviceType", comment: ""), listTitles: [
+        s = Setting(tag: AppSettings.SETTINGS_DEVICE_TYPE, type: .PICKER, title: NSLocalizedString_("label_DeviceType", comment: ""), listTitles: [
             "ELM327",
             "CanSee",
             "Http Gateway",
         ], listValues: [
             AppSettings.DEVICE_TYPE.ELM327.rawValue,
             AppSettings.DEVICE_TYPE.CANSEE.rawValue,
-            AppSettings.DEVICE_TYPE.HTTP.rawValue,
+            AppSettings.DEVICE_TYPE.HTTP_GW.rawValue,
         ], intValue: Globals.shared.deviceType.rawValue)
         settingsArray.append(s)
 
@@ -154,7 +211,7 @@ class SettingsViewController: CanZeViewController {
             if Globals.shared.deviceType == .CANSEE {
                 placeHolder = "192.168.4.1"
             }
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString("label_DeviceAddress", comment: ""), stringValue: Globals.shared.deviceWifiAddress, placeholder: placeHolder)
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString_("label_DeviceAddress", comment: ""), stringValue: Globals.shared.deviceWifiAddress, placeholder: placeHolder)
             settingsArray.append(s)
             s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_PORT, type: .TEXTFIELD, title: "_device port:", stringValue: Globals.shared.deviceWifiPort, placeholder: "35000")
             settingsArray.append(s)
@@ -175,7 +232,7 @@ class SettingsViewController: CanZeViewController {
         }
 
         if Globals.shared.car != AppSettings.CAR_X10PH2 {
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS, type: .SWITCH, title: NSLocalizedString("label_AltFields", comment: ""), boolValue: Globals.shared.useIsoTpFields)
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS, type: .SWITCH, title: NSLocalizedString_("label_AltFields", comment: ""), boolValue: Globals.shared.useIsoTpFields)
             settingsArray.append(s)
         }
 
@@ -183,34 +240,34 @@ class SettingsViewController: CanZeViewController {
 
         // debug
         settingsArray = []
-        titolo = NSLocalizedString("label_SdCardLogging", comment: "")
+        titolo = NSLocalizedString_("label_SdCardLogging", comment: "")
 
-        s = Setting(tag: AppSettings.SETTING_LOGGING_USE_SD_CARD, type: .SWITCH, title: NSLocalizedString("Log to sdcard1", comment: ""), boolValue: Globals.shared.useSdCard)
+        s = Setting(tag: AppSettings.SETTING_LOGGING_USE_SD_CARD, type: .SWITCH, title: NSLocalizedString_("Log to sdcard1", comment: ""), boolValue: Globals.shared.useSdCard)
         settingsArray.append(s)
 
-        s = Setting(tag: AppSettings.SETTING_LOGGING_WRITE_FOR_EMULATOR, type: .SWITCH, title: NSLocalizedString("Write for emulator", comment: ""), boolValue: Globals.shared.writeForEmulator)
+        s = Setting(tag: AppSettings.SETTING_LOGGING_WRITE_FOR_EMULATOR, type: .SWITCH, title: NSLocalizedString_("Write for emulator", comment: ""), boolValue: Globals.shared.writeForEmulator)
         settingsArray.append(s)
 
         settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
 
         // app version
         settingsArray = []
-        titolo = NSLocalizedString("label_Info", comment: "")
+        titolo = NSLocalizedString_("label_Info", comment: "")
 
         let version = "\(Bundle.main.infoDictionary!["CFBundleShortVersionString"] ?? "")(\(Bundle.main.infoDictionary!["CFBundleVersion"] ?? ""))"
 
-        s = Setting(tag: nil, type: .TEXTFIELD_READONLY, title: NSLocalizedString("version", comment: ""), stringValue: version)
+        s = Setting(tag: nil, type: .TEXTFIELD_READONLY, title: NSLocalizedString_("version", comment: ""), stringValue: version)
         settingsArray.append(s)
 
         settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
     }
 
-    @IBAction func btnOBDTest() {
-        if Globals.shared.deviceType != .ELM327 {
-            return
-        }
+    @IBAction func btnDongleTest() {
+        //        if Globals.shared.deviceType != .ELM327 {
+        //            return
+        //        }
 
-        if Globals.shared.deviceType == .ELM327, !Globals.shared.deviceIsConnected {
+        if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             view.hideAllToasts()
             view.makeToast("_please connect")
             return
@@ -218,7 +275,7 @@ class SettingsViewController: CanZeViewController {
         view.hideAllToasts()
         view.makeToast("_starting test")
 
-        NotificationCenter.default.addObserver(self, selector: #selector(endOBDTest), name: Notification.Name("endQueue2"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(endDongleTest), name: Notification.Name("endQueue2"), object: nil)
 
         queue2 = []
         if Utils.isPh2() {
@@ -229,30 +286,30 @@ class SettingsViewController: CanZeViewController {
         startQueue2()
     }
 
-    @objc func endOBDTest() {
+    @objc func endDongleTest() {
         NotificationCenter.default.removeObserver(self, name: Notification.Name("endQueue2"), object: nil)
 
         let sid1 = Sid.SoC
         let v1 = Globals.shared.fieldResultsDouble[sid1]
-        let f1 = Fields.getInstance.getBySID(sid1)
+//        let f1 = Fields.getInstance.getBySID(sid1)
 
         let sid2 = Sid.BatterySerial
         let v2 = Globals.shared.fieldResultsString[sid2]
-        let f2 = Fields.getInstance.getBySID(sid2)
+//        let f2 = Fields.getInstance.getBySID(sid2)
 
-        if f1 != nil, v1 != nil, f2 != nil, v2 != nil {
+        if v1 != nil, v2 != nil {
 //            view.hideAllToasts()
 //            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)", duration: 5.0, position: ToastPosition.center, title: nil, image: nil, style: ToastStyle(), completion: nil)
 //            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)")
-            let msg = "\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)"
-            let ac = UIAlertController(title: "TEST ELM327", message: msg, preferredStyle: .alert)
-            let ac1 = UIAlertAction(title: "OK", style: .default, handler: nil)
+            let msg = "Soc \(v1 ?? 0.0) %\nSerial \(v2!)"
+            let ac = UIAlertController(title: "_Test dongle", message: msg, preferredStyle: .alert)
+            let ac1 = UIAlertAction(title: NSLocalizedString_("default_Ok", comment: ""), style: .default, handler: nil)
             ac.addAction(ac1)
             present(ac, animated: true, completion: nil)
 
         } else {
-            let ac = UIAlertController(title: "TEST ELM327", message: "_test ko :-(", preferredStyle: .alert)
-            let ac1 = UIAlertAction(title: "OK", style: .default, handler: nil)
+            let ac = UIAlertController(title: "_Test dongle", message: "_Test KO :-(", preferredStyle: .alert)
+            let ac1 = UIAlertAction(title: NSLocalizedString_("default_Ok", comment: ""), style: .default, handler: nil)
             ac.addAction(ac1)
             present(ac, animated: true, completion: nil)
         }
@@ -287,7 +344,7 @@ class SettingsViewController: CanZeViewController {
 
             ud.setValue(Globals.shared.deviceType.rawValue, forKey: AppSettings.SETTINGS_DEVICE_TYPE)
 
-            if Globals.shared.deviceType == .HTTP { // http gw is only supported via http
+            if Globals.shared.deviceType == .HTTP_GW { // http gw is only supported via http
                 ud.setValue(AppSettings.DEVICE_CONNECTION.HTTP.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
                 ud.setValue("192.168.0.10", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
             }
@@ -357,7 +414,7 @@ class SettingsViewController: CanZeViewController {
         let arraySettings = settingsDic[myKey]
         let setting = arraySettings?[lastSelectedIndexPath.row]
 
-        let value = textField.text
+        let value = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
 
         ud.setValue(value, forKey: setting!.tag!)
         ud.synchronize()
@@ -576,8 +633,8 @@ extension SettingsViewController: UITableViewDelegate {
             textFieldView.alpha = 1.0
             textField.text = setting.stringValue
             textField.placeholder = setting.placeholder
-            btnTextFieldDone.backgroundColor = .lightGray
-            btnTextFieldCancel.backgroundColor = .lightGray
+            //btnTextFieldDone.backgroundColor = .lightGray
+            //btnTextFieldCancel.backgroundColor = .lightGray
 
         case .SWITCH:
 

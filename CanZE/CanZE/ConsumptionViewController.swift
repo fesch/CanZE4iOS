@@ -65,28 +65,28 @@ class ConsumptionViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_consumption", comment: "")
+        title = NSLocalizedString_("title_activity_consumption", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        label_WheelTorque.text = NSLocalizedString("label_WheelTorque", comment: "")
+        label_WheelTorque.text = NSLocalizedString_("label_WheelTorque", comment: "")
         text_wheel_torque.text = "-"
-        label_InstantConsumption.text = NSLocalizedString("label_InstantConsumption", comment: "")
+        label_InstantConsumption.text = NSLocalizedString_("label_InstantConsumption", comment: "")
         text_instant_consumption_negative.text = "-"
 
-        lblGraphTitle1.text = NSLocalizedString("graph_PowerSoc", comment: "")
+        lblGraphTitle1.text = NSLocalizedString_("graph_PowerSoc", comment: "")
         lblGraphValue1a.text = "-"
         lblGraphValue1a.textColor = .purple
         lblGraphValue1b.text = "-"
 
-        lblGraphTitle2.text = NSLocalizedString("graph_SpeedConsumption", comment: "")
+        lblGraphTitle2.text = NSLocalizedString_("graph_SpeedConsumption", comment: "")
         lblGraphValue2a.text = "-"
         lblGraphValue2a.textColor = UIColor(rgb: 0x008a1d)
         lblGraphValue2b.text = "-"
 
-        lblGraphTitle3.text = NSLocalizedString("_Delta with reality (km), Range (km)", comment: "")
+        lblGraphTitle3.text = NSLocalizedString_("_Delta with reality (km), Range (km)", comment: "")
         lblGraphValue3a.text = "-"
         lblGraphValue3b.text = "-"
 
@@ -141,11 +141,11 @@ class ConsumptionViewController: CanZeViewController {
                         t -= 0.0125
                     }
 
-                    self.pb_driver_torque_request.setProgress(1.0 - t, animated: false)
-                    self.MaxBrakeTorque.setProgress(1.0 - t, animated: false)
-                    self.pb_instant_consumption_negative.setProgress(1.0 - t, animated: false)
-                    self.pb_instant_consumption_positive.setProgress(1.0 - t, animated: false)
-                    self.MeanEffectiveAccTorque.setProgress(1.0 - t, animated: false)
+                    pb_driver_torque_request.setProgress(1.0 - t, animated: false)
+                    MaxBrakeTorque.setProgress(1.0 - t, animated: false)
+                    pb_instant_consumption_negative.setProgress(1.0 - t, animated: false)
+                    pb_instant_consumption_positive.setProgress(1.0 - t, animated: false)
+                    MeanEffectiveAccTorque.setProgress(1.0 - t, animated: false)
                 }
          */
     }
@@ -177,17 +177,17 @@ class ConsumptionViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -221,118 +221,118 @@ class ConsumptionViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.TotalPositiveTorque:
-                    self.posTorque = Int(val!)
+                    posTorque = Int(val!)
                     let progress = Float(val!) / 2048.0
-                    self.MeanEffectiveAccTorque.setProgress(1 - progress, animated: false)
+                    MeanEffectiveAccTorque.setProgress(1 - progress, animated: false)
                 case Sid.TotalNegativeTorque:
                     let field = Fields.getInstance.fieldsBySid[sid!]
-                    self.negTorque = Int(val!)
-                    self.text_wheel_torque.text = "\(self.posTorque - self.negTorque) \(field?.unit ?? "")"
+                    negTorque = Int(val!)
+                    text_wheel_torque.text = "\(posTorque - negTorque) \(field?.unit ?? "")"
                     let progress = Float(val!) / 1536.0
-                    self.pb_driver_torque_request.setProgress(1 - progress, animated: false)
+                    pb_driver_torque_request.setProgress(1 - progress, animated: false)
                 case Sid.TotalPotentialResistiveWheelsTorque:
                     let tprwt = -Int(val!)
                     let progress = tprwt < 2047 ? Float(tprwt) : 10 / 1536.0
-                    self.MaxBrakeTorque.setProgress(1 - progress, animated: false)
+                    MaxBrakeTorque.setProgress(1 - progress, animated: false)
                 case Sid.Instant_Consumption:
                     let field = Fields.getInstance.fieldsBySid[sid!]
                     let consumptionInt = Int(val!)
 
                     // progress bars are rescaled to miles by the layout
                     var progress = -Float(min(0, consumptionInt)) / 150.0
-                    self.pb_instant_consumption_negative.setProgress(1 - progress, animated: false)
+                    pb_instant_consumption_negative.setProgress(1 - progress, animated: false)
 
                     progress = Float(max(0, consumptionInt)) / 150.0
-                    self.pb_instant_consumption_positive.setProgress(1 - progress, animated: false)
+                    pb_instant_consumption_positive.setProgress(1 - progress, animated: false)
 
                     if !Globals.shared.milesMode {
-                        self.text_instant_consumption_negative.text = "\(consumptionInt) \(field!.unit!)"
+                        text_instant_consumption_negative.text = "\(consumptionInt) \(field!.unit!)"
                     } else if val != 0.0 { // consumption is now in kWh/100mi, so rescale progress bar
                         // display the value in imperial format (100 / consumption, meaning mi/kwh)
-                        self.text_instant_consumption_negative.text = String(format: "%.2f \(NSLocalizedString("unit_ConsumptionMiAlt", comment: ""))", 100.0 / val!)
+                        text_instant_consumption_negative.text = String(format: "%.2f \(NSLocalizedString_("unit_ConsumptionMiAlt", comment: ""))", 100.0 / val!)
                     } else {
-                        self.text_instant_consumption_negative.text = "-"
+                        text_instant_consumption_negative.text = "-"
                     }
                 case Sid.DcPowerOut:
-                    self.lblGraphValue1a.text = String(format: "%.0f", val!)
+                    lblGraphValue1a.text = String(format: "%.0f", val!)
                     var add = true
-                    if self.chartEntries1a.count > 0 {
-                        let last = self.chartEntries1a.last
+                    if chartEntries1a.count > 0 {
+                        let last = chartEntries1a.last
                         if last!.x + 5 > Date().timeIntervalSince1970 {
                             add = false
                         }
                     }
                     if add {
-                        self.chartEntries1a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                        self.updateChart1()
+                        chartEntries1a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        updateChart1()
                     }
                 case Sid.UserSoC:
-                    self.lblGraphValue1b.text = String(format: "%.2f", val!)
+                    lblGraphValue1b.text = String(format: "%.2f", val!)
                     var add = true
-                    if self.chartEntries1b.count > 0 {
-                        let last = self.chartEntries1b.last
+                    if chartEntries1b.count > 0 {
+                        let last = chartEntries1b.last
                         if last!.x + 5 > Date().timeIntervalSince1970 {
                             add = false
                         }
                     }
                     if add {
-                        self.chartEntries1b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                        self.updateChart1()
+                        chartEntries1b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        updateChart1()
                     }
                 case Sid.RealSpeed:
-                    self.lblGraphValue2a.text = String(format: "%.2f", val!)
+                    lblGraphValue2a.text = String(format: "%.2f", val!)
                     var add = true
-                    if self.chartEntries2a.count > 0 {
-                        let last = self.chartEntries2a.last
+                    if chartEntries2a.count > 0 {
+                        let last = chartEntries2a.last
                         if last!.x + 5 > Date().timeIntervalSince1970 {
                             add = false
                         }
                     }
                     if add {
-                        self.chartEntries2a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                        self.updateChart2()
+                        chartEntries2a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        updateChart2()
                     }
                 case "800.6104.24":
-                    self.lblGraphValue2b.text = String(format: "%.1f", val!)
+                    lblGraphValue2b.text = String(format: "%.1f", val!)
                     var add = true
-                    if self.chartEntries2b.count > 0 {
-                        let last = self.chartEntries2b.last
+                    if chartEntries2b.count > 0 {
+                        let last = chartEntries2b.last
                         if last!.x + 5 > Date().timeIntervalSince1970 {
                             add = false
                         }
                     }
                     if add {
-                        self.chartEntries2b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                        self.updateChart2()
+                        chartEntries2b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        updateChart2()
                     }
                 case "800.6107.24":
-                    self.lblGraphValue3a.text = String(format: "%.1f", val!)
+                    lblGraphValue3a.text = String(format: "%.1f", val!)
                     var add = true
-                    if self.chartEntries3a.count > 0 {
-                        let last = self.chartEntries3a.last
+                    if chartEntries3a.count > 0 {
+                        let last = chartEntries3a.last
                         if last!.x + 5 > Date().timeIntervalSince1970 {
                             add = false
                         }
                     }
                     if add {
-                        self.chartEntries3a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                        self.updateChart3()
+                        chartEntries3a.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        updateChart3()
                     }
                 case Sid.RangeEstimate:
-                    self.lblGraphValue3b.text = String(format: "%.1f", val!)
+                    lblGraphValue3b.text = String(format: "%.1f", val!)
                     var add = true
-                    if self.chartEntries3b.count > 0 {
-                        let last = self.chartEntries3b.last
+                    if chartEntries3b.count > 0 {
+                        let last = chartEntries3b.last
                         if last!.x + 5 > Date().timeIntervalSince1970 {
                             add = false
                         }
                     }
                     if add {
-                        self.chartEntries3b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                        self.updateChart3()
+                        chartEntries3b.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                        updateChart3()
                     }
                 default:
                     print("unknown sid \(sid!)")

@@ -23,7 +23,7 @@ class TemperatureHeatmapViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_heatmap_bat", comment: "")
+        title = NSLocalizedString_("title_activity_heatmap_bat", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
@@ -67,17 +67,17 @@ class TemperatureHeatmapViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -118,13 +118,13 @@ class TemperatureHeatmapViewController: CanZeViewController {
                         // the update has to be done in a separate thread
                         // otherwise the UI will not be repainted
                         for i in 1 ..< lastCell+1 {
-                            DispatchQueue.main.async {
-                                if let tv = self.view.viewWithTag(i+1000) {
+                            DispatchQueue.main.async { [self] in
+                                if let tv = view.viewWithTag(i+1000) {
                                     let tv2 = tv as! UILabel
                                     // tv.setText(String.format("%.3f", lastVoltage[i]));
-                                    tv2.text = String(format: "%.1f", self.lastVal[i])
-                                    let delta = Int(50 * (self.lastVal[i] - self.mean)) // color is temp minus mean
-                                    tv2.backgroundColor = self.makeColor(delta)
+                                    tv2.text = String(format: "%.1f", lastVal[i])
+                                    let delta = Int(50 * (lastVal[i] - mean)) // color is temp minus mean
+                                    tv2.backgroundColor = makeColor(delta)
                                 }
                             }
                         }

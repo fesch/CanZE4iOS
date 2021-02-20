@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 
 class Globals: NSObject {
-    static let localizableFromPlist = NSDictionary(contentsOf: Bundle.main.url(forResource: "Localizable", withExtension: "plist")!)
-
     static var shared = Globals()
 
     // APP CONFIG
@@ -63,7 +61,6 @@ class Globals: NSObject {
 
     static let reduction = 9.32 // update suggested by Loc Dao
     var lastTime: [String: Double] = [:]
-    
-    static let K_TAG_vBG = 99999
 
+    static let K_TAG_vBG = 99999
 }

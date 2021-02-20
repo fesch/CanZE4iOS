@@ -58,42 +58,38 @@ class DrivingViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_driving", comment: "")
+        title = NSLocalizedString_("title_activity_driving", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        label_pedal.text = NSLocalizedString("label_pedal", comment: "")
+        label_pedal.text = NSLocalizedString_("label_pedal", comment: "")
 
-        label_wheel_torque.text = NSLocalizedString("label_wheel_torque", comment: "")
+        label_wheel_torque.text = NSLocalizedString_("label_wheel_torque", comment: "")
 
         textRealSpeed.text = "-"
-        var s = NSLocalizedString(Globals.shared.milesMode ? "unit_SpeedMi" : "unit_SpeedKm", comment: "")
-        s = s.replacingOccurrences(of: "u0020", with: " ")
-        textSpeedUnit.text = s
+        textSpeedUnit.text = NSLocalizedString_(Globals.shared.milesMode ? "unit_SpeedMi" : "unit_SpeedKm", comment: "")
 
         textConsumption.text = "-"
-        s = NSLocalizedString(Globals.shared.milesMode ? "unit_ConsumptionMiAlt" : "unit_ConsumptionKm", comment: "")
-        s = s.replacingOccurrences(of: "u0020", with: " ")
-        textConsumptionUnit.text = s
+        textConsumptionUnit.text = NSLocalizedString_(Globals.shared.milesMode ? "unit_ConsumptionMiAlt" : "unit_ConsumptionKm", comment: "")
 
-        LabelDistToDest.text = NSLocalizedString("label_DistToDest", comment: "")
+        LabelDistToDest.text = NSLocalizedString_("label_DistToDest", comment: "")
         textDistToDest.text = ""
 
-        label_DistAvailAtDest.text = NSLocalizedString("label_DistAvailAtDest", comment: "")
+        label_DistAvailAtDest.text = NSLocalizedString_("label_DistAvailAtDest", comment: "")
         textDistAVailAtDest.text = "0"
 
-        LabelTripConsumption.text = NSLocalizedString("label_TripConsumption", comment: "")
+        LabelTripConsumption.text = NSLocalizedString_("label_TripConsumption", comment: "")
         textTripConsumption.text = "0"
 
-        label_TripDistance.text = NSLocalizedString("label_TripDistance", comment: "")
+        label_TripDistance.text = NSLocalizedString_("label_TripDistance", comment: "")
         textTripDistance.text = "-"
 
-        label_TripEnergy.text = NSLocalizedString("label_TripEnergy", comment: "")
+        label_TripEnergy.text = NSLocalizedString_("label_TripEnergy", comment: "")
         textTripEnergy.text = "-"
 
-        label_UserSOC.text = NSLocalizedString("label_UserSOC", comment: "")
+        label_UserSOC.text = NSLocalizedString_("label_UserSOC", comment: "")
         textSOC.text = "-"
 
         // init progressview
@@ -141,10 +137,10 @@ class DrivingViewController: CanZeViewController {
                  t -= 0.0125
              }
 
-             self.pb_driver_torque_request.setProgress(1.0 - t, animated: false)
-             self.MaxBrakeTorque.setProgress(1.0 - t, animated: false)
-             self.pedalBar.setProgress(1.0 - t, animated: false)
-             self.MeanEffectiveAccTorque.setProgress(1.0 - t, animated: false)
+             pb_driver_torque_request.setProgress(1.0 - t, animated: false)
+             MaxBrakeTorque.setProgress(1.0 - t, animated: false)
+             pedalBar.setProgress(1.0 - t, animated: false)
+             MeanEffectiveAccTorque.setProgress(1.0 - t, animated: false)
          }
          */
     }
@@ -176,17 +172,17 @@ class DrivingViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
-    override  func startQueue() {
+    override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -213,7 +209,7 @@ class DrivingViewController: CanZeViewController {
 
     @objc func endQueue2() {
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.125) {
-            self.startQueue()
+        startQueue()
 //        }
     }
 
@@ -223,61 +219,61 @@ class DrivingViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.SoC:
-                    self.textSOC.text = String(format: "%.1f", val!)
+                    textSOC.text = String(format: "%.1f", val!)
                 case Sid.Pedal:
                     let progress = Float(val!) / 125.0
-                    self.pedalBar.setProgress(1 - progress, animated: false)
+                    pedalBar.setProgress(1 - progress, animated: false)
                 case Sid.TotalPositiveTorque:
                     let progress = Float(val!) / 2048.0
-                    self.MeanEffectiveAccTorque.setProgress(1 - progress, animated: false)
+                    MeanEffectiveAccTorque.setProgress(1 - progress, animated: false)
                 case Sid.EVC_Odometer:
-                    self.odo = val!
+                    odo = val!
                 case Sid.TripMeterB:
-                    self.tripBdistance = val!
-                    self.tripDistance = self.tripBdistance - self.startBdistance
-                    self.displayTripData()
+                    tripBdistance = val!
+                    tripDistance = tripBdistance - startBdistance
+                    displayTripData()
                 case Sid.TripEnergyB:
-                    self.tripBenergy = val!
-                    self.tripEnergy = self.tripBenergy - self.startBenergy
-                    self.displayTripData()
+                    tripBenergy = val!
+                    tripEnergy = tripBenergy - startBenergy
+                    displayTripData()
 //            case Sid.MaxCharge: NOT USED !
-//                self.text_max_charge.text = String(format: "%.1f", val)
+//                text_max_charge.text = String(format: "%.1f", val)
                 case Sid.RealSpeed:
-                    self.realSpeed = val!
-                    self.textRealSpeed.text = String(format: "%.1f", val!)
+                    realSpeed = val!
+                    textRealSpeed.text = String(format: "%.1f", val!)
                 case Sid.DcPowerOut:
                     if let dcPwr = val {
-                        if !Globals.shared.milesMode, self.realSpeed > 5 {
-                            self.textConsumption.text = String(format: "%.1f", 100.0 * dcPwr / self.realSpeed)
+                        if !Globals.shared.milesMode, realSpeed > 5 {
+                            textConsumption.text = String(format: "%.1f", 100.0 * dcPwr / realSpeed)
                         } else if Globals.shared.milesMode, dcPwr != 0 {
                             // real speed has already been returned in miles, so no conversions should be done
-                            self.textConsumption.text = String(format: "%.2f", self.realSpeed / dcPwr)
+                            textConsumption.text = String(format: "%.2f", realSpeed / dcPwr)
                         }
                     } else {
-                        self.textConsumption.text = "-"
+                        textConsumption.text = "-"
                     }
                 case Sid.RangeEstimate:
                     // int rangeInBat = (int) Utils.kmOrMiles(field.getValue());
                     let rangeInBat = Int(val!)
-                    if rangeInBat > 0, self.odo > 0, self.destOdo > 0 { // we update only if there are no weird values
-                        if self.destOdo > self.odo {
-                            self.displayDistToDest(distance1: Int(self.destOdo - self.odo), distance2: Int(Double(rangeInBat) - self.destOdo + self.odo))
+                    if rangeInBat > 0, odo > 0, destOdo > 0 { // we update only if there are no weird values
+                        if destOdo > odo {
+                            displayDistToDest(distance1: Int(destOdo - odo), distance2: Int(Double(rangeInBat) - destOdo + odo))
                         } else {
-                            self.displayDistToDest(distance1: 0, distance2: 0)
+                            displayDistToDest(distance1: 0, distance2: 0)
                         }
                     } else {
-                        self.displayDistToDest()
+                        displayDistToDest()
                     }
                 case Sid.TotalPotentialResistiveWheelsTorque: // blue bar
                     let tprwt = -Int(val!)
                     let progress = tprwt < 2047 ? Float(tprwt) : 10 / 1536.0
-                    self.MaxBrakeTorque.setProgress(1 - progress, animated: false)
+                    MaxBrakeTorque.setProgress(1 - progress, animated: false)
                 case Sid.TotalNegativeTorque:
                     let progress = Float(val!) / 1536.0
-                    self.pb_driver_torque_request.setProgress(1 - progress, animated: false)
+                    pb_driver_torque_request.setProgress(1 - progress, animated: false)
 
                 // case Sid.DriverBrakeWheel_Torque_Request:
                 //    driverBrakeWheel_Torque_Request = field.getValue() + coasting_Torque;
@@ -302,24 +298,24 @@ class DrivingViewController: CanZeViewController {
             return
         }
 
-        let alertController = UIAlertController(title: NSLocalizedString("prompt_Distance", comment: ""), message: NSLocalizedString("prompt_SetDistance", comment: ""), preferredStyle: .alert)
+        let alertController = UIAlertController(title: NSLocalizedString_("prompt_Distance", comment: ""), message: NSLocalizedString_("prompt_SetDistance", comment: ""), preferredStyle: .alert)
         alertController.addTextField { textField in
             textField.placeholder = ""
         }
 
-        let confirmAction = UIAlertAction(title: NSLocalizedString("default_Ok", comment: ""), style: .default) { [weak alertController] _ in
+        let confirmAction = UIAlertAction(title: NSLocalizedString_("default_Ok", comment: ""), style: .default) { [self, weak alertController] _ in
             guard let alertController = alertController, let textField = alertController.textFields?.first else { return }
             if let i = Int(textField.text ?? "") {
-                self.saveDestOdo(d: self.odo + Double(i))
+                saveDestOdo(d: odo + Double(i))
             }
         }
         alertController.addAction(confirmAction)
 
-        let doubleAction = UIAlertAction(title: NSLocalizedString("button_Double", comment: ""), style: .default) { [weak alertController] _ in
+        let doubleAction = UIAlertAction(title: NSLocalizedString_("button_Double", comment: ""), style: .default) { [self, weak alertController] _ in
             guard let alertController = alertController, let textField = alertController.textFields?.first else { return }
             let i = Int(textField.text ?? "")
             if i != nil {
-                self.saveDestOdo(d: self.odo + 2.0 * Double(i!))
+                saveDestOdo(d: odo + 2.0 * Double(i!))
             }
         }
         alertController.addAction(doubleAction)
@@ -390,7 +386,7 @@ class DrivingViewController: CanZeViewController {
 
     func displayTripData() {
         if (odo - tripBdistance - 1) > savedTripStart {
-            textTripConsumption.text = NSLocalizedString("default_Reset", comment: "")
+            textTripConsumption.text = NSLocalizedString_("default_Reset", comment: "")
             textTripDistance.text = ""
             textTripEnergy.text = ""
             textTripConsumption.text = ""

@@ -14,7 +14,7 @@ class AppSettings: NSObject {
     static let CAR_TWINGO: Int = 0x001
     static let CAR_ZOE_Q210: Int = 0x002
     static let CAR_TWIZY: Int = 0x008
-    static let CAR_X10PH2: Int = 0x010 // ZE50
+    static let CAR_X10PH2: Int = 0x010 // ZE40/ZE50
     static let CAR_ZOE_R240: Int = 0x020
     static let CAR_ZOE_Q90: Int = 0x040
     static let CAR_ZOE_R90: Int = 0x080
@@ -36,7 +36,7 @@ class AppSettings: NSObject {
         case NONE
         case ELM327
         case CANSEE
-        case HTTP
+        case HTTP_GW
     }
 
     static let SETTINGS_DEVICE_TYPE = "SETTINGS_DEVICE_TYPE"

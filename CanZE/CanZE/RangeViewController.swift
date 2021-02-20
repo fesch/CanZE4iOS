@@ -48,21 +48,21 @@ class RangeViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_range", comment: "")
+        title = NSLocalizedString_("title_activity_range", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        label_RangeRemaining.text = NSLocalizedString("label_RangeRemaining", comment: "")
+        label_RangeRemaining.text = NSLocalizedString_("label_RangeRemaining", comment: "")
         carRange.text = "-"
-        label_RangeRemainingCanZE.text = NSLocalizedString("label_RangeRemainingCanZE", comment: "")
+        label_RangeRemainingCanZE.text = NSLocalizedString_("label_RangeRemainingCanZE", comment: "")
         canzeRange.text = "-"
-        label_EstimatedDrivingStyleLoss.text = NSLocalizedString("label_EstimatedDrivingStyleLoss", comment: "")
+        label_EstimatedDrivingStyleLoss.text = NSLocalizedString_("label_EstimatedDrivingStyleLoss", comment: "")
 
         lossView.text = "%"
 
-        graph_DistanceEnergy.text = NSLocalizedString("graph_DistanceEnergy", comment: "")
+        graph_DistanceEnergy.text = NSLocalizedString_("graph_DistanceEnergy", comment: "")
         text_DistanceEnergy1.text = "-"
         text_DistanceEnergy1.textColor = .red
         text_DistanceEnergy2.text = "-"
@@ -108,17 +108,17 @@ class RangeViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -135,8 +135,8 @@ class RangeViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
@@ -146,31 +146,31 @@ class RangeViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.RangeEstimate:
-                    self.distance = val!
-                    self.carRange.text = String(format: "%.1f", self.distance)
-                    self.text_DistanceEnergy1.text = String(format: "%.1f", val!)
+                    distance = val!
+                    carRange.text = String(format: "%.1f", distance)
+                    text_DistanceEnergy1.text = String(format: "%.1f", val!)
                 case Sid.AvailableEnergy:
-                    self.energy = val!
-                    self.range = self.energy / self.consumption * 100
-                    self.rangeWorst = self.energy / self.consumptionWorst * 100
-                    self.rangeBest = self.energy / self.consumptionBest * 100
-                    self.updateRange()
-                    self.text_DistanceEnergy2.text = String(format: "%.1f", val!)
+                    energy = val!
+                    range = energy / consumption * 100
+                    rangeWorst = energy / consumptionWorst * 100
+                    rangeBest = energy / consumptionBest * 100
+                    updateRange()
+                    text_DistanceEnergy2.text = String(format: "%.1f", val!)
                 case Sid.AverageConsumption:
-                    self.consumption = val!
-                    self.range = self.energy / self.consumption * 100
-                    self.updateRange()
+                    consumption = val!
+                    range = energy / consumption * 100
+                    updateRange()
                 case Sid.WorstAverageConsumption:
-                    self.consumptionWorst = val!
-                    self.rangeWorst = self.energy / self.consumptionWorst * 100
-                    self.updateRange()
+                    consumptionWorst = val!
+                    rangeWorst = energy / consumptionWorst * 100
+                    updateRange()
                 case Sid.BestAverageConsumption:
-                    self.consumptionBest = val!
-                    self.rangeBest = self.energy / self.consumptionBest * 100
-                    self.updateRange()
+                    consumptionBest = val!
+                    rangeBest = energy / consumptionBest * 100
+                    updateRange()
                 default:
                     print("unknown sid \(sid!)")
                 }

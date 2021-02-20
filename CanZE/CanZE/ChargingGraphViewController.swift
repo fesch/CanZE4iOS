@@ -46,21 +46,21 @@ class ChargingGraphViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_charging_graph", comment: "")
+        title = NSLocalizedString_("title_activity_charging_graph", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         //
 
-        graph_PilotPower.text = NSLocalizedString("graph_PilotPower", comment: "")
+        graph_PilotPower.text = NSLocalizedString_("graph_PilotPower", comment: "")
         graph_PilotPower1.text = "-"
         graph_PilotPower2.text = "-"
 
-        graph_MaxRealChPwr.text = NSLocalizedString("graph_MaxRealChPwr", comment: "")
+        graph_MaxRealChPwr.text = NSLocalizedString_("graph_MaxRealChPwr", comment: "")
         graph_MaxRealChPwr1.text = "-"
         graph_MaxRealChPwr2.text = "-"
 
-        graph_EnergyTemperature.text = NSLocalizedString("graph_EnergyTemperature", comment: "")
+        graph_EnergyTemperature.text = NSLocalizedString_("graph_EnergyTemperature", comment: "")
         graph_EnergyTemperature1.text = "-"
         graph_EnergyTemperature2.text = "-"
 
@@ -96,17 +96,17 @@ class ChargingGraphViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -126,8 +126,8 @@ class ChargingGraphViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
+            startQueue()
         }
     }
 
@@ -137,32 +137,32 @@ class ChargingGraphViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.ACPilot:
-                    self.graph_PilotPower1.text = String(format: "%.0f", val!)
-                    self.pilotPowerChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updatePilotPowerChart()
+                    graph_PilotPower1.text = String(format: "%.0f", val!)
+                    pilotPowerChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updatePilotPowerChart()
                 case Sid.AvailableChargingPower:
-                    self.graph_PilotPower2.text = String(format: "%.2f", val!)
-                    self.pilotPowerChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updatePilotPowerChart()
+                    graph_PilotPower2.text = String(format: "%.2f", val!)
+                    pilotPowerChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updatePilotPowerChart()
                 case Sid.MaxCharge:
-                    self.graph_MaxRealChPwr1.text = String(format: "%.2f", val!)
-                    self.maxRealChPwrChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateMaxRealChPwrChart()
+                    graph_MaxRealChPwr1.text = String(format: "%.2f", val!)
+                    maxRealChPwrChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateMaxRealChPwrChart()
                 case Sid.DcPowerIn:
-                    self.graph_MaxRealChPwr2.text = String(format: "%.0f", val!)
-                    self.maxRealChPwrChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateMaxRealChPwrChart()
+                    graph_MaxRealChPwr2.text = String(format: "%.0f", val!)
+                    maxRealChPwrChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateMaxRealChPwrChart()
                 case Sid.AvailableEnergy:
-                    self.graph_EnergyTemperature1.text = String(format: "%.3f", val!)
-                    self.energyTemperatureChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateEnergyTemperatureChart()
+                    graph_EnergyTemperature1.text = String(format: "%.3f", val!)
+                    energyTemperatureChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateEnergyTemperatureChart()
                 case Sid.HvTemp:
-                    self.graph_EnergyTemperature2.text = String(format: "%.2f", val!)
-                    self.energyTemperatureChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateEnergyTemperatureChart()
+                    graph_EnergyTemperature2.text = String(format: "%.2f", val!)
+                    energyTemperatureChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateEnergyTemperatureChart()
                 default:
                     print("unknown sid \(sid!)")
                 }

@@ -43,34 +43,34 @@ class ChargingViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_charging", comment: "")
+        title = NSLocalizedString_("title_activity_charging", comment: "")
         lblDebug.text = "Debug"
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         //
 
-        label_AvChPwr.text = NSLocalizedString("label_AvChPwr", comment: "")
+        label_AvChPwr.text = NSLocalizedString_("label_AvChPwr", comment: "")
         textAvChPwr.text = "-"
 
-        label_max_charge.text = NSLocalizedString("label_max_charge", comment: "")
+        label_max_charge.text = NSLocalizedString_("label_max_charge", comment: "")
         text_max_charge.text = "-"
 
-        labelDcPwr.text = NSLocalizedString("label_DcPwr", comment: "")
+        labelDcPwr.text = NSLocalizedString_("label_DcPwr", comment: "")
         textDcPwr.text = "-"
 
-        label_DISTA.text = NSLocalizedString("label_DISTA", comment: "")
+        label_DISTA.text = NSLocalizedString_("label_DISTA", comment: "")
         textKMA.text = "-"
 
-        label_UserSOC.text = NSLocalizedString("label_UserSOC", comment: "")
+        label_UserSOC.text = NSLocalizedString_("label_UserSOC", comment: "")
         textUserSOC.text = "-"
 
-        label_RealSOC.text = NSLocalizedString("label_RealSOC", comment: "")
+        label_RealSOC.text = NSLocalizedString_("label_RealSOC", comment: "")
         textRealSOC.text = "-"
 
-        label_SOH.text = NSLocalizedString("label_SOH", comment: "")
+        label_SOH.text = NSLocalizedString_("label_SOH", comment: "")
         textSOH.text = "-"
 
-        label_HvTemp.text = NSLocalizedString("label_HvTemp", comment: "")
+        label_HvTemp.text = NSLocalizedString_("label_HvTemp", comment: "")
         textHvTemp.text = "-"
     }
 
@@ -101,17 +101,17 @@ class ChargingViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -134,8 +134,8 @@ class ChargingViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
@@ -146,38 +146,38 @@ class ChargingViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.MaxCharge:
-                    self.text_max_charge.text = String(format: "%.\(f?.decimals ?? 2)f", val!)
-                    if val! < self.avChPwr * 0.8, self.avChPwr < 45.0 {
-                        self.text_max_charge.textColor = .red
+                    text_max_charge.text = String(format: "%.\(f?.decimals ?? 2)f", val!)
+                    if val! < avChPwr * 0.8, avChPwr < 45.0 {
+                        text_max_charge.textColor = .red
                     } else {
-                        self.text_max_charge.textColor = .black
+                        text_max_charge.textColor = .black
                     }
                 case Sid.UserSoC:
-                    self.textUserSOC.text = String(format: "%.2f", val!)
+                    textUserSOC.text = String(format: "%.2f", val!)
                 case Sid.RealSoC:
-                    self.textRealSOC.text = String(format: "%.2f", val!)
+                    textRealSOC.text = String(format: "%.2f", val!)
                 case Sid.SOH:
-                    self.textSOH.text = String(format: "%.2f", val!)
+                    textSOH.text = String(format: "%.2f", val!)
                 case Sid.RangeEstimate:
                     if val! >= 1023 {
-                        self.textKMA.text = "---"
+                        textKMA.text = "---"
                     } else {
-                        self.textKMA.text = String(format: "%.0f", val!)
+                        textKMA.text = String(format: "%.0f", val!)
                     }
                 case Sid.DcPowerIn:
-                    self.textDcPwr.text = String(format: "%.2f", val!)
+                    textDcPwr.text = String(format: "%.2f", val!)
                 case Sid.AvailableChargingPower:
-                    self.avChPwr = val!
-                    if self.avChPwr > 45 {
-                        self.textAvChPwr.text = "---"
+                    avChPwr = val!
+                    if avChPwr > 45 {
+                        textAvChPwr.text = "---"
                     } else {
-                        self.textAvChPwr.text = String(format: "%.2f", val!)
+                        textAvChPwr.text = String(format: "%.2f", val!)
                     }
                 case Sid.HvTemp:
-                    self.textHvTemp.text = String(format: "%.2f", val!)
+                    textHvTemp.text = String(format: "%.2f", val!)
                 default:
                     print("unknown sid \(sid!)")
                 }

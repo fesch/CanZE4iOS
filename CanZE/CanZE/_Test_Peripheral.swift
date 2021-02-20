@@ -160,11 +160,11 @@ extension _TestViewController: CBPeripheralDelegate {
             if s?.last == ">" {
                 lastRxString += s!
 
-                var string = lastRxString.trimmingCharacters(in: .whitespacesAndNewlines)
-                string = String(string.filter { !">".contains($0) })
-                string = String(string.filter { !"\r".contains($0) })
+                var reply = lastRxString.trimmingCharacters(in: .whitespacesAndNewlines)
+                reply = String(reply.filter { !">".contains($0) })
+                reply = String(reply.filter { !"\r".contains($0) })
 
-                let dic: [String: String] = ["tag": string]
+                let dic: [String: String] = ["reply": reply]
 
 //                var ss = String(lastRxString.filter { !"\r".contains($0) })
 //                ss = String(ss.filter { !"\n".contains($0) })

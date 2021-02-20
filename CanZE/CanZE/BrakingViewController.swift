@@ -35,22 +35,22 @@ class BrakingViewController: CanZeViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        title = NSLocalizedString("title_activity_braking", comment: "")
+        title = NSLocalizedString_("title_activity_braking", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        label_driver_torque_request.text = NSLocalizedString("label_driver_torque_request", comment: "")
+        label_driver_torque_request.text = NSLocalizedString_("label_driver_torque_request", comment: "")
         text_driver_torque_request.text = "-"
 
-        label_ElecBrakeWheelsTorqueApplied.text = NSLocalizedString("label_ElecBrakeWheelsTorqueApplied", comment: "")
+        label_ElecBrakeWheelsTorqueApplied.text = NSLocalizedString_("label_ElecBrakeWheelsTorqueApplied", comment: "")
         text_ElecBrakeWheelsTorqueApplied.text = "-"
 
-        label_diff_friction_torque.text = NSLocalizedString("label_diff_friction_torque", comment: "")
+        label_diff_friction_torque.text = NSLocalizedString_("label_diff_friction_torque", comment: "")
         text_diff_friction_torque.text = "-"
 
-        help_AllTorques.text = NSLocalizedString("help_AllTorques", comment: "")
+        help_AllTorques.text = NSLocalizedString_("help_AllTorques", comment: "")
 
         // init progressview
         pb_driver_torque_request.trackImage = UIImage(view: GradientView(frame: pb_driver_torque_request.bounds)).withHorizontallyFlippedOrientation()
@@ -94,10 +94,10 @@ class BrakingViewController: CanZeViewController {
                         t -= 0.0125
                     }
 
-                    self.pb_driver_torque_request.setProgress(1.0 - t, animated: false)
-                    self.MaxBrakeTorque.setProgress(1.0 - t, animated: false)
-                    self.pb_ElecBrakeWheelsTorqueApplied.setProgress(1.0 - t, animated: false)
-                    self.pb_diff_friction_torque.setProgress(1.0 - t, animated: false)
+                    pb_driver_torque_request.setProgress(1.0 - t, animated: false)
+                    MaxBrakeTorque.setProgress(1.0 - t, animated: false)
+                    pb_ElecBrakeWheelsTorqueApplied.setProgress(1.0 - t, animated: false)
+                    pb_diff_friction_torque.setProgress(1.0 - t, animated: false)
                 }
          */
     }
@@ -129,17 +129,17 @@ class BrakingViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -155,7 +155,7 @@ class BrakingViewController: CanZeViewController {
 
     @objc func endQueue2() {
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+            startQueue()
 //        }
     }
 
@@ -165,34 +165,34 @@ class BrakingViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.TotalPotentialResistiveWheelsTorque: // bluebar
                     let tprwt = -val!
                     let progress = Float(tprwt < 2047 ? tprwt : 20 / 2048.0)
-                    self.MaxBrakeTorque.setProgress(1 - progress, animated: false)
+                    MaxBrakeTorque.setProgress(1 - progress, animated: false)
                 case Sid.FrictionTorque:
-                    self.frictionTorque = val!
+                    frictionTorque = val!
 
                     var progress = Float(val!) / 2048.0
-                    self.pb_diff_friction_torque.setProgress(1 - progress, animated: false)
-                    let um = NSLocalizedString("unit_Nm", comment: "")
-                    self.text_diff_friction_torque.text = String(format: "%.0f \(um)", val!)
+                    pb_diff_friction_torque.setProgress(1 - progress, animated: false)
+                    let um = NSLocalizedString_("unit_Nm", comment: "")
+                    text_diff_friction_torque.text = String(format: "%.0f \(um)", val!)
 
-                    progress = Float((self.frictionTorque + self.elecBrakeTorque) / 2048.0)
-                    self.pb_driver_torque_request.setProgress(1 - progress, animated: false)
-                    self.text_driver_torque_request.text = String(format: "%.0f \(um)", self.frictionTorque + self.elecBrakeTorque)
+                    progress = Float((frictionTorque + elecBrakeTorque) / 2048.0)
+                    pb_driver_torque_request.setProgress(1 - progress, animated: false)
+                    text_driver_torque_request.text = String(format: "%.0f \(um)", frictionTorque + elecBrakeTorque)
                 case Sid.ElecBrakeTorque:
-                    self.elecBrakeTorque = val!
+                    elecBrakeTorque = val!
 
                     var progress = Float(val!) / 2048.0
-                    self.pb_ElecBrakeWheelsTorqueApplied.setProgress(1 - progress, animated: false)
-                    let um = NSLocalizedString("unit_Nm", comment: "")
-                    self.text_ElecBrakeWheelsTorqueApplied.text = String(format: "%.0f \(um)", val!)
+                    pb_ElecBrakeWheelsTorqueApplied.setProgress(1 - progress, animated: false)
+                    let um = NSLocalizedString_("unit_Nm", comment: "")
+                    text_ElecBrakeWheelsTorqueApplied.text = String(format: "%.0f \(um)", val!)
 
-                    progress = Float((self.frictionTorque + self.elecBrakeTorque) / 2048.0)
-                    self.pb_driver_torque_request.setProgress(1 - progress, animated: false)
-                    self.text_driver_torque_request.text = String(format: "%.0f \(um)", self.frictionTorque + self.elecBrakeTorque)
+                    progress = Float((frictionTorque + elecBrakeTorque) / 2048.0)
+                    pb_driver_torque_request.setProgress(1 - progress, animated: false)
+                    text_driver_torque_request.text = String(format: "%.0f \(um)", frictionTorque + elecBrakeTorque)
                 default:
                     print("unknown sid \(sid!)")
                 }

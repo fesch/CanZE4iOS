@@ -55,7 +55,7 @@ extension _TestViewController: StreamDelegate {
                 string = string?.trimmingCharacters(in: .whitespacesAndNewlines)
                 string = String(string!.filter { !">".contains($0) })
                 string = String(string!.filter { !"\r".contains($0) })
-                let dic: [String: String] = ["tag": string!]
+                let dic: [String: String] = ["reply": string!]
                 NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
             }
         }

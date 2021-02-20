@@ -66,55 +66,55 @@ class HomeViewController: CanZeViewController {
         let items = Array(arrayLiteral: item1, item2)
         navigationItem.leftBarButtonItems = items
 
-        btnConsumption.setTitle(NSLocalizedString("button_Consumption", comment: "").uppercased(), for: .normal)
+        btnConsumption.setTitle(NSLocalizedString_("button_Consumption", comment: "").uppercased(), for: .normal)
         btnConsumption.setImage(#imageLiteral(resourceName: "button_consumption"), for: .normal)
-        btnBattery.setTitle(NSLocalizedString("button_Battery", comment: "").uppercased(), for: .normal)
+        btnBattery.setTitle(NSLocalizedString_("button_Battery", comment: "").uppercased(), for: .normal)
         btnBattery.setImage(#imageLiteral(resourceName: "button_battery"), for: .normal)
-        btnClimate.setTitle(NSLocalizedString("button_Climate", comment: "").uppercased(), for: .normal)
+        btnClimate.setTitle(NSLocalizedString_("button_Climate", comment: "").uppercased(), for: .normal)
         btnClimate.setImage(#imageLiteral(resourceName: "button_climate"), for: .normal)
-        btnCharging.setTitle(NSLocalizedString("button_Charging", comment: "").uppercased(), for: .normal)
+        btnCharging.setTitle(NSLocalizedString_("button_Charging", comment: "").uppercased(), for: .normal)
         btnCharging.setImage(#imageLiteral(resourceName: "button_charge"), for: .normal)
-        btnDriving.setTitle(NSLocalizedString("button_Driving", comment: "").uppercased(), for: .normal)
+        btnDriving.setTitle(NSLocalizedString_("button_Driving", comment: "").uppercased(), for: .normal)
         btnDriving.setImage(#imageLiteral(resourceName: "button_drive"), for: .normal)
-        btnBraking.setTitle(NSLocalizedString("button_Braking", comment: "").uppercased(), for: .normal)
+        btnBraking.setTitle(NSLocalizedString_("button_Braking", comment: "").uppercased(), for: .normal)
         btnBraking.setImage(#imageLiteral(resourceName: "button_brake"), for: .normal)
-        btnAvgSpeed.setTitle(NSLocalizedString("button_speedcontrol", comment: "").uppercased(), for: .normal)
+        btnAvgSpeed.setTitle(NSLocalizedString_("button_speedcontrol", comment: "").uppercased(), for: .normal)
         btnAvgSpeed.setImage(#imageLiteral(resourceName: "button_speedcam"), for: .normal)
 
         lblNews.text = ""
-        lblMain.text = NSLocalizedString("help_Main", comment: "")
+        lblMain.text = NSLocalizedString_("help_Main", comment: "")
 
         getNews()
 
         loadSettings()
 
-        btnChargingTech.setTitle(NSLocalizedString("button_Charging", comment: "").uppercased(), for: .normal)
+        btnChargingTech.setTitle(NSLocalizedString_("button_Charging", comment: "").uppercased(), for: .normal)
         btnChargingTech.setImage(#imageLiteral(resourceName: "button_charge"), for: .normal)
-        btnChargingGraph.setTitle(NSLocalizedString("button_ChargingGraphs", comment: "").uppercased(), for: .normal)
+        btnChargingGraph.setTitle(NSLocalizedString_("button_ChargingGraphs", comment: "").uppercased(), for: .normal)
         btnChargingGraph.setImage(#imageLiteral(resourceName: "button_charging_graphs"), for: .normal)
-        btnFirmware.setTitle(NSLocalizedString("button_Firmware", comment: "").uppercased(), for: .normal)
+        btnFirmware.setTitle(NSLocalizedString_("button_Firmware", comment: "").uppercased(), for: .normal)
         btnFirmware.setImage(#imageLiteral(resourceName: "button_firmware"), for: .normal)
-        btnAllData.setTitle(NSLocalizedString("button_alldata", comment: "").uppercased(), for: .normal)
+        btnAllData.setTitle(NSLocalizedString_("button_alldata", comment: "").uppercased(), for: .normal)
         btnAllData.setImage(#imageLiteral(resourceName: "button_alldata"), for: .normal)
-        btnVoltageHeatmap.setTitle(NSLocalizedString("button_HeatmapVoltage", comment: "").uppercased(), for: .normal)
+        btnVoltageHeatmap.setTitle(NSLocalizedString_("button_HeatmapVoltage", comment: "").uppercased(), for: .normal)
         btnVoltageHeatmap.setImage(#imageLiteral(resourceName: "button_lightning"), for: .normal)
-        btnTemperatureHeatmap.setTitle(NSLocalizedString("button_HeatmapTemperature", comment: "").uppercased(), for: .normal)
+        btnTemperatureHeatmap.setTitle(NSLocalizedString_("button_HeatmapTemperature", comment: "").uppercased(), for: .normal)
         btnTemperatureHeatmap.setImage(#imageLiteral(resourceName: "button_batterytemp"), for: .normal)
-        btnDtcReadout.setTitle(NSLocalizedString("button_DtcReadout", comment: "").uppercased(), for: .normal)
+        btnDtcReadout.setTitle(NSLocalizedString_("button_DtcReadout", comment: "").uppercased(), for: .normal)
         btnDtcReadout.setImage(#imageLiteral(resourceName: "button_attention"), for: .normal)
-        btnChargingPrediction.setTitle(NSLocalizedString("button_ChargingPrediction", comment: "").uppercased(), for: .normal)
+        btnChargingPrediction.setTitle(NSLocalizedString_("button_ChargingPrediction", comment: "").uppercased(), for: .normal)
         btnChargingPrediction.setImage(#imageLiteral(resourceName: "button_prediction"), for: .normal)
-        btnElmTesting.setTitle(NSLocalizedString("button_ElmTesting", comment: "").uppercased(), for: .normal)
+        btnElmTesting.setTitle(NSLocalizedString_("button_ElmTesting", comment: "").uppercased(), for: .normal)
         btnElmTesting.setImage(#imageLiteral(resourceName: "button_elm327"), for: .normal)
-        btnChargingHistory.setTitle(NSLocalizedString("button_chargingHistory", comment: "").uppercased(), for: .normal)
+        btnChargingHistory.setTitle(NSLocalizedString_("button_chargingHistory", comment: "").uppercased(), for: .normal)
         btnChargingHistory.setImage(#imageLiteral(resourceName: "button_charginghist"), for: .normal)
-        btn12VBattery.setTitle(NSLocalizedString("button_AuxBatt", comment: "").uppercased(), for: .normal)
+        btn12VBattery.setTitle(NSLocalizedString_("button_AuxBatt", comment: "").uppercased(), for: .normal)
         btn12VBattery.setImage(#imageLiteral(resourceName: "button_auxbat"), for: .normal)
-        btnRange.setTitle(NSLocalizedString("button_Range", comment: "").uppercased(), for: .normal)
+        btnRange.setTitle(NSLocalizedString_("button_Range", comment: "").uppercased(), for: .normal)
         btnRange.setImage(#imageLiteral(resourceName: "button_range"), for: .normal)
-        btnLeakCurrents.setTitle(NSLocalizedString("button_LeakCurrents", comment: "").uppercased(), for: .normal)
+        btnLeakCurrents.setTitle(NSLocalizedString_("button_LeakCurrents", comment: "").uppercased(), for: .normal)
         btnLeakCurrents.setImage(#imageLiteral(resourceName: "button_leak"), for: .normal)
-        btnTires.setTitle(NSLocalizedString("button_Tires", comment: "").uppercased(), for: .normal)
+        btnTires.setTitle(NSLocalizedString_("button_Tires", comment: "").uppercased(), for: .normal)
         btnTires.setImage(#imageLiteral(resourceName: "button_tire"), for: .normal)
     }
 
@@ -138,7 +138,7 @@ class HomeViewController: CanZeViewController {
         } else if deviceIsConnectable() {
             // connect()
         } else {
-            view.makeToast(NSLocalizedString("toast_AdjustSettings", comment: ""))
+            view.makeToast(NSLocalizedString_("toast_AdjustSettings", comment: ""))
         }
     }
 
@@ -164,11 +164,11 @@ class HomeViewController: CanZeViewController {
                         if newsText.contains("<") {
                             self.isHtml = true
                         }
-                        DispatchQueue.main.async {
-                            if self.isHtml {
-                                self.lblNews.attributedText = newsText.htmlToAttributedString
+                        DispatchQueue.main.async { [self] in
+                            if isHtml {
+                                lblNews.attributedText = newsText.htmlToAttributedString
                             } else {
-                                self.lblNews.text = newsText
+                                lblNews.text = newsText
                             }
                         }
                         self.firstRun = false
@@ -176,8 +176,8 @@ class HomeViewController: CanZeViewController {
 
                 } catch {
                     print(error.localizedDescription)
-                    DispatchQueue.main.async {
-                        self.lblNews.text = "error"
+                    DispatchQueue.main.async { [self] in
+                        lblNews.text = "error"
                     }
                 }
             }

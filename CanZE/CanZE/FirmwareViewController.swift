@@ -23,25 +23,26 @@ class FirmwareViewController: CanZeViewController {
 
     var multi = false
     var logger = AllFirmwaresLogger()
+    var lastStringLogged = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_firmware", comment: "")
+        title = NSLocalizedString_("title_activity_firmware", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        lblHeader.attributedText = NSLocalizedString("help_Ecus", comment: "").htmlToAttributedString
+        lblHeader.attributedText = NSLocalizedString_("help_Ecus", comment: "").htmlToAttributedString
         lblResult1.text = " "
         lblResult2.text = " "
         lblResult3.text = " "
         lblResult4.text = " "
 
-        btnDownload_.setTitle(NSLocalizedString("button_WriteCsv", comment: "").uppercased(), for: .normal)
+        btnDownload_.setTitle(NSLocalizedString_("button_WriteCsv", comment: "").uppercased(), for: .normal)
 
         arrayEcu = []
         for ecu in Ecus.getInstance.getAllEcus() {
@@ -51,6 +52,10 @@ class FirmwareViewController: CanZeViewController {
             {
                 arrayEcu.append(ecu) // all reachable ECU's plus the Free Fields Computer. We skip the Virtual Fields Computer for now as it requires real fields and thus frames.
             }
+        }
+
+        arrayEcu.sort { (a: Ecu, b: Ecu) -> Bool in
+            a.mnemonic < b.mnemonic
         }
 
         tableV.delegate = self
@@ -84,18 +89,53 @@ class FirmwareViewController: CanZeViewController {
         super.viewDidDisappear(animated)
     }
 
-    @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+    override func viewDidLayoutSubviews() {
+        let lblHeaderText = NSLocalizedString_("help_Ecus", comment: "")
+        if lblHeaderText.contains("http://") || lblHeaderText.contains("https://") {
+            let b = UIButton(type: .system)
+            b.frame = lblHeader.frame
+            b.setTitle("", for: .normal)
+            b.addTarget(self, action: #selector(lblHeader_), for: .touchUpInside)
+            view.addSubview(b)
         }
-        debug((dic?["debug"])!)
+    }
+
+    @objc func lblHeader_() {
+        var source = NSLocalizedString_("help_Ecus", comment: "")
+        var from_ = source.index(of: "http://")
+        if from_ == nil {
+            from_ = source.index(of: "https://")
+        }
+        if from_ != nil {
+            source = String(source[from_!...])
+            var to_ = source.index(of: "\"")
+            if to_ == nil {
+                to_ = source.index(of: "'")
+            }
+            if to_ != nil {
+                let result = source[..<to_!]
+                print(result as Any)
+                let r = "\(result)"
+                let u = URL(string: r)
+                if UIApplication.shared.canOpenURL(u!) {
+                    UIApplication.shared.open(u!, options: [:], completionHandler: nil)
+                }
+            }
+        }
+    }
+
+    @objc func updateDebugLabel(notification: Notification) {
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
+        }
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -148,23 +188,24 @@ class FirmwareViewController: CanZeViewController {
         let sid = obj["sid"]
 
         if let field = Fields.getInstance.fieldsBySid[sid!] {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 var s = "\(field.frame.sendingEcu.mnemonic ?? ""),"
                 if sid!.contains(".6180.56") || sid!.contains(".62f1a0.") {
-                    s.append("diagVersion:\(self.formatta(field))")
-                    self.lblResult1.text = s
+                    s.append("diagVersion:\(formatta(field))")
+                    lblResult1.text = s
                 } else if sid!.contains(".64") || sid!.contains(".62f18a.") {
-                    s.append("supplier:\(self.formatta(field))")
-                    self.lblResult2.text = s
+                    s.append("supplier:\(formatta(field))")
+                    lblResult2.text = s
                 } else if sid!.contains(".128") || sid!.contains(".62f194.") {
-                    s.append("soft:\(self.formatta(field))")
-                    self.lblResult3.text = s
+                    s.append("soft:\(formatta(field))")
+                    lblResult3.text = s
                 } else if sid!.contains(".144") || sid!.contains(".62f195.") {
-                    s.append("version:\(self.formatta(field))")
-                    self.lblResult4.text = s
+                    s.append("version:\(formatta(field))")
+                    lblResult4.text = s
                 }
-                if self.multi, !sid!.contains(".5003.") {
-                    self.logger.add(s)
+                if multi, !sid!.contains(".5003."), s != lastStringLogged {
+                    logger.add(s)
+                    lastStringLogged = s
                 }
             }
         }
@@ -236,17 +277,15 @@ class FirmwareViewController: CanZeViewController {
             }
         }
 
-        for ecu in Ecus.getInstance.getAllEcus() {
+        for ecu in arrayEcu {
             // see if we need to stop right now
-            if ecu.fromId > 0, ecu.fromId < 0x800 || ecu.fromId >= 0x900 {
-                keepAlive()
-                if ecu.sessionRequired {
-                    if let frame = getFrame(fromId: ecu.fromId, responseId: ecu.startDiag) { // open the ecu, as the poller is stopped
-                        queryFrame(frame)
-                    }
+            keepAlive()
+            if ecu.sessionRequired {
+                if let frame = getFrame(fromId: ecu.fromId, responseId: ecu.startDiag) { // open the ecu, as the poller is stopped
+                    queryFrame(frame)
                 }
-                processOneEcu(ecu)
             }
+            processOneEcu(ecu)
         }
         // closeDump()
         // displayProgress(false, R.id.progressBar_cyclic3, R.id.csvFirmware) //
@@ -335,6 +374,10 @@ extension FirmwareViewController: UITableViewDelegate {
 }
 
 extension FirmwareViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 55
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrayEcu.count
     }
@@ -342,7 +385,9 @@ extension FirmwareViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")! as UITableViewCell
         let ecu = arrayEcu[indexPath.row]
-        cell.textLabel!.text = "\(ecu.mnemonic ?? "") (\(ecu.name ?? ""))"
+        cell.textLabel!.text = "\(ecu.mnemonic.trimmingCharacters(in: .whitespacesAndNewlines)) (\(ecu.name.trimmingCharacters(in: .whitespacesAndNewlines)))"
+        cell.textLabel!.numberOfLines = 0
+        cell.textLabel!.lineBreakMode = .byWordWrapping
         return cell
     }
 }

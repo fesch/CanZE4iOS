@@ -9,8 +9,8 @@ import UIKit
 
 extension UITextView {
     func scrollToBottom() {
-        DispatchQueue.main.async {
-            self.scrollRangeToVisible(NSMakeRange(self.text.count, Int.max))
+        DispatchQueue.main.async { [self] in
+            scrollRangeToVisible(NSMakeRange(self.text.count, Int.max))
         }
     }
 }

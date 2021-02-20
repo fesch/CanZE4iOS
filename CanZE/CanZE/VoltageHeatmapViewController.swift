@@ -33,17 +33,17 @@ class VoltageHeatmapViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_heatmap_cellvoltage", comment: "")
+        title = NSLocalizedString_("title_activity_heatmap_cellvoltage", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         //
 
-        label_CellVoltageTop.text = NSLocalizedString("label_CellVoltageTop", comment: "")
+        label_CellVoltageTop.text = NSLocalizedString_("label_CellVoltageTop", comment: "")
         text_CellVoltageTop.text = "-"
-        label_CellVoltageBottom.text = NSLocalizedString("label_CellVoltageBottom", comment: "")
+        label_CellVoltageBottom.text = NSLocalizedString_("label_CellVoltageBottom", comment: "")
         text_CellVoltageBottom.text = "-"
-        label_CellVoltageDelta.text = NSLocalizedString("label_CellVoltageDelta", comment: "")
+        label_CellVoltageDelta.text = NSLocalizedString_("label_CellVoltageDelta", comment: "")
         text_CellVoltageDelta.text = "-"
 
         for n in 1001 ..< 1097 {
@@ -84,17 +84,17 @@ class VoltageHeatmapViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -153,23 +153,25 @@ class VoltageHeatmapViewController: CanZeViewController {
                 // the update has to be done in a separate thread
                 // otherwise the UI will not be repainted
                 for i in 1 ..< lastCell+1 {
-                    DispatchQueue.main.async {
-                        if let tv = self.view.viewWithTag(i+1000) {
+                    DispatchQueue.main.async { [self] in
+                        if let tv = view.viewWithTag(i+1000) {
                             let tv2 = tv as! UILabel
                             // tv.setText(String.format("%.3f", lastVoltage[i]));
-                            tv2.text = String(format: "%.3f", self.lastVoltage[i])
-                            let delta = Int(10000 * (self.lastVoltage[i] - self.mean)) // color is temp minus mean. 1mV difference is 5 color ticks
-                            tv2.backgroundColor = self.makeColor(delta)
+                            if i < lastVoltage.count, lastVoltage[i] != Double.nan {
+                                tv2.text = String(format: "%.3f", lastVoltage[i])
+                            }
+                            let delta = Int(10000 * (lastVoltage[i] - mean)) // color is temp minus mean. 1mV difference is 5 color ticks
+                            tv2.backgroundColor = makeColor(delta)
                         }
                     }
                 }
 
                 // Only update the high-low if we have realistic data
                 if highest >= lowest {
-                    DispatchQueue.main.async {
-                        self.text_CellVoltageTop.text = String(format: "%.3f", self.highest)
-                        self.text_CellVoltageBottom.text = String(format: "%.3f", self.lowest)
-                        self.text_CellVoltageDelta.text = String(format: "%.0f", 1000 * (self.highest - self.lowest)) //  Math.round
+                    DispatchQueue.main.async { [self] in
+                        text_CellVoltageTop.text = String(format: "%.3f", highest)
+                        text_CellVoltageBottom.text = String(format: "%.3f", lowest)
+                        text_CellVoltageDelta.text = String(format: "%.0f", 1000 * (highest - lowest)) //  Math.round
                     }
                 }
             }

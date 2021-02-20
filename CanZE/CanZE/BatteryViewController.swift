@@ -49,25 +49,25 @@ class BatteryViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_battery", comment: "")
+        title = NSLocalizedString_("title_activity_battery", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        lblGraph_SOH_title.text = NSLocalizedString("graph_SOH", comment: "")
+        lblGraph_SOH_title.text = NSLocalizedString_("graph_SOH", comment: "")
         lblGraph_SOH.text = "-"
 
-        lblGraph_RealIndicatedSoc_title.text = NSLocalizedString("graph_RealIndicatedSoc", comment: "")
+        lblGraph_RealIndicatedSoc_title.text = NSLocalizedString_("graph_RealIndicatedSoc", comment: "")
         lblGraph_RealIndicatedSoc.text = "-"
         lblGraph_RealIndicatedSoc.textColor = .red
         lblGraph_UserIndicatedSoc.text = "-"
         lblGraph_UserIndicatedSoc.textColor = .blue
 
-        lblHelp_QA.attributedText = NSLocalizedString("help_QA", comment: "").htmlToAttributedString
+        lblHelp_QA.attributedText = NSLocalizedString_("help_QA", comment: "").htmlToAttributedString
 
-        lblGraph_CellVoltages_title.text = NSLocalizedString("graph_CellVoltages", comment: "")
-        lblGraph_ModuleTemperatures_title.text = NSLocalizedString("graph_ModuleTemperatures", comment: "")
+        lblGraph_CellVoltages_title.text = NSLocalizedString_("graph_CellVoltages", comment: "")
+        lblGraph_ModuleTemperatures_title.text = NSLocalizedString_("graph_ModuleTemperatures", comment: "")
 
         lblBatterySerial.text = "Serial:"
 
@@ -90,6 +90,41 @@ class BatteryViewController: CanZeViewController {
         startQueue()
     }
 
+    override func viewDidLayoutSubviews() {
+        let help_QAText = NSLocalizedString_("help_QA", comment: "")
+        if help_QAText.contains("http://") || help_QAText.contains("https://") {
+            let b = UIButton(type: .system)
+            b.frame = lblHelp_QA.frame
+            b.setTitle("", for: .normal)
+            b.addTarget(self, action: #selector(help_QA_), for: .touchUpInside)
+            view.addSubview(b)
+        }
+    }
+
+    @objc func help_QA_() {
+        var source = NSLocalizedString_("help_QA", comment: "")
+        var from_ = source.index(of: "http://")
+        if from_ == nil {
+            from_ = source.index(of: "https://")
+        }
+        if from_ != nil {
+            source = String(source[from_!...])
+            var to_ = source.index(of: "\"")
+            if to_ == nil {
+                to_ = source.index(of: "'")
+            }
+            if to_ != nil {
+                let result = source[..<to_!]
+                print(result as Any)
+                let r = "\(result)"
+                let u = URL(string: r)
+                if UIApplication.shared.canOpenURL(u!) {
+                    UIApplication.shared.open(u!, options: [:], completionHandler: nil)
+                }
+            }
+        }
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("decoded"), object: nil)
@@ -103,17 +138,17 @@ class BatteryViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -145,8 +180,8 @@ class BatteryViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
@@ -156,37 +191,37 @@ class BatteryViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         let strVal = Globals.shared.fieldResultsString[sid!]
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
             switch sid {
             case "658.33":
                 if val != nil, !val!.isNaN {
-                    self.lblGraph_SOH.text = String(format: "%.1f", val!)
+                    lblGraph_SOH.text = String(format: "%.1f", val!)
                 }
             case Sid.RealSoC:
                 if val != nil, !val!.isNaN {
-                    self.lblGraph_RealIndicatedSoc.text = String(format: "%.2f", val!)
-                    self.realSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateSocChart()
+                    lblGraph_RealIndicatedSoc.text = String(format: "%.2f", val!)
+                    realSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateSocChart()
                 }
             case Sid.UserSoC:
                 if val != nil, !val!.isNaN {
-                    self.lblGraph_UserIndicatedSoc.text = String(format: "%.2f", val!)
-                    self.userSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateSocChart()
+                    lblGraph_UserIndicatedSoc.text = String(format: "%.2f", val!)
+                    userSocChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateSocChart()
                 }
             case "7bb.6141.16":
                 if val != nil, !val!.isNaN {
-                    self.voltChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateVoltChart()
+                    voltChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateVoltChart()
                 }
             case "7bb.6104.32":
                 if val != nil, !val!.isNaN {
-                    self.tempChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateTempChart()
+                    tempChartEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateTempChart()
                 }
             case Sid.BatterySerial:
                 if strVal != nil {
-                    self.lblBatterySerial.text = "Serial: \(strVal!)"
+                    lblBatterySerial.text = "Serial: \(strVal!)"
                 }
             default:
                 print("unknown sid \(sid!)")

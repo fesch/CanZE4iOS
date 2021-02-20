@@ -53,42 +53,46 @@ class ClimateViewController: CanZeViewController {
     var tempChartLine3: LineChartDataSet!
     var tempChartLine4: LineChartDataSet!
 
-    let cooling_Status = Globals.localizableFromPlist?.value(forKey: "list_CoolingStatus") as? [String]
-    let conditioning_Status = Globals.localizableFromPlist?.value(forKey: Utils.isPh2() ? "list_ConditioningStatusPh2" : "list_ConditioningStatus") as? [String]
-    let climate_Status = Globals.localizableFromPlist?.value(forKey: Utils.isPh2() ? "list_ClimateStatusPh2" : "list_ClimateStatus") as? [String]
+    var cooling_Status: [String] = []
+    var conditioning_Status: [String] = []
+    var climate_Status: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_clima_tech", comment: "")
+        title = NSLocalizedString_("title_activity_clima_tech", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        label_EngineFanSpeed.text = NSLocalizedString("label_EngineFanSpeed", comment: "")
+        cooling_Status = localizableFromPlist("list_CoolingStatus")
+        conditioning_Status = localizableFromPlist(Utils.isPh2() ? "list_ConditioningStatusPh2" : "list_ConditioningStatus")
+        climate_Status = localizableFromPlist(Utils.isPh2() ? "list_ClimateStatusPh2" : "list_ClimateStatus")
+
+        label_EngineFanSpeed.text = NSLocalizedString_("label_EngineFanSpeed", comment: "")
         text_EFS.text = "-"
-        textLabel_climatePower.text = NSLocalizedString(Utils.isPh2() ? "label_ThermalComfortPower" : "label_DcPwr", comment: "")
+        textLabel_climatePower.text = NSLocalizedString_(Utils.isPh2() ? "label_ThermalComfortPower" : "label_DcPwr", comment: "")
         text_ClimatePower.text = "-"
-        label_HVCoolingState.text = NSLocalizedString("label_HVCoolingState", comment: "")
+        label_HVCoolingState.text = NSLocalizedString_("label_HVCoolingState", comment: "")
         text_HCS.text = "-"
-        label_HVEvaporationTemp.text = NSLocalizedString("label_HVEvaporationTemp", comment: "")
+        label_HVEvaporationTemp.text = NSLocalizedString_("label_HVEvaporationTemp", comment: "")
         text_HET.text = "-"
-        label_ACPressure.text = NSLocalizedString("label_ACPressure", comment: "")
+        label_ACPressure.text = NSLocalizedString_("label_ACPressure", comment: "")
         text_PRE.text = "-"
-        label_HVBatConditioningMode.text = NSLocalizedString("label_HVBatConditioningMode", comment: "")
+        label_HVBatConditioningMode.text = NSLocalizedString_("label_HVBatConditioningMode", comment: "")
         text_HCM.text = "-"
-        label_ClimaLoopMode.text = NSLocalizedString("label_ClimaLoopMode", comment: "")
+        label_ClimaLoopMode.text = NSLocalizedString_("label_ClimaLoopMode", comment: "")
         text_CLM.text = "-"
 
-        label_IH_ClimCompPWRStatus.text = NSLocalizedString("label_IH_ClimCompPWRStatus", comment: "")
+        label_IH_ClimCompPWRStatus.text = NSLocalizedString_("label_IH_ClimCompPWRStatus", comment: "")
         label_IH_ClimCompPWRStatus1.text = "-"
         label_IH_ClimCompPWRStatus2.text = "-"
 
-        label_Temperatures.text = NSLocalizedString("label_Temperatures", comment: "")
-        graph_Climatech.text = NSLocalizedString("graph_Climatech", comment: "")
+        label_Temperatures.text = NSLocalizedString_("label_Temperatures", comment: "")
+        graph_Climatech.text = NSLocalizedString_("graph_Climatech", comment: "")
         graph_Climatech1.text = "-"
         graph_Climatech1.textColor = .red
         graph_Climatech2.text = "-"
@@ -129,17 +133,17 @@ class ClimateViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -172,8 +176,8 @@ class ClimateViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
@@ -183,33 +187,33 @@ class ClimateViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.EngineFanSpeed:
-                    self.text_EFS.text = String(format: "%.1f", val!)
+                    text_EFS.text = String(format: "%.1f", val!)
                 case Sid.DcPowerOut:
-                    self.text_ClimatePower.text = String(format: "%.1f", val!)
+                    text_ClimatePower.text = String(format: "%.1f", val!)
                 case Sid.HvCoolingState:
                     let i = Int(val!)
-                    if i >= 0, i < self.cooling_Status!.count {
-                        self.text_HCS.text = self.cooling_Status![i]
+                    if i >= 0, i < cooling_Status.count {
+                        text_HCS.text = cooling_Status[i]
                     }
                 case Sid.HvEvaporationTemp:
-                    self.text_HET.text = String(format: "%.1f", val!)
+                    text_HET.text = String(format: "%.1f", val!)
                 case Sid.Pressure:
-                    self.text_PRE.text = String(format: "%.1f", val!)
+                    text_PRE.text = String(format: "%.1f", val!)
                 case Sid.BatteryConditioningMode:
                     let i = Int(val!)
-                    if i >= 0, i < self.conditioning_Status!.count {
-                        self.text_HCM.text = self.conditioning_Status![i]
+                    if i >= 0, i < conditioning_Status.count {
+                        text_HCM.text = conditioning_Status[i]
                     }
                 case Sid.ClimaLoopMode:
                     let i = Int(val!)
-                    if i >= 0, i < self.climate_Status!.count {
-                        self.text_CLM.text = self.climate_Status![i]
+                    if i >= 0, i < climate_Status.count {
+                        text_CLM.text = climate_Status[i]
                     }
                 case Sid.ThermalComfortPower:
-                    self.text_ClimatePower.text = String(format: "%.1f", val!)
+                    text_ClimatePower.text = String(format: "%.1f", val!)
                      // case Sid.PtcRelay1:
                      //    value = (int) field.getValue();
                      //    tv = findViewById(R.id.text_PTC1);
@@ -233,30 +237,30 @@ class ClimateViewController: CanZeViewController {
                      //    break;
 
                 case "764.6143.110":
-                    self.graph_Climatech1.text = String(format: "%.1f", val!)
-                    self.tempChartEntries4.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateTempChart()
+                    graph_Climatech1.text = String(format: "%.1f", val!)
+                    tempChartEntries4.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateTempChart()
                 case "764.6121.26":
-                    self.graph_Climatech2.text = String(format: "%.1f", val!)
-                    self.tempChartEntries3.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateTempChart()
+                    graph_Climatech2.text = String(format: "%.1f", val!)
+                    tempChartEntries3.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateTempChart()
                 case "800.6105.24":
-                    self.graph_Climatech3.text = String(format: "%.1f", val!)
-                    self.tempChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateTempChart()
+                    graph_Climatech3.text = String(format: "%.1f", val!)
+                    tempChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateTempChart()
                 case Sid.HvTemp:
-                    self.graph_Climatech4.text = String(format: "%.2f", val!)
-                    self.tempChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateTempChart()
+                    graph_Climatech4.text = String(format: "%.2f", val!)
+                    tempChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateTempChart()
 
                 case "764.6144.107":
-                    self.label_IH_ClimCompPWRStatus1.text = String(format: "%.0f", val!)
-                    self.compChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateCompChart()
+                    label_IH_ClimCompPWRStatus1.text = String(format: "%.0f", val!)
+                    compChartEntries1.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateCompChart()
                 case "764.6143.86":
-                    self.label_IH_ClimCompPWRStatus2.text = String(format: "%.0f", val!)
-                    self.compChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateCompChart()
+                    label_IH_ClimCompPWRStatus2.text = String(format: "%.0f", val!)
+                    compChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateCompChart()
 
                 default:
                     print("unknown sid \(sid!)")
@@ -267,7 +271,7 @@ class ClimateViewController: CanZeViewController {
 
     func initCompChart() {
         compChartView.legend.enabled = false
-        compChartView.rightAxis.enabled = false
+        // compChartView.rightAxis.enabled = false
 
         let xAxis = compChartView.xAxis
         xAxis.labelPosition = .bottom
@@ -290,6 +294,8 @@ class ClimateViewController: CanZeViewController {
         let yAxisRight = compChartView.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 1
+        yAxisRight.granularity = 1
+        yAxisRight.valueFormatter = IntFormatter()
 
         compChartLine2 = LineChartDataSet(entries: compChartEntries2, label: nil)
         compChartLine2.axisDependency = .right
@@ -355,6 +361,12 @@ class ClimateViewController: CanZeViewController {
         tempChartLine3.replaceEntries(tempChartEntries3)
         tempChartLine4.replaceEntries(tempChartEntries4)
         tempChartView.data = LineChartData(dataSets: [tempChartLine1, tempChartLine2, tempChartLine3, tempChartLine4])
+    }
+
+    class IntFormatter: IAxisValueFormatter {
+        func stringForValue(_ value: Double, axis: AxisBase?) -> String {
+            return String(format: "%.0f", value)
+        }
     }
 
     class TimestampAxis: IAxisValueFormatter {

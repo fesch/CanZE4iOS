@@ -35,8 +35,8 @@ class ChargingHistoryViewController: CanZeViewController {
     @IBOutlet var label_CountPartial: UILabel!
     @IBOutlet var textCountPartial: UILabel!
 
-    let charging_HistEnd = Globals.localizableFromPlist?.value(forKey: "list_ChargingHistEnd") as? [String]
-    let charging_HistTyp = Globals.localizableFromPlist?.value(forKey: "list_ChargingHistTyp") as? [String]
+    var charging_HistEnd: [String] = []
+    var charging_HistTyp: [String] = []
 
     var km: [Double] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     var end: [Double] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -50,66 +50,69 @@ class ChargingHistoryViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_charging_history", comment: "")
+        title = NSLocalizedString_("title_activity_charging_history", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        header_ChargingHistory.text = NSLocalizedString("header_ChargingHistory", comment: "")
+        charging_HistEnd = localizableFromPlist("list_ChargingHistEnd")
+        charging_HistTyp = localizableFromPlist("list_ChargingHistTyp")
 
-        label_distance.text = NSLocalizedString("label_distance", comment: "")
-        label_EndOfChargeStatus.text = NSLocalizedString("label_EndOfChargeStatus", comment: "")
-        label_TypeOfCharge.text = NSLocalizedString("label_TypeOfCharge", comment: "")
-        label_EndSoc.text = NSLocalizedString("label_EndSoc", comment: "")
-        label_EndBatteryTemp.text = NSLocalizedString("label_EndBatteryTemp", comment: "")
-        label_HistDuration.text = NSLocalizedString("label_HistDuration", comment: "")
+        header_ChargingHistory.text = NSLocalizedString_("header_ChargingHistory", comment: "")
 
-        header_ChargeSummary.text = NSLocalizedString("header_ChargeSummary", comment: "")
+        label_distance.text = NSLocalizedString_("label_distance", comment: "")
+        label_EndOfChargeStatus.text = NSLocalizedString_("label_EndOfChargeStatus", comment: "")
+        label_TypeOfCharge.text = NSLocalizedString_("label_TypeOfCharge", comment: "")
+        label_EndSoc.text = NSLocalizedString_("label_EndSoc", comment: "")
+        label_EndBatteryTemp.text = NSLocalizedString_("label_EndBatteryTemp", comment: "")
+        label_HistDuration.text = NSLocalizedString_("label_HistDuration", comment: "")
 
-        label_TotKwh.text = NSLocalizedString("label_TotKwh", comment: "")
+        header_ChargeSummary.text = NSLocalizedString_("header_ChargeSummary", comment: "")
+
+        label_TotKwh.text = NSLocalizedString_("label_TotKwh", comment: "")
         textTotKwh.text = "-"
 
-        label_TotKwhRegen.text = NSLocalizedString("label_TotKwhRegen", comment: "")
+        label_TotKwhRegen.text = NSLocalizedString_("label_TotKwhRegen", comment: "")
         textTotKwhRegen.text = "-"
 
-        label_CountFull.text = NSLocalizedString("label_CountFull", comment: "")
+        label_CountFull.text = NSLocalizedString_("label_CountFull", comment: "")
         textCountFull.text = "-"
 
-        label_CountPartial.text = NSLocalizedString("label_CountPartial", comment: "")
+        label_CountPartial.text = NSLocalizedString_("label_CountPartial", comment: "")
         textCountPartial.text = "-"
 
-        var s = "\(NSLocalizedString("label_distance", comment: "")) \n"
+        var s = "\(NSLocalizedString_("label_distance", comment: "")) \n"
         for i in 0 ..< 10 {
             s += "\(km[i])\n"
         }
         label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString("label_EndOfChargeStatus", comment: "")) \n"
+        s = "\(NSLocalizedString_("label_EndOfChargeStatus", comment: "")) \n"
         for i in 0 ..< 10 {
             s += "\(end[i])\n"
         }
         label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString("label_TypeOfCharge", comment: "")) \n"
+        s = "\(NSLocalizedString_("label_TypeOfCharge", comment: "")) \n"
         for i in 0 ..< 10 {
             s += "\(typ[i])\n"
         }
         label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString("label_EndSoc", comment: "")) \n"
+        s = "\(NSLocalizedString_("label_EndSoc", comment: "")) \n"
         for i in 0 ..< 10 {
             s += "\(soc[i])\n"
         }
         label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString("label_EndBatteryTemp", comment: "")) \n"
+        s = "\(NSLocalizedString_("label_EndBatteryTemp", comment: "")) \n"
         for i in 0 ..< 10 {
             s += "\(tmp[i])\n"
         }
         label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString("label_HistDuration", comment: "")) \n"
+        s = "\(NSLocalizedString_("label_HistDuration", comment: "")) \n"
         for i in 0 ..< 10 {
             s += "\(dur[i])\n"
         }
@@ -143,17 +146,17 @@ class ChargingHistoryViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -192,76 +195,76 @@ class ChargingHistoryViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sidPreamble {
                 case Sid.Preamble_KM:
                     let indice = (264 - startBit!) / 24 - 1
-                    self.km[indice] = val!
-                    var s = "\(NSLocalizedString("label_distance", comment: "")) \n"
+                    km[indice] = val!
+                    var s = "\(NSLocalizedString_("label_distance", comment: "")) \n"
                     for i in 0 ..< 10 {
-                        s += "\(self.km[i])\n"
+                        s += "\(km[i])\n"
                     }
-                    self.label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                    label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_END:
                     let indice = (104 - startBit!) / 8 - 1
-                    self.end[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString("label_EndOfChargeStatus", comment: "")) \n"
+                    end[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString_("label_EndOfChargeStatus", comment: "")) \n"
                     for i in 0 ..< 10 {
-                        let ii = Int(self.end[i])
-                        if ii < self.charging_HistEnd!.count {
-                            s += "\(self.charging_HistEnd![ii])\n"
+                        let ii = Int(end[i])
+                        if ii < charging_HistEnd.count {
+                            s += "\(charging_HistEnd[ii])\n"
                         } else {
                             s += "\n"
                         }
                     }
-                    self.label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                    label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_TYP:
                     let indice = (104 - startBit!) / 8 - 1
-                    self.typ[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString("label_TypeOfCharge", comment: "")) \n"
+                    typ[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString_("label_TypeOfCharge", comment: "")) \n"
                     for i in 0 ..< 10 {
-                        let ii = Int(self.typ[i])
-                        if ii < self.charging_HistTyp!.count {
-                            s += "\(self.charging_HistTyp![ii])\n"
+                        let ii = Int(typ[i])
+                        if ii < charging_HistTyp.count {
+                            s += "\(charging_HistTyp[ii])\n"
                         } else {
                             s += "\n"
                         }
                     }
-                    self.label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                    label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_SOC:
                     let indice = (184 - startBit!) / 16 - 1
-                    self.soc[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString("label_EndSoc", comment: "")) \n"
+                    soc[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString_("label_EndSoc", comment: "")) \n"
                     for i in 0 ..< 10 {
-                        s += "\(self.soc[i])\n"
+                        s += "\(soc[i])\n"
                     }
-                    self.label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                    label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_TMP:
                     let indice = (104 - startBit!) / 8 - 1
-                    self.tmp[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString("label_EndBatteryTemp", comment: "")) \n"
+                    tmp[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString_("label_EndBatteryTemp", comment: "")) \n"
                     for i in 0 ..< 10 {
-                        s += "\(self.tmp[i])\n"
+                        s += "\(tmp[i])\n"
                     }
-                    self.label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                    label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_DUR:
                     let indice = (184 - startBit!) / 16 - 1
-                    self.dur[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString("label_HistDuration", comment: "")) \n"
+                    dur[indice] = (val!.isNaN ? 0.0 : val)!
+                    var s = "\(NSLocalizedString_("label_HistDuration", comment: "")) \n"
                     for i in 0 ..< 10 {
-                        s += "\(self.dur[i])\n"
+                        s += "\(dur[i])\n"
                     }
-                    self.label_HistDuration.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+                    label_HistDuration.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 default:
                     switch sid {
                     case Sid.Total_kWh:
-                        self.textTotKwh.text = String(format: "%.0f", val!)
+                        textTotKwh.text = String(format: "%.0f", val!)
                     case Sid.Total_Regen_kWh:
-                        self.textTotKwhRegen.text = String(format: "%.0f", val!)
+                        textTotKwhRegen.text = String(format: "%.0f", val!)
                     case Sid.Counter_Full:
-                        self.textCountFull.text = String(format: "%.0f", val!)
+                        textCountFull.text = String(format: "%.0f", val!)
                     case Sid.Counter_Partial:
-                        self.textCountPartial.text = String(format: "%.0f", val!)
+                        textCountPartial.text = String(format: "%.0f", val!)
                     default:
                         print("unknown sid \(sid!)")
                     }

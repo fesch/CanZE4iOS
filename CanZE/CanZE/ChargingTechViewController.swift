@@ -132,17 +132,17 @@ class ChargingTechViewController: CanZeViewController {
     var pilot = 0.0
     var usoc = 0.0
 
-    let plug_Status = Globals.localizableFromPlist?.value(forKey: "list_PlugStatus") as? [String]
-    let mains_Current_Type = Globals.localizableFromPlist?.value(forKey: "list_MainsCurrentType") as? [String]
-    let supervisor_State = Utils.isPh2() ? Globals.localizableFromPlist?.value(forKey: "list_SupervisorStatePh2") as? [String] : Globals.localizableFromPlist?.value(forKey: "list_SupervisorState") as? [String]
-    let completion_Status = Globals.localizableFromPlist?.value(forKey: "list_CompletionStatus") as? [String]
-    let evse_status = Globals.localizableFromPlist?.value(forKey: "list_EVSEStatus") as? [String]
-    let evse_failure_status = Globals.localizableFromPlist?.value(forKey: "list_EVSEFailureStatus") as? [String]
-    let ev_ready_status = Globals.localizableFromPlist?.value(forKey: "list_EVReady") as? [String]
-    let cplc_com_status = Globals.localizableFromPlist?.value(forKey: "list_CPLCComStatus") as? [String]
-    let ev_request_state = Globals.localizableFromPlist?.value(forKey: "list_EVRequestState") as? [String]
-    let evse_state = Globals.localizableFromPlist?.value(forKey: "list_EVSEState") as? [String]
-    let limit_reached = Globals.localizableFromPlist?.value(forKey: "list_EVSELimitReached") as? [String]
+    var plug_Status: [String] = []
+    var mains_Current_Type: [String] = []
+    var supervisor_State: [String] = []
+    var completion_Status: [String] = []
+    var evse_status: [String] = []
+    var evse_failure_status: [String] = []
+    var ev_ready_status: [String] = []
+    var cplc_com_status: [String] = []
+    var ev_request_state: [String] = []
+    var evse_state: [String] = []
+    var limit_reached: [String] = []
 
     var doneOneTimeOnly = false
 
@@ -151,44 +151,56 @@ class ChargingTechViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_charging", comment: "")
+        title = NSLocalizedString_("title_activity_charging", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         //
 
-        lbl_header_Charging.text = NSLocalizedString("header_Charging", comment: "")
-        lbl_label_Plug.text = NSLocalizedString("label_Plug", comment: "")
+        plug_Status = localizableFromPlist("list_PlugStatus")
+        mains_Current_Type = localizableFromPlist("list_MainsCurrentType")
+        supervisor_State = Utils.isPh2() ? localizableFromPlist("list_SupervisorStatePh2") : localizableFromPlist("list_SupervisorState")
+        completion_Status = localizableFromPlist("list_CompletionStatus")
+        evse_status = localizableFromPlist("list_EVSEStatus")
+        evse_failure_status = localizableFromPlist("list_EVSEFailureStatus")
+        ev_ready_status = localizableFromPlist("list_EVReady")
+        cplc_com_status = localizableFromPlist("list_CPLCComStatus")
+        ev_request_state = localizableFromPlist("list_EVRequestState")
+        evse_state = localizableFromPlist("list_EVSEState")
+        limit_reached = localizableFromPlist("list_EVSELimitReached")
+
+        lbl_header_Charging.text = NSLocalizedString_("header_Charging", comment: "")
+        lbl_label_Plug.text = NSLocalizedString_("label_Plug", comment: "")
         lbl_textPlug.text = "-"
-        lbl_label_max_pilot.text = NSLocalizedString("label_max_pilot", comment: "")
+        lbl_label_max_pilot.text = NSLocalizedString_("label_max_pilot", comment: "")
         lbl_text_max_pilot.text = "-"
-        lbl_label_AvChPwr.text = NSLocalizedString("label_AvChPwr", comment: "")
+        lbl_label_AvChPwr.text = NSLocalizedString_("label_AvChPwr", comment: "")
         lbl_textAvChPwr.text = "-"
-        lbl_header_Battery.text = NSLocalizedString("header_Battery", comment: "")
-        lbl_label_UserSOC.text = NSLocalizedString("label_UserSOC", comment: "")
+        lbl_header_Battery.text = NSLocalizedString_("header_Battery", comment: "")
+        lbl_label_UserSOC.text = NSLocalizedString_("label_UserSOC", comment: "")
         lbl_textUserSOC.text = "-"
-        lbl_label_RealSOC.text = NSLocalizedString("label_RealSOC", comment: "")
+        lbl_label_RealSOC.text = NSLocalizedString_("label_RealSOC", comment: "")
         lbl_textRealSOC.text = "-"
-        lbl_label_max_charge.text = NSLocalizedString("label_max_charge", comment: "")
+        lbl_label_max_charge.text = NSLocalizedString_("label_max_charge", comment: "")
         lbl_text_max_charge.text = "-"
-        lbl_label_AvEner.text = NSLocalizedString("label_AvEner", comment: "")
+        lbl_label_AvEner.text = NSLocalizedString_("label_AvEner", comment: "")
         lbl_textAvEner.text = "-"
-        lbl_label_ETF.text = NSLocalizedString("label_ETF", comment: "")
+        lbl_label_ETF.text = NSLocalizedString_("label_ETF", comment: "")
         lbl_textETF.text = "-"
-        lbl_label_DcPwr.text = NSLocalizedString("label_DcPwr", comment: "")
+        lbl_label_DcPwr.text = NSLocalizedString_("label_DcPwr", comment: "")
         lbl_textDcPwr.text = "-"
-        lbl_label_Amps.text = NSLocalizedString("label_Amps", comment: "")
+        lbl_label_Amps.text = NSLocalizedString_("label_Amps", comment: "")
         lbl_textAmps.text = "-"
-        lbl_label_Volt.text = NSLocalizedString("label_Volt", comment: "")
+        lbl_label_Volt.text = NSLocalizedString_("label_Volt", comment: "")
         lbl_textVolt.text = "-"
-        lbl_label_SOH.text = NSLocalizedString("label_SOH", comment: "")
+        lbl_label_SOH.text = NSLocalizedString_("label_SOH", comment: "")
         lbl_textSOH.text = "-"
-        lbl_label_HKM.text = NSLocalizedString("label_HKM", comment: "")
+        lbl_label_HKM.text = NSLocalizedString_("label_HKM", comment: "")
         lbl_textHKM.text = "-"
-        lbl_header_DrivingCh.text = NSLocalizedString("header_DrivingCh", comment: "")
-        lbl_label_DISTA.text = NSLocalizedString("label_DISTA", comment: "")
+        lbl_header_DrivingCh.text = NSLocalizedString_("header_DrivingCh", comment: "")
+        lbl_label_DISTA.text = NSLocalizedString_("label_DISTA", comment: "")
         lbl_textKMA.text = "-"
-        lbl_header_CompTemp.text = NSLocalizedString("header_CompTemp", comment: "")
+        lbl_header_CompTemp.text = NSLocalizedString_("header_CompTemp", comment: "")
         lbl_text_comp_1_temp.text = "-"
         lbl_text_comp_2_temp.text = "-"
         lbl_text_comp_3_temp.text = "-"
@@ -201,7 +213,7 @@ class ChargingTechViewController: CanZeViewController {
         lbl_text_comp_10_temp.text = "-"
         lbl_text_comp_11_temp.text = "-"
         lbl_text_comp_12_temp.text = "-"
-        lbl_unit_Celsius.text = NSLocalizedString("unit_Celsius", comment: "")
+        lbl_unit_Celsius.text = NSLocalizedString_("unit_Celsius", comment: "")
         lbl_text_bala_1_temp.text = "-"
         lbl_text_bala_2_temp.text = "-"
         lbl_text_bala_3_temp.text = "-"
@@ -214,57 +226,57 @@ class ChargingTechViewController: CanZeViewController {
         lbl_text_bala_10_temp.text = "-"
         lbl_text_bala_11_temp.text = "-"
         lbl_text_bala_12_temp.text = "-"
-        lbl_header_GridParameters.text = NSLocalizedString("header_GridParameters", comment: "")
-        lbl_label_MainsCurrentType.text = NSLocalizedString("label_MainsCurrentType", comment: "")
+        lbl_header_GridParameters.text = NSLocalizedString_("header_GridParameters", comment: "")
+        lbl_label_MainsCurrentType.text = NSLocalizedString_("label_MainsCurrentType", comment: "")
         lbl_textMainsCurrentType.text = "-"
-        lbl_label_phaseCurrent.text = NSLocalizedString("label_phaseCurrent", comment: "")
+        lbl_label_phaseCurrent.text = NSLocalizedString_("label_phaseCurrent", comment: "")
         lbl_textPhase1CurrentRMS.text = "-"
         lbl_textPhase2CurrentRMS.text = "-"
         lbl_textPhase3CurrentRMS.text = "-"
-        lbl_label_PhaseVoltage.text = NSLocalizedString("label_PhaseVoltage", comment: "")
+        lbl_label_PhaseVoltage.text = NSLocalizedString_("label_PhaseVoltage", comment: "")
         lbl_textPhaseVoltage1.text = "-"
         lbl_textPhaseVoltage2.text = "-"
         lbl_textPhaseVoltage3.text = "-"
-        lbl_label_InterPhaseVoltage.text = NSLocalizedString("label_InterPhaseVoltage", comment: "")
+        lbl_label_InterPhaseVoltage.text = NSLocalizedString_("label_InterPhaseVoltage", comment: "")
         lbl_textInterPhaseVoltage12.text = "-"
         lbl_textInterPhaseVoltage23.text = "-"
         lbl_textInterPhaseVoltage31.text = "-"
-        lbl_label_MainsActivePowerConsumed.text = NSLocalizedString("label_MainsActivePowerConsumed", comment: "")
+        lbl_label_MainsActivePowerConsumed.text = NSLocalizedString_("label_MainsActivePowerConsumed", comment: "")
         lbl_textMainsActivePower.text = "-"
-        lbl_label_GroundResistanceOhm.text = NSLocalizedString("label_GroundResistanceOhm", comment: "")
+        lbl_label_GroundResistanceOhm.text = NSLocalizedString_("label_GroundResistanceOhm", comment: "")
         lbl_textGroundResistance.text = "-"
-        lbl_label_SupervisorState.text = NSLocalizedString("label_SupervisorState", comment: "")
+        lbl_label_SupervisorState.text = NSLocalizedString_("label_SupervisorState", comment: "")
         lbl_textSupervisorState.text = "-"
-        lbl_label_CompletionStatus.text = NSLocalizedString("label_CompletionStatus", comment: "")
+        lbl_label_CompletionStatus.text = NSLocalizedString_("label_CompletionStatus", comment: "")
         lbl_textCompletionStatus.text = "-"
-        lbl_header_EVSEParameters.text = NSLocalizedString("header_EVSEParameters", comment: "")
-        lbl_EVSEStatus.text = NSLocalizedString("EVSEStatus", comment: "")
+        lbl_header_EVSEParameters.text = NSLocalizedString_("header_EVSEParameters", comment: "")
+        lbl_EVSEStatus.text = NSLocalizedString_("EVSEStatus", comment: "")
         lbl_textEVSEStatus.text = "-"
-        lbl_EVSEFailureStatus.text = NSLocalizedString("EVSEFailureStatus", comment: "")
+        lbl_EVSEFailureStatus.text = NSLocalizedString_("EVSEFailureStatus", comment: "")
         lbl_textEVSEFailureStatus.text = "-"
-        lbl_EVReady.text = NSLocalizedString("EVReady", comment: "")
+        lbl_EVReady.text = NSLocalizedString_("EVReady", comment: "")
         lbl_textEVReady.text = "-"
-        lbl_CPLCComStatus.text = NSLocalizedString("CPLCComStatus", comment: "")
+        lbl_CPLCComStatus.text = NSLocalizedString_("CPLCComStatus", comment: "")
         lbl_textCPLCComStatus.text = "-"
-        lbl_EVRequestState.text = NSLocalizedString("EVRequestState", comment: "")
+        lbl_EVRequestState.text = NSLocalizedString_("EVRequestState", comment: "")
         lbl_textEVRequestState.text = "-"
-        lbl_EVSEState.text = NSLocalizedString("EVSEState", comment: "")
+        lbl_EVSEState.text = NSLocalizedString_("EVSEState", comment: "")
         lbl_textEVSEState.text = "-"
-        lbl_EVSEMaxPower.text = NSLocalizedString("EVSEMaxPower", comment: "")
+        lbl_EVSEMaxPower.text = NSLocalizedString_("EVSEMaxPower", comment: "")
         lbl_textEVSEMaxPower.text = "-"
-        lbl_EVSEPowerLimitReached.text = NSLocalizedString("EVSEPowerLimitReached", comment: "")
+        lbl_EVSEPowerLimitReached.text = NSLocalizedString_("EVSEPowerLimitReached", comment: "")
         lbl_textEVSEPowerLimitReached.text = "-"
-        lbl_EVSEMaxVoltage.text = NSLocalizedString("EVSEMaxVoltage", comment: "")
+        lbl_EVSEMaxVoltage.text = NSLocalizedString_("EVSEMaxVoltage", comment: "")
         lbl_textEVSEMaxVoltage.text = "-"
-        lbl_EVSEPresentVoltage.text = NSLocalizedString("EVSEPresentVoltage", comment: "")
+        lbl_EVSEPresentVoltage.text = NSLocalizedString_("EVSEPresentVoltage", comment: "")
         lbl_textEVSEPresentVoltage.text = "-"
-        lbl_EVSEVoltageLimitReached.text = NSLocalizedString("EVSEVoltageLimitReached", comment: "")
+        lbl_EVSEVoltageLimitReached.text = NSLocalizedString_("EVSEVoltageLimitReached", comment: "")
         lbl_textEVSEVoltageLimitReached.text = "-"
-        lbl_EVSEMaxCurrent.text = NSLocalizedString("EVSEMaxCurrent", comment: "")
+        lbl_EVSEMaxCurrent.text = NSLocalizedString_("EVSEMaxCurrent", comment: "")
         lbl_textEVSEMaxCurrent.text = "-"
-        lbl_EVSEPresentCurrent.text = NSLocalizedString("EVSEPresentCurrent", comment: "")
+        lbl_EVSEPresentCurrent.text = NSLocalizedString_("EVSEPresentCurrent", comment: "")
         lbl_textEVSEPresentCurrent.text = "-"
-        lbl_EVSECurrentLimitReached.text = NSLocalizedString("EVSECurrentLimitReached", comment: "")
+        lbl_EVSECurrentLimitReached.text = NSLocalizedString_("EVSECurrentLimitReached", comment: "")
         lbl_textEVSECurrentLimitReached.text = "-"
         if !Utils.isPh2() {
             lbl_header_EVSEParameters.alpha = 0
@@ -297,7 +309,7 @@ class ChargingTechViewController: CanZeViewController {
             lbl_EVSECurrentLimitReached.alpha = 0
             lbl_textEVSECurrentLimitReached.alpha = 0
 
-            lbl_textPlug.text = plug_Status?[0]
+            lbl_textPlug.text = plug_Status[0]
         }
     }
 
@@ -339,17 +351,17 @@ class ChargingTechViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -424,8 +436,8 @@ class ChargingTechViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
@@ -438,192 +450,192 @@ class ChargingTechViewController: CanZeViewController {
             DispatchQueue.main.async { [self] in
                 switch sid {
                 case Sid.MaxCharge:
-                    self.lbl_text_max_charge.text = String(format: "%.2f", val!)
+                    lbl_text_max_charge.text = String(format: "%.2f", val!)
                 case Sid.ACPilot:
-                    self.pilot = val!
-                    self.lbl_text_max_pilot.text = String(format: "%.0f", self.pilot)
+                    pilot = val!
+                    lbl_text_max_pilot.text = String(format: "%.0f", pilot)
                 case Sid.PlugConnected:
                     let i = Int(val!)
-                    if i < self.plug_Status![i].count {
-                        self.lbl_textPlug.text = self.plug_Status?[i]
+                    if i < plug_Status[i].count {
+                        lbl_textPlug.text = plug_Status[i]
                     }
                 case Sid.UserSoC:
-                    self.usoc = val!
-                    self.lbl_textUserSOC.text = String(format: "%.2f", self.usoc)
+                    usoc = val!
+                    lbl_textUserSOC.text = String(format: "%.2f", usoc)
                 case Sid.RealSoC:
-                    self.lbl_textRealSOC.text = String(format: "%.2f", val!)
+                    lbl_textRealSOC.text = String(format: "%.2f", val!)
                 case Sid.AvailableChargingPower:
                     if val! > 45 {
-                        self.lbl_textAvChPwr.text = "-"
+                        lbl_textAvChPwr.text = "-"
                     } else {
-                        self.lbl_textAvChPwr.text = String(format: "%.2f", val!)
+                        lbl_textAvChPwr.text = String(format: "%.2f", val!)
                     }
                 case Sid.AvailableEnergy:
                     if usoc > 0 {
                         let val2 = val! * (1 - usoc) / usoc
-                        self.lbl_textETF.text = String(format: "%.2f", val2)
+                        lbl_textETF.text = String(format: "%.2f", val2)
                     }
-                    self.lbl_textAvEner.text = String(format: "%.2f", val!)
+                    lbl_textAvEner.text = String(format: "%.2f", val!)
                 case Sid.SOH: // state of health gives continuous timeouts. This frame is send at a very low rate
-                    self.lbl_textSOH.text = String(format: "%.0f", val!)
+                    lbl_textSOH.text = String(format: "%.0f", val!)
                 case Sid.RangeEstimate:
                     if val! >= 1023 {
-                        self.lbl_textKMA.text = "---"
+                        lbl_textKMA.text = "---"
                     } else {
-                        self.lbl_textKMA.text = String(format: "%.0f", val!)
+                        lbl_textKMA.text = String(format: "%.0f", val!)
                     }
-                case Sid.HvKilometers:
-                    self.lbl_textHKM.text = String(format: "%.0f", val!)
+                case Sid.HvKilometers: // EVC_Odometer ?
+                    lbl_textHKM.text = String(format: "%.0f", val!)
                 case Sid.TractionBatteryVoltage:
-                    self.dcVolt = val!
-                    self.lbl_textVolt.text = String(format: "%.2f", self.dcVolt)
+                    dcVolt = val!
+                    lbl_textVolt.text = String(format: "%.2f", dcVolt)
                 case Sid.TractionBatteryCurrent:
                     let current = val!
                     if current != Double.nan {
-                        let dcPwr = self.dcVolt * current / 1000.0
-                        self.lbl_textDcPwr.text = String(format: "%.1f", dcPwr)
-                        self.lbl_textAmps.text = String(format: "%.2f", current)
+                        let dcPwr = dcVolt * current / 1000.0
+                        lbl_textDcPwr.text = String(format: "%.1f", dcPwr)
+                        lbl_textAmps.text = String(format: "%.2f", current)
                     }
                 case Sid.Preamble_CompartmentTemperatures + "32":
-                    self.lbl_text_comp_1_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_1_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "56":
-                    self.lbl_text_comp_2_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_2_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "80":
-                    self.lbl_text_comp_3_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_3_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "104":
-                    self.lbl_text_comp_4_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_4_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "128":
-                    self.lbl_text_comp_5_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_5_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "152":
-                    self.lbl_text_comp_6_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_6_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "176":
-                    self.lbl_text_comp_7_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_7_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "200":
-                    self.lbl_text_comp_8_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_8_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "224":
-                    self.lbl_text_comp_9_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_9_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "248":
-                    self.lbl_text_comp_10_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_10_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "272":
-                    self.lbl_text_comp_11_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_11_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_CompartmentTemperatures + "296":
-                    self.lbl_text_comp_12_temp.text = String(format: self.DefaultFormatTemperature, val!)
+                    lbl_text_comp_12_temp.text = String(format: DefaultFormatTemperature, val!)
                 case Sid.Preamble_BalancingBytes + "16":
-                    self.lbl_text_bala_1_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_1_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "24":
-                    self.lbl_text_bala_2_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_2_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "32":
-                    self.lbl_text_bala_3_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_3_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "40":
-                    self.lbl_text_bala_4_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_4_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "48":
-                    self.lbl_text_bala_5_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_5_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "56":
-                    self.lbl_text_bala_6_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_6_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "64":
-                    self.lbl_text_bala_7_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_7_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "72":
-                    self.lbl_text_bala_8_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_8_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "80":
-                    self.lbl_text_bala_9_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_9_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "88":
-                    self.lbl_text_bala_10_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_10_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "96":
-                    self.lbl_text_bala_11_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_11_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.Preamble_BalancingBytes + "104":
-                    self.lbl_text_bala_12_temp.text = String(format: self.DefaultFormatBalancing, val!)
+                    lbl_text_bala_12_temp.text = String(format: DefaultFormatBalancing, val!)
                 case Sid.MainsCurrentType:
                     let i = Int(val!)
-                    if i < self.mains_Current_Type!.count {
-                        self.lbl_textMainsCurrentType.text = self.mains_Current_Type?[i]
+                    if i < mains_Current_Type.count {
+                        lbl_textMainsCurrentType.text = mains_Current_Type[i]
                     }
                 case Sid.Phase1currentRMS:
-                    self.lbl_textPhase1CurrentRMS.text = String(format: "%.2f", val!)
+                    lbl_textPhase1CurrentRMS.text = String(format: "%.2f", val!)
                 case Sid.Phase2CurrentRMS:
-                    self.lbl_textPhase2CurrentRMS.text = String(format: "%.2f", val!)
+                    lbl_textPhase2CurrentRMS.text = String(format: "%.2f", val!)
                 case Sid.Phase3CurrentRMS:
-                    self.lbl_textPhase3CurrentRMS.text = String(format: "%.2f", val!)
+                    lbl_textPhase3CurrentRMS.text = String(format: "%.2f", val!)
                 case Sid.PhaseVoltage1:
-                    self.lbl_textPhaseVoltage1.text = String(format: "%.2f", val!)
+                    lbl_textPhaseVoltage1.text = String(format: "%.2f", val!)
                 case Sid.PhaseVoltage2:
-                    self.lbl_textPhaseVoltage2.text = String(format: "%.2f", val!)
+                    lbl_textPhaseVoltage2.text = String(format: "%.2f", val!)
                 case Sid.PhaseVoltage3:
-                    self.lbl_textPhaseVoltage3.text = String(format: "%.2f", val!)
+                    lbl_textPhaseVoltage3.text = String(format: "%.2f", val!)
                 case Sid.InterPhaseVoltage12:
-                    self.lbl_textInterPhaseVoltage12.text = String(format: "%.2f", val!)
+                    lbl_textInterPhaseVoltage12.text = String(format: "%.2f", val!)
                 case Sid.InterPhaseVoltage23:
-                    self.lbl_textInterPhaseVoltage23.text = String(format: "%.2f", val!)
+                    lbl_textInterPhaseVoltage23.text = String(format: "%.2f", val!)
                 case Sid.InterPhaseVoltage31:
-                    self.lbl_textInterPhaseVoltage31.text = String(format: "%.2f", val!)
+                    lbl_textInterPhaseVoltage31.text = String(format: "%.2f", val!)
                 case Sid.MainsActivePower:
-                    self.lbl_textMainsActivePower.text = String(format: "%.2f", val!)
+                    lbl_textMainsActivePower.text = String(format: "%.2f", val!)
                 case Sid.GroundResistance:
-                    self.lbl_textGroundResistance.text = String(format: "%.2f", val!)
+                    lbl_textGroundResistance.text = String(format: "%.2f", val!)
 
                 case Sid.SupervisorState:
                     let i = Int(val!)
-                    if i >= 0, i < self.supervisor_State!.count {
-                        self.lbl_textSupervisorState.text = self.supervisor_State![i]
+                    if i >= 0, i < supervisor_State.count {
+                        lbl_textSupervisorState.text = supervisor_State[i]
                     }
                 case Sid.CompletionStatus:
                     let i = Int(val!)
-                    if i >= 0, i < self.completion_Status!.count {
-                        self.lbl_textCompletionStatus.text = self.completion_Status![i]
+                    if i >= 0, i < completion_Status.count {
+                        lbl_textCompletionStatus.text = completion_Status[i]
                     }
                 case Sid.CCSEVSEStatus:
                     let i = Int(val!)
-                    if i >= 0, i < self.evse_status!.count {
-                        self.lbl_textEVSEStatus.text = self.evse_status![i]
+                    if i >= 0, i < evse_status.count {
+                        lbl_textEVSEStatus.text = evse_status[i]
                     }
                 case Sid.CCSFailureStatus:
                     let i = Int(val!)
-                    if i >= 0, i < self.evse_failure_status!.count {
-                        self.lbl_textEVSEFailureStatus.text = self.evse_failure_status![i]
+                    if i >= 0, i < evse_failure_status.count {
+                        lbl_textEVSEFailureStatus.text = evse_failure_status[i]
                     }
                 case Sid.CCSEVReady:
                     let i = Int(val!)
-                    if i >= 0, i < self.ev_ready_status!.count {
-                        self.lbl_textEVReady.text = self.ev_ready_status![i]
+                    if i >= 0, i < ev_ready_status.count {
+                        lbl_textEVReady.text = ev_ready_status[i]
                     }
                 case Sid.CCSCPLCComStatus:
                     let i = Int(val!)
-                    if i >= 0, i < self.cplc_com_status!.count {
-                        self.lbl_textCPLCComStatus.text = self.cplc_com_status![i]
+                    if i >= 0, i < cplc_com_status.count {
+                        lbl_textCPLCComStatus.text = cplc_com_status[i]
                     }
                 case Sid.CCSEVRequestState:
                     let i = Int(val!)
-                    if i >= 0, i < self.ev_request_state!.count {
-                        self.lbl_textEVRequestState.text = self.ev_request_state![i]
+                    if i >= 0, i < ev_request_state.count {
+                        lbl_textEVRequestState.text = ev_request_state[i]
                     }
                 case Sid.CCSEVSEState:
                     let i = Int(val!)
-                    if i >= 0, i < self.evse_state!.count {
-                        self.lbl_textEVSEState.text = self.evse_state![i]
+                    if i >= 0, i < evse_state.count {
+                        lbl_textEVSEState.text = evse_state[i]
                     }
                 case Sid.CCSEVSEMaxPower:
-                    self.lbl_textEVSEMaxPower.text = String(format: "%.2f", val!)
+                    lbl_textEVSEMaxPower.text = String(format: "%.2f", val!)
                 case Sid.CCSEVSEPowerLimitReached:
                     let i = Int(val!)
-                    if i >= 0, i < self.limit_reached!.count {
-                        self.lbl_textEVSEPowerLimitReached.text = self.limit_reached![i]
+                    if i >= 0, i < limit_reached.count {
+                        lbl_textEVSEPowerLimitReached.text = limit_reached[i]
                     }
                 case Sid.CCSEVSEMaxVoltage:
-                    self.lbl_textEVSEMaxVoltage.text = String(format: "%.2f", val!)
+                    lbl_textEVSEMaxVoltage.text = String(format: "%.2f", val!)
                 case Sid.CCSEVSEPresentVoltage:
-                    self.lbl_textEVSEPresentVoltage.text = String(format: "%.2f", val!)
+                    lbl_textEVSEPresentVoltage.text = String(format: "%.2f", val!)
                 case Sid.CCSEVSEVoltageLimitReaced:
                     let i = Int(val!)
-                    if i >= 0, i < self.limit_reached!.count {
-                        self.lbl_textEVSEVoltageLimitReached.text = self.limit_reached![i]
+                    if i >= 0, i < limit_reached.count {
+                        lbl_textEVSEVoltageLimitReached.text = limit_reached[i]
                     }
                 case Sid.CCSEVSEMaxCurrent:
-                    self.lbl_textEVSEMaxCurrent.text = String(format: "%.2f", val!)
+                    lbl_textEVSEMaxCurrent.text = String(format: "%.2f", val!)
                 case Sid.CCSEVSEPresentCurrent:
-                    self.lbl_textEVSEPresentCurrent.text = String(format: "%.2f", val!)
+                    lbl_textEVSEPresentCurrent.text = String(format: "%.2f", val!)
                 case Sid.CCSEVSECurrentLimitReached:
                     let i = Int(val!)
-                    if i >= 0, i < self.limit_reached!.count {
-                        self.lbl_textEVSECurrentLimitReached.text = self.limit_reached![i]
+                    if i >= 0, i < limit_reached.count {
+                        lbl_textEVSECurrentLimitReached.text = limit_reached[i]
                     }
                 case Sid.BcbVersion: // pre 0x0800 versions have a pilot PWM resolution of 1
                     let field = Fields.getInstance.fieldsBySid[sid!]

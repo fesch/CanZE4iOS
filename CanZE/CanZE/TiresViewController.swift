@@ -48,9 +48,9 @@ class TiresViewController: CanZeViewController {
 
     @IBOutlet var button_TiresSwap: UIButton!
 
-    let val_TireSpdPresMisadaption = [NSLocalizedString("default_Ok", comment: ""), NSLocalizedString("default_NotOk", comment: "")]
-    let val_TireState = Globals.localizableFromPlist?.value(forKey: "list_TireStatus") as? [String]
-    let val_Unavailable = NSLocalizedString("default_Dash", comment: "")
+    var val_TireSpdPresMisadaption: [String] = []
+    var val_TireState: [String] = []
+    var val_Unavailable = ""
 
 //    private int baseColor;
 //    @ColorInt private int alarmColor;
@@ -63,47 +63,51 @@ class TiresViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_tires", comment: "")
+        title = NSLocalizedString_("title_activity_tires", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         //
 
-        label_TireFL.text = NSLocalizedString("label_TireFL", comment: "")
+        val_TireSpdPresMisadaption = [NSLocalizedString_("default_Ok", comment: ""), NSLocalizedString_("default_NotOk", comment: "")]
+        val_Unavailable = NSLocalizedString_("default_Dash", comment: "")
+        val_TireState = localizableFromPlist("list_TireStatus")
+
+        label_TireFL.text = NSLocalizedString_("label_TireFL", comment: "")
         text_TireFLState.text = "-"
         text_TireFLPressure.text = "-"
         text_TireFLId.text = "000000"
 
-        label_TireFR.text = NSLocalizedString("label_TireFR", comment: "")
+        label_TireFR.text = NSLocalizedString_("label_TireFR", comment: "")
         text_TireFRState.text = "-"
         text_TireFRPressure.text = "-"
         text_TireFRId.text = "000000"
 
-        help_PressuresMbar.text = NSLocalizedString("help_PressuresMbar", comment: "")
+        help_PressuresMbar.text = NSLocalizedString_("help_PressuresMbar", comment: "")
 
-        label_TireRL.text = NSLocalizedString("label_TireRL", comment: "")
+        label_TireRL.text = NSLocalizedString_("label_TireRL", comment: "")
         text_TireRLState.text = "-"
         text_TireRLPressure.text = "-"
         text_TireRLId.text = "000000"
 
-        label_TireRR.text = NSLocalizedString("label_TireRR", comment: "")
+        label_TireRR.text = NSLocalizedString_("label_TireRR", comment: "")
         text_TireRRState.text = "-"
         text_TireRRPressure.text = "-"
         text_TireRRId.text = "000000"
 
-        label_TireSpdPresMisadaption.text = NSLocalizedString("label_TireSpdPresMisadaption", comment: "")
+        label_TireSpdPresMisadaption.text = NSLocalizedString_("label_TireSpdPresMisadaption", comment: "")
         text_TireSpdPresMisadaption.text = "-"
 
-        button_TiresRead.setTitle(NSLocalizedString("button_Tires_read", comment: "").uppercased(), for: .normal)
-        button_TiresWrite.setTitle(NSLocalizedString("button_Tires_write", comment: "").uppercased(), for: .normal)
+        button_TiresRead.setTitle(NSLocalizedString_("button_Tires_read", comment: "").uppercased(), for: .normal)
+        button_TiresWrite.setTitle(NSLocalizedString_("button_Tires_write", comment: "").uppercased(), for: .normal)
 
-        button_TiresSaveA.setTitle(NSLocalizedString("SAVE TO A", comment: ""), for: .normal)
-        button_TiresLoadA.setTitle(NSLocalizedString("LOAD FROM A", comment: ""), for: .normal)
+        button_TiresSaveA.setTitle(NSLocalizedString_("SAVE TO A", comment: ""), for: .normal)
+        button_TiresLoadA.setTitle(NSLocalizedString_("LOAD FROM A", comment: ""), for: .normal)
 
-        button_TiresSaveB.setTitle(NSLocalizedString("SAVE TO B", comment: ""), for: .normal)
-        button_TiresLoadB.setTitle(NSLocalizedString("LOAD FROM B", comment: ""), for: .normal)
+        button_TiresSaveB.setTitle(NSLocalizedString_("SAVE TO B", comment: ""), for: .normal)
+        button_TiresLoadB.setTitle(NSLocalizedString_("LOAD FROM B", comment: ""), for: .normal)
 
-        button_TiresSwap.setTitle(NSLocalizedString("SWAP FRONT REAR", comment: ""), for: .normal)
+        button_TiresSwap.setTitle(NSLocalizedString_("SWAP FRONT REAR", comment: ""), for: .normal)
 
         ecu = Ecus.getInstance.getByMnemonic("BCM")
         ecuFromId = (ecu == nil) ? 0 : ecu.fromId
@@ -147,17 +151,17 @@ class TiresViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            self.lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -179,84 +183,86 @@ class TiresViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
     @objc func decoded(notification: Notification) {
-        let obj = notification.object as! [String: String]
-        let sid = obj["sid"]
+        /*
+         let obj = notification.object as! [String: String]
+         let sid = obj["sid"]
 
-        let val = Globals.shared.fieldResultsDouble[sid!]
-        if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
-                /*   switch sid {
-                                             // get the text field
-                                        case Sid.TpmsState:
-                                            tpmsState (intValue);
-                                            tv = null;
-                                            break;
-                                        case Sid.TireSpdPresMisadaption:
-                                            tv = findViewById(R.id.text_TireSpdPresMisadaption);
-                                            color = 0; // don't set color
-                                            value = val_TireSpdPresMisadaption[intValue];
-                                            break;
-                                        case Sid.TireFLState:
-                                            if (intValue < 0 || intValue > 6) return;
-                                            tv = findViewById(R.id.text_TireFLState);
-                                            if (intValue > 1) color = alarmColor;
-                                            value = val_TireState != null ? val_TireState[intValue] : "";
-                                            break;
-                                        case Sid.TireFLPressure:
-                                            tv = findViewById(R.id.text_TireFLPressure);
-                                            value = (intValue >= 3499) ? val_Unavailable : ("" + intValue);
-                                            break;
-                                        case Sid.TireFRState:
-                                            if (intValue < 0 || intValue > 6) return;
-                                            tv = findViewById(R.id.text_TireFRState);
-                                            if (intValue > 1) color = alarmColor;
-                                            value = val_TireState != null ? val_TireState[intValue] : "";
-                                            break;
-                                        case Sid.TireFRPressure:
-                                            tv = findViewById(R.id.text_TireFRPressure);
-                                            value = (intValue >= 3499) ? val_Unavailable : ("" + intValue);
-                                            break;
-                                        case Sid.TireRLState:
-                                            if (intValue < 0 || intValue > 6) return;
-                                            tv = findViewById(R.id.text_TireRLState);
-                                            if (intValue > 1) color = alarmColor;
-                                            value = val_TireState != null ? val_TireState[intValue] : "";
-                                            break;
-                                        case Sid.TireRLPressure:
-                                            tv = findViewById(R.id.text_TireRLPressure);
-                                            value = (intValue >= 3499) ? val_Unavailable : ("" + intValue);
-                                            break;
-                                        case Sid.TireRRState:
-                                            if (intValue < 0 || intValue > 6) return;
-                                            tv = findViewById(R.id.text_TireRRState);
-                                            if (intValue > 1) color = alarmColor;
-                                            value = val_TireState != null ? val_TireState[intValue] : "";
-                                            break;
-                                        case Sid.TireRRPressure:
-                                            tv = findViewById(R.id.text_TireRRPressure);
-                                            value = (intValue >= 3499) ? val_Unavailable : ("" + intValue);
-                                            break;
-                                    }
-                                    // set regular new content, all exeptions handled above
-                                    if (tv != null) {
-                                        tv.setText(value);
-                                        if (color != 0) tv.setBackgroundColor(color);
-                                    }
+         let val = Globals.shared.fieldResultsDouble[sid!]
+         if val != nil && !val!.isNaN {
+             DispatchQueue.main.async { [self] in
+                  switch sid {
+                                              // get the text field
+                                         case Sid.TpmsState:
+                                             tpmsState (intValue);
+                                             tv = null;
+                                             break;
+                                         case Sid.TireSpdPresMisadaption:
+                                             tv = findViewById(R.id.text_TireSpdPresMisadaption);
+                                             color = 0; // don't set color
+                                             value = val_TireSpdPresMisadaption[intValue];
+                                             break;
+                                         case Sid.TireFLState:
+                                             if (intValue < 0 || intValue > 6) return;
+                                             tv = findViewById(R.id.text_TireFLState);
+                                             if (intValue > 1) color = alarmColor;
+                                             value = val_TireState != null ? val_TireState[intValue] : "";
+                                             break;
+                                         case Sid.TireFLPressure:
+                                             tv = findViewById(R.id.text_TireFLPressure);
+                                             value = (intValue >= 3499) ? val_Unavailable : ("" + intValue);
+                                             break;
+                                         case Sid.TireFRState:
+                                             if (intValue < 0 || intValue > 6) return;
+                                             tv = findViewById(R.id.text_TireFRState);
+                                             if (intValue > 1) color = alarmColor;
+                                             value = val_TireState != null ? val_TireState[intValue] : "";
+                                             break;
+                                         case Sid.TireFRPressure:
+                                             tv = findViewById(R.id.text_TireFRPressure);
+                                             value = (intValue >= 3499) ? val_Unavailable : ("" + intValue);
+                                             break;
+                                         case Sid.TireRLState:
+                                             if (intValue < 0 || intValue > 6) return;
+                                             tv = findViewById(R.id.text_TireRLState);
+                                             if (intValue > 1) color = alarmColor;
+                                             value = val_TireState != null ? val_TireState[intValue] : "";
+                                             break;
+                                         case Sid.TireRLPressure:
+                                             tv = findViewById(R.id.text_TireRLPressure);
+                                             value = (intValue >= 3499) ? val_Unavailable : ("" + intValue);
+                                             break;
+                                         case Sid.TireRRState:
+                                             if (intValue < 0 || intValue > 6) return;
+                                             tv = findViewById(R.id.text_TireRRState);
+                                             if (intValue > 1) color = alarmColor;
+                                             value = val_TireState != null ? val_TireState[intValue] : "";
+                                             break;
+                                         case Sid.TireRRPressure:
+                                             tv = findViewById(R.id.text_TireRRPressure);
+                                             value = (intValue >= 3499) ? val_Unavailable : ("" + intValue);
+                                             break;
+                                     }
+                                     // set regular new content, all exeptions handled above
+                                     if (tv != null) {
+                                         tv.setText(value);
+                                         if (color != 0) tv.setBackgroundColor(color);
+                                     }
 
-                                    tv = findViewById(R.id.textDebug);
-                                    tv.setText(fieldId);
-                                }
-                            });
+                                     tv = findViewById(R.id.textDebug);
+                                     tv.setText(fieldId);
+                                 }
+                             });
 
-                 } */
-            }
-        }
+                  }
+             }
+         }
+         */
     }
 
     func tpmsState(_ state: Int) {

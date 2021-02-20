@@ -17,7 +17,7 @@ class DisclaimerViewController: CanZeViewController {
         
         title = Bundle.main.infoDictionary![kCFBundleNameKey as String] as? String
         
-        tv.attributedText = NSLocalizedString("prompt_DisclaimerText", comment: "").htmlToAttributedString
+        tv.attributedText = NSLocalizedString_("prompt_DisclaimerText", comment: "").htmlToAttributedString
         
         ud.setValue(true, forKey: "disclaimer")
         ud.synchronize()

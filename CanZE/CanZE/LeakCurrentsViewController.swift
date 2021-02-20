@@ -44,22 +44,22 @@ class LeakCurrentsViewController: CanZeViewController {
 
         // Do any additional setup after loading the view.
 
-        title = NSLocalizedString("title_activity_leakCurrents", comment: "")
+        title = NSLocalizedString_("title_activity_leakCurrents", comment: "")
         lblDebug.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(updateDebugLabel(notification:)), name: Notification.Name("updateDebugLabel"), object: nil)
 
         ///
 
-        label_LeakCurrentDc.text = NSLocalizedString("label_LeakCurrentDc", comment: "")
+        label_LeakCurrentDc.text = NSLocalizedString_("label_LeakCurrentDc", comment: "")
         text_LeakCurrentDc.text = "-"
 
-        label_LeakCurrentLf.text = NSLocalizedString("label_LeakCurrentLf", comment: "")
+        label_LeakCurrentLf.text = NSLocalizedString_("label_LeakCurrentLf", comment: "")
         text_LeakCurrentLf.text = "-"
 
-        label_LeakCurrentHf.text = NSLocalizedString("label_LeakCurrentHf", comment: "")
+        label_LeakCurrentHf.text = NSLocalizedString_("label_LeakCurrentHf", comment: "")
         text_LeakCurrentHf.text = "-"
 
-        label_LeakCurrentEhf.text = NSLocalizedString("label_LeakCurrentEhf", comment: "")
+        label_LeakCurrentEhf.text = NSLocalizedString_("label_LeakCurrentEhf", comment: "")
         text_LeakCurrentEhf.text = "-"
 
         initLeakCurrentDcChart()
@@ -95,17 +95,17 @@ class LeakCurrentsViewController: CanZeViewController {
     }
 
     @objc func updateDebugLabel(notification: Notification) {
-        let dic = notification.object as? [String: String]
-        DispatchQueue.main.async {
-            self.lblDebug.text = dic?["debug"]
+        let notificationObject = notification.object as? [String: String]
+        DispatchQueue.main.async { [self] in
+            lblDebug.text = notificationObject?["debug"]
         }
-        debug((dic?["debug"])!)
+        debug((notificationObject?["debug"])!)
     }
 
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
-            DispatchQueue.main.async {
-                self.view.makeToast("_device not connected")
+            DispatchQueue.main.async { [self] in
+                view.makeToast("_device not connected")
             }
             return
         }
@@ -128,8 +128,8 @@ class LeakCurrentsViewController: CanZeViewController {
     }
 
     @objc func endQueue2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            self.startQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            startQueue()
         }
     }
 
@@ -139,24 +139,24 @@ class LeakCurrentsViewController: CanZeViewController {
 
         let val = Globals.shared.fieldResultsDouble[sid!]
         if val != nil && !val!.isNaN {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 switch sid {
                 case "793.625057.24":
-                    self.text_LeakCurrentDc.text = String(format: "%.2f", val!)
-                    self.leakCurrentDcEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateLeakCurrentDcChart()
+                    text_LeakCurrentDc.text = String(format: "%.2f", val!)
+                    leakCurrentDcEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateLeakCurrentDcChart()
                 case "793.62505a.24":
-                    self.text_LeakCurrentLf.text = String(format: "%.2f", val!)
-                    self.leakCurrentLfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateLeakCurrentLfChart()
+                    text_LeakCurrentLf.text = String(format: "%.2f", val!)
+                    leakCurrentLfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateLeakCurrentLfChart()
                 case "793.625059.24":
-                    self.text_LeakCurrentHf.text = String(format: "%.2f", val!)
-                    self.leakCurrentHfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateLeakCurrentHfChart()
+                    text_LeakCurrentHf.text = String(format: "%.2f", val!)
+                    leakCurrentHfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateLeakCurrentHfChart()
                 case "793.625058.24":
-                    self.text_LeakCurrentEhf.text = String(format: "%.2f", val!)
-                    self.leakCurrentEhfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
-                    self.updateLeakCurrentEhfChart()
+                    text_LeakCurrentEhf.text = String(format: "%.2f", val!)
+                    leakCurrentEhfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
+                    updateLeakCurrentEhfChart()
                 default:
                     print("unknown sid \(sid!)")
                 }

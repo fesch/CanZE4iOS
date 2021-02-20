@@ -156,10 +156,15 @@ class _TestViewController: UIViewController {
             Globals.shared.deviceConnection = .WIFI
             connectWifi()
         case 2:
-            // CanSee BLE
+            // CanSee WIFI
+            Globals.shared.deviceType = .CANSEE
+            Globals.shared.deviceConnection = .WIFI
+            Globals.shared.deviceWifiAddress = "192.168.4.1"
+            Globals.shared.deviceWifiPort = "35000"
+            connectWifi()
             break
         case 3:
-            // CanSee WIFI
+            // CanSee BLE
             break
         default:
             break
@@ -360,11 +365,11 @@ class _TestViewController: UIViewController {
 
     // ricezione dati wifi
     @objc func didReceiveFromWifiDongle(notification: Notification) {
-        let dic = notification.object as? [String: Any]
-        if dic != nil, dic?.keys != nil {
-            for k in dic!.keys {
-                let ss = dic![k] as! String
-                NotificationCenter.default.post(name: Notification.Name("received"), object: ["tag": ss])
+        let notificationObject = notification.object as? [String: Any]
+        if notificationObject != nil, notificationObject?.keys != nil {
+            for k in notificationObject!.keys {
+                let ss = notificationObject![k] as! String
+                NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": ss])
             }
         }
     }
@@ -413,7 +418,7 @@ class _TestViewController: UIViewController {
                 if reply3!.contains("problem") {
                     reply3 = "ERROR"
                 }
-                let dic = ["tag": reply3]
+                let dic = ["reply": reply3]
                 NotificationCenter.default.post(name: Notification.Name("received2"), object: dic)
             } else {
                 self.debug(reply!)
@@ -569,7 +574,7 @@ class _TestViewController: UIViewController {
 
             for s in arr {
                 let nn = Notification.Name("a")
-                let no = Notification(name: nn, object: ["sid": s.a1, "tag": s.a2], userInfo: nil)
+                let no = Notification(name: nn, object: ["sid": s.a1, "reply": s.a2], userInfo: nil)
                 received2(notification: no)
                 /*
                                 let field = Fields.getInstance.getBySID(s.a1)
@@ -642,7 +647,7 @@ class _TestViewController: UIViewController {
 
         if field.virtual {
 //            var r = calcolaVirtual(field)
-//            let dic = ["tag":r]
+//            let dic = ["reply":r]
 //            NotificationCenter.default.post(name: Notification.Name("received2"), object: dic)
 
             let virtualField = Fields.getInstance.getBySID(field.sid) as! VirtualField
@@ -1133,10 +1138,10 @@ class _TestViewController: UIViewController {
 
     func continueQueue() {
         // next step, after delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // Change n to the desired number of seconds
-            if self.queue.count > 0 {
-                self.queue.remove(at: 0)
-                self.processQueue()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {  [self] in // Change n to the desired number of seconds
+            if queue.count > 0 {
+                queue.remove(at: 0)
+                processQueue()
             }
         }
     }
@@ -1150,8 +1155,8 @@ class _TestViewController: UIViewController {
         } else if queue2.count > 0 {
             NotificationCenter.default.post(name: Notification.Name("received2"), object: notification.object)
         } else {
-            let dic = notification.object as! [String: Any]
-            let ss = dic["tag"] as! String
+            let notificationObject = notification.object as! [String: Any]
+            let ss = notificationObject["reply"] as! String
             debug("< '\(ss)' \(ss.count)")
         }
     }
@@ -1198,30 +1203,30 @@ class _TestViewController: UIViewController {
     func continueQueue2() {
         // next step, after delay
         indiceCmd += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // Change n to the desired number of seconds
-            self.processQueue2()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {  [self] in // Change n to the desired number of seconds
+            processQueue2()
         }
     }
 
     func debug(_ s: String) {
         print(s)
-        DispatchQueue.main.async {
-            self.tv.text += "\n\(s)"
-            self.tv.scrollToBottom()
+        DispatchQueue.main.async { [self] in
+            tv.text += "\n\(s)"
+            tv.scrollToBottom()
         }
     }
 
     @objc func received2(notification: Notification) {
-        let dic = notification.object as! [String: Any]
-        let reply = dic["tag"] as! String
+        let notificationObject = notification.object as! [String: Any]
+        let reply = notificationObject["reply"] as! String
 
         debug("< '\(reply)' \(reply.count)")
 
         // TEST
         var sid = ""
         let seq = queue2.first
-        if dic["sid"] != nil {
-            sid = dic["sid"] as! String
+        if notificationObject["sid"] != nil {
+            sid = notificationObject["sid"] as! String
         } else {
             sid = (seq?.field.sid)!
         }
