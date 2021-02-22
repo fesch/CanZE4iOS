@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		46FC578625E25C3B00587E46 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FC578525E25C3B00587E46 /* RootViewController.swift */; };
 		621AC0E425C7F673004A293C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0E325C7F673004A293C /* Logger.swift */; };
 		621AC0E925C811D2004A293C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0E825C811D2004A293C /* Data.swift */; };
 		621AC0EC25C81B2C004A293C /* FirmwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0EB25C81B2C004A293C /* FirmwareViewController.swift */; };
@@ -100,6 +101,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		46FC578525E25C3B00587E46 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		621AC0E325C7F673004A293C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		621AC0E625C80287004A293C /* CanZE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CanZE.entitlements; sourceTree = "<group>"; };
 		621AC0E825C811D2004A293C /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				629204DF258BB05400288D1E /* LaunchScreen.storyboard */,
 				629204D4258BB05000288D1E /* AppDelegate.swift */,
 				62D3F96425933793002CB6C7 /* NavigationController.swift */,
+				46FC578525E25C3B00587E46 /* RootViewController.swift */,
 				62D3F97825934B6C002CB6C7 /* CanZeViewController.swift */,
 				629204D8258BB05000288D1E /* HomeViewController.swift */,
 				62D2649C25B5BE9200421F14 /* DisclaimerViewController.swift */,
@@ -592,6 +595,7 @@
 				6232908825DAD56D006AC42C /* _Test_CentralManager.swift in Sources */,
 				626C004425B9C66000121456 /* UIDevice.swift in Sources */,
 				62D67DFB25C1D1260075D7AB /* ChargingTechViewController.swift in Sources */,
+				46FC578625E25C3B00587E46 /* RootViewController.swift in Sources */,
 				62EF1D0A25D2B60200E59E77 /* BrakingViewController.swift in Sources */,
 				6232908C25DAD573006AC42C /* _Test_Picker.swift in Sources */,
 				62DFAB322592300500B00C5C /* Utils.swift in Sources */,
