@@ -132,6 +132,13 @@ class VoltageHeatmapViewController: CanZeViewController {
         if cell > 0, cell <= lastCell {
             let value = field?.getValue()
 
+            DispatchQueue.main.async { [self] in
+                if let tv = view.viewWithTag(cell+1000) {
+                    let tv2 = tv as! UILabel
+                    tv2.text = String(format: "%.3f", value!)
+                }
+            }
+
             lastVoltage[cell] = value!
             if cell == lastCell {
                 mean = 0
@@ -157,9 +164,9 @@ class VoltageHeatmapViewController: CanZeViewController {
                         if let tv = view.viewWithTag(i+1000) {
                             let tv2 = tv as! UILabel
                             // tv.setText(String.format("%.3f", lastVoltage[i]));
-                            if i < lastVoltage.count, lastVoltage[i] != Double.nan {
-                                tv2.text = String(format: "%.3f", lastVoltage[i])
-                            }
+//                            if i < lastVoltage.count, lastVoltage[i] != Double.nan {
+//                                tv2.text = String(format: "%.3f", lastVoltage[i])
+//                            }
                             let delta = Int(10000 * (lastVoltage[i] - mean)) // color is temp minus mean. 1mV difference is 5 color ticks
                             tv2.backgroundColor = makeColor(delta)
                         }

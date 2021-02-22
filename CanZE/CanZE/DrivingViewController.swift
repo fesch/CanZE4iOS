@@ -189,17 +189,19 @@ class DrivingViewController: CanZeViewController {
 
         queue2 = []
 
+        addField(Sid.Pedal, intervalMs: 0)  // 1st time
         addField(Sid.DcPowerOut, intervalMs: 0)
-        addField(Sid.Pedal, intervalMs: 0)
         // addField(Sid.DriverBrakeWheel_Torque_Request, 0)
         // addField(Sid.ElecBrakeWheelsTorqueApplied, 0)
         // addField(Sid.Coasting_Torque, 0)
         addField(Sid.TotalPositiveTorque, intervalMs: 0)
         addField(Sid.TotalNegativeTorque, intervalMs: 0)
+        addField(Sid.Pedal, intervalMs: 0)  // 2nd time
         addField(Sid.TotalPotentialResistiveWheelsTorque, intervalMs: 0)
         addField(Sid.RealSpeed, intervalMs: 0)
         addField_(Sid.SoC, intervalMs: 7200)
         addField_(Sid.RangeEstimate, intervalMs: 7200)
+        addField(Sid.Pedal, intervalMs: 0)  // 3rd time
         addField_(Sid.EVC_Odometer, intervalMs: 6000)
         addField_(Sid.TripMeterB, intervalMs: 6000)
         addField_(Sid.TripEnergyB, intervalMs: 6000)

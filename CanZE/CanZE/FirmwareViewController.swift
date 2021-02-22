@@ -203,7 +203,7 @@ class FirmwareViewController: CanZeViewController {
                     s.append("version:\(formatta(field))")
                     lblResult4.text = s
                 }
-                if multi, !sid!.contains(".5003."), s != lastStringLogged {
+                if multi, !sid!.contains(".5003."), s != lastStringLogged, s != "" {
                     logger.add(s)
                     lastStringLogged = s
                 }

@@ -108,6 +108,13 @@ class TemperatureHeatmapViewController: CanZeViewController {
             let value = field?.getValue()
             if value != nil, !value!.isNaN {
                 if cell < lastVal.count {
+                    DispatchQueue.main.async { [self] in
+                        if let tv = view.viewWithTag(cell+1000) {
+                            let tv2 = tv as! UILabel
+                            tv2.text = String(format: "%.1f", value!)
+                        }
+                    }
+
                     lastVal[cell] = value!
                     if cell == lastCell {
                         for i in 1 ..< lastCell+1 {
@@ -122,7 +129,7 @@ class TemperatureHeatmapViewController: CanZeViewController {
                                 if let tv = view.viewWithTag(i+1000) {
                                     let tv2 = tv as! UILabel
                                     // tv.setText(String.format("%.3f", lastVoltage[i]));
-                                    tv2.text = String(format: "%.1f", lastVal[i])
+                                    //                                tv2.text = String(format: "%.1f", lastVal[i])
                                     let delta = Int(50 * (lastVal[i] - mean)) // color is temp minus mean
                                     tv2.backgroundColor = makeColor(delta)
                                 }

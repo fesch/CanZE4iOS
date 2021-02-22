@@ -2313,7 +2313,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="1257"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rw5-OS-5tf">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="737"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="1257"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sth-Gl-OcR">
                                                 <rect key="frame" x="10" y="10" width="394" height="18"/>
@@ -3283,7 +3283,7 @@
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="Rw5-OS-5tf" secondAttribute="bottom" id="TZq-yD-zP3"/>
                                     <constraint firstItem="Rw5-OS-5tf" firstAttribute="top" secondItem="o4B-PN-iqm" secondAttribute="top" id="ZCT-5Z-ikX"/>
-                                    <constraint firstItem="fqv-uI-GiN" firstAttribute="bottom" secondItem="Rw5-OS-5tf" secondAttribute="bottom" constant="520" id="f6U-GK-ph8"/>
+                                    <constraint firstItem="fqv-uI-GiN" firstAttribute="bottom" secondItem="Rw5-OS-5tf" secondAttribute="bottom" id="f6U-GK-ph8"/>
                                     <constraint firstAttribute="trailing" secondItem="Rw5-OS-5tf" secondAttribute="trailing" id="kkW-NQ-Leu"/>
                                     <constraint firstItem="Rw5-OS-5tf" firstAttribute="width" secondItem="o4B-PN-iqm" secondAttribute="width" id="mDM-Km-BPO"/>
                                     <constraint firstItem="Rw5-OS-5tf" firstAttribute="leading" secondItem="o4B-PN-iqm" secondAttribute="leading" id="oA4-ZA-0zd"/>

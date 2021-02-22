@@ -414,7 +414,7 @@ class CanZeViewController: RootViewController {
             vBG.removeFromSuperview()
         }
     }
-  
+
     func write(s: String) {
         switch Globals.shared.deviceConnection {
         case .BLE:
@@ -464,10 +464,12 @@ class CanZeViewController: RootViewController {
                     }
                 } else {
                     var found = false
-                    for s in queue2 {
-                        if s.field.sid == field.sid {
-                            found = true
-                            break
+                    if intervalMs != 0 { // to speed up pedal position update on DrivingViewController
+                        for s in queue2 {
+                            if s.field.sid == field.sid {
+                                found = true
+                                break
+                            }
                         }
                     }
                     if !found {
@@ -777,9 +779,10 @@ class CanZeViewController: RootViewController {
             // print(hexData.lowercased())
         }
 
-        debug("decodeIsoTp \(hexData.lowercased())")
+        hexData = hexData.lowercased()
+        debug("decodeIsoTp \(hexData)")
 
-        return hexData.lowercased()
+        return hexData
     }
 
     func onMessageCompleteEventField(binString_: String, field: Field) {
@@ -1184,9 +1187,9 @@ class CanZeViewController: RootViewController {
         if queueInit.count > 0 {
             if timeoutTimer != nil, timeoutTimer.isValid {
                 timeoutTimer.invalidate()
-            //    if queue.count > 0 {
-            //        continueQueue()
-            //    } else
+                //    if queue.count > 0 {
+                //        continueQueue()
+                //    } else
                 if queueInit.count > 0 {
                     continueQueueInit()
                 }
@@ -1231,19 +1234,28 @@ class CanZeViewController: RootViewController {
                 // firmware
 
                 for field in seq.frame.getAllFields() {
-                    if reply.contains("not found") {
-                        debug("not found")
+                    if reply.contains("ERROR") {
+                        error = "ERROR"
+                        debug(error)
+                    } else if reply == "OK" {
+                        // do nothing
+                    } else if reply == "NO DATA" {
+                        error = reply
+                        debug(error)
+                    } else if reply == "" {
+                        error = "EMPTY"
+                        debug(error)
+                    } else if reply.contains("not found") { // http
+                        error = "NOT FOUND"
+                        debug(error)
                     } else {
-                        // lascio qui ?
                         if Globals.shared.deviceType == .ELM327 {
-                            field.strVal = decodeIsoTp(elmResponse2: reply) // ""
-                        } else {
-                            // http, cansee
+                            field.strVal = decodeIsoTp(elmResponse2: reply)
+                        } else { // http, cansee
                             field.strVal = reply
                         }
-                        let binString = getAsBinaryString(data: reply)
+                        let binString = getAsBinaryString(data: field.strVal)
                         debug("\(binString) (\(binString.count))")
-                        // lascio qui ?
 
                         onMessageCompleteEventField(binString_: binString, field: field)
 
@@ -1282,22 +1294,23 @@ class CanZeViewController: RootViewController {
             } else {
                 if let field = Fields.getInstance.getBySID(sid) {
                     if reply.contains("ERROR") {
-                        // do nothing
                         error = "ERROR"
                         debug(error)
                     } else if reply == "OK" {
                         // do nothing
+                    } else if reply == "NO DATA" {
+                        error = reply
+                        debug(error)
                     } else if reply == "" {
                         error = "EMPTY"
                         debug(error)
-                    } else if reply.contains("not found") {
+                    } else if reply.contains("not found") { // http
                         error = "NOT FOUND"
                         debug(error)
                     } else {
                         if Globals.shared.deviceType == .ELM327 {
                             field.strVal = decodeIsoTp(elmResponse2: reply) // ""
-                        } else {
-                            // http, cansee
+                        } else { // http, cansee
                             field.strVal = reply
                         }
                         if field.strVal.hasPrefix("7f") {
