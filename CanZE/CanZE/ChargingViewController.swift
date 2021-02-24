@@ -117,14 +117,15 @@ class ChargingViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         if Utils.isPh2() {
-            addField_(Sid.EVC, intervalMs: 2000) // open EVC
+            addField_(Sid.EVC, intervalMs: 20000) // open EVC
         }
         addField_(Sid.MaxCharge, intervalMs: 5000)
         addField_(Sid.UserSoC, intervalMs: 5000)
         addField_(Sid.RealSoC, intervalMs: 5000)
-        addField_(Sid.SOH, intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
+        addField_(Sid.SOH, intervalMs: 20000) // state of health gives continuous timeouts. This frame is send at a very low rate
         addField_(Sid.RangeEstimate, intervalMs: 5000)
         addField_(Sid.DcPowerIn, intervalMs: 5000)
         addField_(Sid.AvailableChargingPower, intervalMs: 5000)
@@ -179,7 +180,11 @@ class ChargingViewController: CanZeViewController {
                 case Sid.HvTemp:
                     textHvTemp.text = String(format: "%.2f", val!)
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

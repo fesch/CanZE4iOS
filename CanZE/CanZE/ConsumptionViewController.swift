@@ -193,6 +193,7 @@ class ConsumptionViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField(Sid.TotalPositiveTorque, intervalMs: 0)
         addField(Sid.TotalNegativeTorque, intervalMs: 0)
@@ -335,7 +336,11 @@ class ConsumptionViewController: CanZeViewController {
                         updateChart3()
                     }
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

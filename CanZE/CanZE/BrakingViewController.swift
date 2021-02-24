@@ -145,6 +145,7 @@ class BrakingViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField(Sid.TotalPotentialResistiveWheelsTorque, intervalMs: 0)
         addField(Sid.FrictionTorque, intervalMs: 0)
@@ -194,7 +195,11 @@ class BrakingViewController: CanZeViewController {
                     pb_driver_torque_request.setProgress(1 - progress, animated: false)
                     text_driver_torque_request.text = String(format: "%.0f \(um)", frictionTorque + elecBrakeTorque)
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

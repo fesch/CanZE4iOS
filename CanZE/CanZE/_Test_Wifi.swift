@@ -19,22 +19,22 @@ extension _TestViewController: StreamDelegate {
                 readAvailableBytes(stream: aStream as! InputStream)
             }
         case .endEncountered:
-            debug( "\(aStream) endEncountered")
+            debug2("\(aStream) endEncountered")
         case .hasSpaceAvailable:
             // print("\(aStream) hasSpaceAvailable")
             if aStream == outputStream {
 //                print("ready")
 //                print("ready")
-             //   debug( "ready")
+                //   debug( "ready")
                 // tv.text += ("ready\n")
                 // tv.scrollToBottom()
             }
         case .errorOccurred:
-            debug( "\(aStream) errorOccurred")
+            debug2("\(aStream) errorOccurred")
         case .openCompleted:
-            debug( "\(aStream) openCompleted")
+            debug2("\(aStream) openCompleted")
         default:
-            debug( "\(aStream) \(eventCode.rawValue)")
+            debug2("\(aStream) \(eventCode.rawValue)")
         }
     }
 
@@ -43,7 +43,7 @@ extension _TestViewController: StreamDelegate {
         while stream.hasBytesAvailable {
             let numberOfBytesRead = inputStream.read(buffer, maxLength: maxReadLength)
             if numberOfBytesRead < 0, let error = stream.streamError {
-                debug( error.localizedDescription)
+                debug2(error.localizedDescription)
                 break
             }
             var string = String(

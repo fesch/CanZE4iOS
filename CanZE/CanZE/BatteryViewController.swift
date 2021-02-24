@@ -42,8 +42,6 @@ class BatteryViewController: CanZeViewController {
 
     @IBOutlet var lblBatterySerial: UILabel!
 
-    var doneOneTimeOnly = false
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -154,6 +152,7 @@ class BatteryViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         if Utils.isPh2() {
             addField_(Sid.EVC, intervalMs: 2000) // open EVC
@@ -166,10 +165,7 @@ class BatteryViewController: CanZeViewController {
 
         // 7bb.6104.32,7bb.6104.56,7bb.6104.80,7bb.6104.104,7bb.6104.128,7bb.6104.152,7bb.6104.176,7bb.6104.200,7bb.6104.224,7bb.6104.248,7bb.6104.272,7bb.6104.296
 
-        if !doneOneTimeOnly {
-            addField_(Sid.BatterySerial, intervalMs: 5000)
-            doneOneTimeOnly = true
-        }
+        addField_(Sid.BatterySerial, intervalMs: 60000)
 
         addField_("658.33", intervalMs: 5000) // state of health gives continuous timeouts. This frame is send at a very low rate
 
@@ -224,7 +220,11 @@ class BatteryViewController: CanZeViewController {
                     lblBatterySerial.text = "Serial: \(strVal!)"
                 }
             default:
-                print("unknown sid \(sid!)")
+                if let f = Fields.getInstance.fieldsBySid[sid!] {
+                    print("unknown sid \(sid!) \(f.name ?? "")")
+                } else {
+                    print("unknown sid \(sid!)")
+                }
             }
         }
     }

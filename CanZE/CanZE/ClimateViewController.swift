@@ -149,6 +149,7 @@ class ClimateViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField(Sid.EngineFanSpeed, intervalMs: 0)
         addField(Sid.HvCoolingState, intervalMs: 0)
@@ -263,7 +264,11 @@ class ClimateViewController: CanZeViewController {
                     updateCompChart()
 
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

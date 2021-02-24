@@ -16,21 +16,21 @@ extension _TestViewController: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .unknown:
-            debug( "central.state is .unknown")
+            debug2("central.state is .unknown")
         case .resetting:
-            debug( "central.state is .resetting")
+            debug2("central.state is .resetting")
         case .unsupported:
-            debug( "central.state is .unsupported")
+            debug2("central.state is .unsupported")
         case .unauthorized:
-            debug( "central.state is .unauthorized")
+            debug2("central.state is .unauthorized")
         case .poweredOff:
-            debug( "central.state is .poweredOff")
+            debug2("central.state is .poweredOff")
         case .poweredOn:
-            debug( "central.state is .poweredOn")
+            debug2("central.state is .poweredOn")
             //            centralManager.scanForPeripherals(withServices: [serviceCBUUID])
             centralManager.scanForPeripherals(withServices: [])
         @unknown default:
-            debug( "central.state is unknown")
+            debug2("central.state is unknown")
         }
     }
 
@@ -55,7 +55,7 @@ extension _TestViewController: CBCentralManagerDelegate {
                 }
             }
             if !trovato {
-                debug( "discovered \(peripheral.name ?? "?")")
+                debug2("discovered \(peripheral.name ?? "?")")
                 peripheralsArray.append(p)
                 picker.reloadAllComponents()
             }
@@ -69,13 +69,13 @@ extension _TestViewController: CBCentralManagerDelegate {
             centralManager.stopScan()
             p.blePeripheral.delegate = self
             selectedPeripheral = p
-            debug( "found selected Peripheral \(selectedPeripheral.blePeripheral.name ?? "")")
+            debug2("found selected Peripheral \(selectedPeripheral.blePeripheral.name ?? "")")
             centralManager.connect(selectedPeripheral.blePeripheral)
         }
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        debug( "didConnect \(peripheral.name ?? "?") \(peripheral.identifier.uuidString)")
+        debug2("didConnect \(peripheral.name ?? "?") \(peripheral.identifier.uuidString)")
         servicesArray = []
         pickerPhase = .SERVICES
         tmpPickerIndex = 0
@@ -84,15 +84,15 @@ extension _TestViewController: CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        debug( "didFailToConnect \(peripheral) \(error?.localizedDescription ?? "")")
+        debug2("didFailToConnect \(peripheral) \(error?.localizedDescription ?? "")")
     }
 
     func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
-        debug( "connectionEventDidOccur \(peripheral)")
+        debug2("connectionEventDidOccur \(peripheral)")
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        debug( "didDisconnectPeripheral \(peripheral.name ?? "")")
+        debug2("didDisconnectPeripheral \(peripheral.name ?? "")")
     }
 
     func centralManager(_ central: CBCentralManager, didUpdateANCSAuthorizationFor peripheral: CBPeripheral) {}

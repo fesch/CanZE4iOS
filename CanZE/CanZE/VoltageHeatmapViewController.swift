@@ -100,6 +100,7 @@ class VoltageHeatmapViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         for i in 1 ..< 63 {
             let sid = "\(Sid.Preamble_CellVoltages1)\(i * 16)" // remember, first is pos 16, i starts s at 1

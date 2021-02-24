@@ -22,8 +22,6 @@ class Globals: NSObject {
     // WIFI
     var deviceWifiAddress = ""
     var deviceWifiPort = ""
-    var inputStream: InputStream!
-    var outputStream: OutputStream!
 
     // BLE
     var peripheralsDic: [String: BlePeripheral]!

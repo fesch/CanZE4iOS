@@ -39,7 +39,7 @@ extension _TestViewController: CBPeripheralDelegate {
             for s in servicesArray {
                 if s.uuid.uuidString == Globals.shared.deviceBleServiceUuid {
                     selectedService = s
-                    debug( "found selected service \(selectedService.uuid)")
+                    debug2("found selected service \(selectedService.uuid)")
                     characteristicArray = []
                     selectedPeripheral.blePeripheral.discoverCharacteristics([selectedService.uuid], for: selectedService)
                     break
@@ -114,12 +114,12 @@ extension _TestViewController: CBPeripheralDelegate {
 //                    print(c.uuid.uuidString)
                     if c.uuid.uuidString == Globals.shared.deviceBleWriteCharacteristicUuid {
                         selectedWriteCharacteristic = c
-                        debug( "found selected write characteristic \(c.uuid)")
+                        debug2("found selected write characteristic \(c.uuid)")
                         // peripheral.discoverDescriptors(for: characteristics)
                     }
                     if c.uuid.uuidString == Globals.shared.deviceBleReadCharacteristicUuid {
                         selectedReadCharacteristic = c
-                        debug( "found selected notify characteristic \(c.uuid)")
+                        debug2("found selected notify characteristic \(c.uuid)")
                         if c.properties.contains(.notify) {
 //                            for c in selectedService.characteristics! {
 //                              selectedPeripheral.blePeripheral.setNotifyValue(false, for: c)
@@ -130,7 +130,7 @@ extension _TestViewController: CBPeripheralDelegate {
                     }
 
                     if selectedReadCharacteristic != nil, selectedWriteCharacteristic != nil {
-                        debug( "trovati")
+                        debug2("trovati")
                         break
                     }
                 }
@@ -192,11 +192,11 @@ extension _TestViewController: CBPeripheralDelegate {
     // Descriptors
     func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            debug( error!.localizedDescription)
+            debug2(error!.localizedDescription)
         } else {
             let s = "didDiscoverDescriptorsFor \(characteristic.uuid)"
-            debug( s)
-            debug( "characteristic.descriptors \(characteristic.descriptors!)")
+            debug2(s)
+            debug2("characteristic.descriptors \(characteristic.descriptors!)")
         }
     }
 
@@ -204,10 +204,10 @@ extension _TestViewController: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            debug( "error didUpdateNotificationStateFor characteristic \(characteristic.uuid.uuidString): \(error?.localizedDescription as Any)")
+            debug2("error didUpdateNotificationStateFor characteristic \(characteristic.uuid.uuidString): \(error?.localizedDescription as Any)")
         } else {
             let s = "didUpdateNotificationStateFor \(characteristic.uuid)"
-            debug( s)
+            debug2(s)
             //   tv.text += "\n\(s)"
             //   tv.scrollToBottom()
         }

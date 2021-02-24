@@ -86,8 +86,6 @@ class HomeViewController: CanZeViewController {
 
         getNews()
 
-        loadSettings()
-
         btnChargingTech.setTitle(NSLocalizedString_("button_Charging", comment: "").uppercased(), for: .normal)
         btnChargingTech.setImage(#imageLiteral(resourceName: "button_charge"), for: .normal)
         btnChargingGraph.setTitle(NSLocalizedString_("button_ChargingGraphs", comment: "").uppercased(), for: .normal)

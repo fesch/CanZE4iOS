@@ -367,6 +367,7 @@ class ChargingTechViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         if !doneOneTimeOnly {
             addField_(Sid.BcbTesterInit, intervalMs: 0) // INTERVAL_ONCE)
@@ -644,7 +645,11 @@ class ChargingTechViewController: CanZeViewController {
                         bcbVersionField?.resolution = Int(field!.getValue()) < 0x0800 ? 1.0 : 0.5
                     }
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

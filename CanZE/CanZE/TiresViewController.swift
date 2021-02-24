@@ -167,6 +167,7 @@ class TiresViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField_(Sid.TpmsState, intervalMs: 1000)
         addField_(Sid.TireSpdPresMisadaption, intervalMs: 6000)
@@ -408,7 +409,11 @@ class TiresViewController: CanZeViewController {
                           case 96: // CodeIdentite(4)_(0) --> IIdent code, left rear wheel (Wheel 4, set 0)
                               idsRead[3] = Int(field.getValue())
                           default:
-     print("unknown sid \(sid!)")
+     if let f = Fields.getInstance.fieldsBySid[sid!] {
+         print("unknown sid \(sid!) \(f.name ?? "")")
+     } else {
+         print("unknown sid \(sid!)")
+     }
                       }
                   }
                   idsRead = bit23on(idsRead)

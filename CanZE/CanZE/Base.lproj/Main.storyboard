@@ -3446,20 +3446,21 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="yXe-XL-syw">
-                                <rect key="frame" x="5" y="93" width="380" height="32"/>
+                                <rect key="frame" x="5" y="93" width="380" height="41"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="qaD-vQ-aFQ"/>
+                                </constraints>
                                 <segments>
                                     <segment title="ELM327 BLE"/>
                                     <segment title="ELM327 WIFI"/>
+                                    <segment title="CANSEE WIFI"/>
                                 </segments>
-                                <connections>
-                                    <action selector="segmentedValue" destination="GVO-Br-fja" eventType="valueChanged" id="Hwr-73-2bl"/>
-                                </connections>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BzE-mb-vMd">
-                                <rect key="frame" x="5" y="129" width="187.66666666666666" height="50"/>
+                                <rect key="frame" x="5" y="138" width="187.66666666666666" height="40"/>
                                 <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="nWC-hJ-FAL"/>
+                                    <constraint firstAttribute="height" constant="40" id="nWC-hJ-FAL"/>
                                 </constraints>
                                 <state key="normal" title="Connect"/>
                                 <connections>
@@ -3467,7 +3468,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yOI-b0-1on">
-                                <rect key="frame" x="197.66666666666663" y="129" width="187.33333333333337" height="50"/>
+                                <rect key="frame" x="197.66666666666663" y="138" width="187.33333333333337" height="40"/>
                                 <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                                 <state key="normal" title="Disconnect"/>
                                 <connections>
@@ -3475,15 +3476,23 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oro-GC-Ptl">
-                                <rect key="frame" x="261.66666666666669" y="184" width="123.33333333333331" height="50"/>
+                                <rect key="frame" x="197.66666666666666" y="228" width="90.999999999999972" height="40"/>
                                 <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                                 <state key="normal" title="Auto Init"/>
                                 <connections>
                                     <action selector="btnAutoInit" destination="GVO-Br-fja" eventType="touchUpInside" id="Q5Y-V6-zSH"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cXB-Y8-HjY">
+                                <rect key="frame" x="260" y="183" width="125" height="40"/>
+                                <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
+                                <state key="normal" title="Send"/>
+                                <connections>
+                                    <action selector="btnSend" destination="GVO-Br-fja" eventType="touchUpInside" id="zni-nB-yNz"/>
+                                </connections>
+                            </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="2Gl-zF-7mW">
-                                <rect key="frame" x="5" y="239" width="380" height="571"/>
+                                <rect key="frame" x="5" y="273" width="380" height="537"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" systemColor="labelColor"/>
@@ -3534,11 +3543,8 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="paX-tc-ntv">
-                                <rect key="frame" x="4.9999999999999929" y="184" width="123.33333333333331" height="50"/>
+                                <rect key="frame" x="5" y="228" width="91.333333333333329" height="40"/>
                                 <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="Ru4-rE-alS"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal">
                                     <string key="title">Load BLE
@@ -3549,7 +3555,7 @@ Conn Sett</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="8Uq-o7-iem">
-                                <rect key="frame" x="133.33333333333334" y="184" width="123.33333333333334" height="50"/>
+                                <rect key="frame" x="101.33333333333334" y="228" width="91.333333333333343" height="40"/>
                                 <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal">
@@ -3560,37 +3566,63 @@ Conn Sett</string>
                                     <action selector="btnSaveBleConnectionParams" destination="GVO-Br-fja" eventType="touchUpInside" id="2Zw-8G-KXh"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4dz-UV-u26">
+                                <rect key="frame" x="5" y="183" width="250" height="40"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mcC-r3-j7j">
+                                <rect key="frame" x="293.66666666666669" y="228" width="91.333333333333314" height="40"/>
+                                <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
+                                <state key="normal" title="TEST"/>
+                                <connections>
+                                    <action selector="requestIsoTpFrame" destination="GVO-Br-fja" eventType="touchUpInside" id="sWM-eJ-1Z6"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="w4c-dk-8pg"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="4dz-UV-u26" firstAttribute="top" secondItem="BzE-mb-vMd" secondAttribute="bottom" constant="5" id="34z-4W-3Pd"/>
+                            <constraint firstItem="mcC-r3-j7j" firstAttribute="width" secondItem="Oro-GC-Ptl" secondAttribute="width" id="4cp-fB-22Y"/>
+                            <constraint firstItem="cXB-Y8-HjY" firstAttribute="width" secondItem="4dz-UV-u26" secondAttribute="width" multiplier="0.5" id="5qd-6O-nTp"/>
                             <constraint firstItem="w4c-dk-8pg" firstAttribute="trailing" secondItem="2Gl-zF-7mW" secondAttribute="trailing" constant="5" id="5uM-xH-b9Y"/>
+                            <constraint firstItem="mcC-r3-j7j" firstAttribute="centerY" secondItem="Oro-GC-Ptl" secondAttribute="centerY" id="6eY-FP-fax"/>
+                            <constraint firstItem="cXB-Y8-HjY" firstAttribute="leading" secondItem="4dz-UV-u26" secondAttribute="trailing" constant="5" id="6ew-F8-Dlk"/>
                             <constraint firstItem="yXe-XL-syw" firstAttribute="leading" secondItem="w4c-dk-8pg" secondAttribute="leading" constant="5" id="6gY-rr-3sR"/>
                             <constraint firstItem="BzE-mb-vMd" firstAttribute="leading" secondItem="w4c-dk-8pg" secondAttribute="leading" constant="5" id="7Mt-2r-ZbK"/>
                             <constraint firstItem="oQI-RL-FQN" firstAttribute="trailing" secondItem="w4c-dk-8pg" secondAttribute="trailing" id="88s-7Z-xyZ"/>
                             <constraint firstItem="2Gl-zF-7mW" firstAttribute="leading" secondItem="w4c-dk-8pg" secondAttribute="leading" constant="5" id="A80-N0-VDO"/>
+                            <constraint firstItem="paX-tc-ntv" firstAttribute="top" secondItem="4dz-UV-u26" secondAttribute="bottom" constant="5" id="Bcf-m1-Kho"/>
                             <constraint firstItem="yOI-b0-1on" firstAttribute="height" secondItem="BzE-mb-vMd" secondAttribute="height" id="INb-cY-eKr"/>
                             <constraint firstItem="yOI-b0-1on" firstAttribute="width" secondItem="BzE-mb-vMd" secondAttribute="width" id="J10-w2-6YF"/>
+                            <constraint firstItem="mcC-r3-j7j" firstAttribute="height" secondItem="Oro-GC-Ptl" secondAttribute="height" id="Jsd-B7-dXO"/>
                             <constraint firstItem="Oro-GC-Ptl" firstAttribute="width" secondItem="8Uq-o7-iem" secondAttribute="width" id="NUz-VB-ysJ"/>
                             <constraint firstItem="Oro-GC-Ptl" firstAttribute="leading" secondItem="8Uq-o7-iem" secondAttribute="trailing" constant="5" id="O8T-i4-vEW"/>
-                            <constraint firstItem="paX-tc-ntv" firstAttribute="top" secondItem="BzE-mb-vMd" secondAttribute="bottom" constant="5" id="Q0y-8k-bvq"/>
                             <constraint firstItem="w4c-dk-8pg" firstAttribute="trailing" secondItem="yXe-XL-syw" secondAttribute="trailing" constant="5" id="Q3k-IG-MQq"/>
                             <constraint firstItem="yOI-b0-1on" firstAttribute="leading" secondItem="BzE-mb-vMd" secondAttribute="trailing" constant="5" id="RCf-g4-dOm"/>
                             <constraint firstItem="yOI-b0-1on" firstAttribute="centerY" secondItem="BzE-mb-vMd" secondAttribute="centerY" id="Sdg-T2-hGw"/>
                             <constraint firstItem="8Uq-o7-iem" firstAttribute="width" secondItem="paX-tc-ntv" secondAttribute="width" id="Sxw-WR-kUY"/>
                             <constraint firstItem="Oro-GC-Ptl" firstAttribute="centerY" secondItem="8Uq-o7-iem" secondAttribute="centerY" id="Tfe-kp-a9e"/>
+                            <constraint firstItem="cXB-Y8-HjY" firstAttribute="height" secondItem="4dz-UV-u26" secondAttribute="height" id="UJt-9G-afq"/>
                             <constraint firstItem="8Uq-o7-iem" firstAttribute="centerY" secondItem="paX-tc-ntv" secondAttribute="centerY" id="UNm-DX-jYF"/>
                             <constraint firstAttribute="bottom" secondItem="oQI-RL-FQN" secondAttribute="bottom" id="YP1-MD-tMy"/>
                             <constraint firstItem="w4c-dk-8pg" firstAttribute="trailing" secondItem="yOI-b0-1on" secondAttribute="trailing" constant="5" id="ZF9-Iy-Ksa"/>
+                            <constraint firstItem="w4c-dk-8pg" firstAttribute="trailing" secondItem="mcC-r3-j7j" secondAttribute="trailing" constant="5" id="bBg-YT-dSD"/>
                             <constraint firstItem="Oro-GC-Ptl" firstAttribute="height" secondItem="8Uq-o7-iem" secondAttribute="height" id="cnT-rk-Cu9"/>
                             <constraint firstItem="oQI-RL-FQN" firstAttribute="leading" secondItem="w4c-dk-8pg" secondAttribute="leading" id="dWA-7A-abD"/>
-                            <constraint firstItem="w4c-dk-8pg" firstAttribute="trailing" secondItem="Oro-GC-Ptl" secondAttribute="trailing" constant="5" id="eos-FK-Q2I"/>
                             <constraint firstItem="paX-tc-ntv" firstAttribute="leading" secondItem="w4c-dk-8pg" secondAttribute="leading" constant="5" id="fKJ-BV-hTP"/>
                             <constraint firstItem="8Uq-o7-iem" firstAttribute="leading" secondItem="paX-tc-ntv" secondAttribute="trailing" constant="5" id="gcB-QX-lCc"/>
+                            <constraint firstItem="w4c-dk-8pg" firstAttribute="trailing" secondItem="cXB-Y8-HjY" secondAttribute="trailing" constant="5" id="hfY-4L-0g3"/>
                             <constraint firstItem="8Uq-o7-iem" firstAttribute="height" secondItem="paX-tc-ntv" secondAttribute="height" id="kWC-KG-xMQ"/>
+                            <constraint firstItem="cXB-Y8-HjY" firstAttribute="centerY" secondItem="4dz-UV-u26" secondAttribute="centerY" id="l2F-Es-P0l"/>
+                            <constraint firstItem="paX-tc-ntv" firstAttribute="height" secondItem="cXB-Y8-HjY" secondAttribute="height" id="mfc-HU-7z3"/>
                             <constraint firstItem="2Gl-zF-7mW" firstAttribute="top" secondItem="Oro-GC-Ptl" secondAttribute="bottom" constant="5" id="n4h-Y2-Ldb"/>
+                            <constraint firstItem="mcC-r3-j7j" firstAttribute="leading" secondItem="Oro-GC-Ptl" secondAttribute="trailing" constant="5" id="pvP-Ft-JjY"/>
                             <constraint firstItem="w4c-dk-8pg" firstAttribute="bottom" secondItem="2Gl-zF-7mW" secondAttribute="bottom" id="pzV-2T-AiL"/>
                             <constraint firstItem="yXe-XL-syw" firstAttribute="top" secondItem="w4c-dk-8pg" secondAttribute="top" constant="5" id="sQ1-Wp-TZp"/>
+                            <constraint firstItem="cXB-Y8-HjY" firstAttribute="height" secondItem="yOI-b0-1on" secondAttribute="height" id="tHe-yf-aPn"/>
+                            <constraint firstItem="4dz-UV-u26" firstAttribute="leading" secondItem="w4c-dk-8pg" secondAttribute="leading" constant="5" id="udn-rr-qeP"/>
                             <constraint firstItem="BzE-mb-vMd" firstAttribute="top" secondItem="yXe-XL-syw" secondAttribute="bottom" constant="5" id="yk5-0w-XFF"/>
                         </constraints>
                     </view>
@@ -3601,12 +3633,13 @@ Conn Sett</string>
                         <outlet property="picker" destination="jRk-lr-yDw" id="Bba-a2-9jX"/>
                         <outlet property="pickerView" destination="oQI-RL-FQN" id="E6Z-4h-WQM"/>
                         <outlet property="seg" destination="yXe-XL-syw" id="7UL-aU-yiT"/>
+                        <outlet property="tf" destination="4dz-UV-u26" id="2pf-an-d4G"/>
                         <outlet property="tv" destination="2Gl-zF-7mW" id="5JT-Tn-L63"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tcR-8b-F1i" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1225" y="-174"/>
+            <point key="canvasLocation" x="-1226.1538461538462" y="-174.17061611374407"/>
         </scene>
         <!--Charging Graph View Controller-->
         <scene sceneID="FsL-ND-8h8">

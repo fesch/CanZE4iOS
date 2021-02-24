@@ -160,9 +160,9 @@ class FirmwareViewController: CanZeViewController {
         } else if field.getValue().isNaN {
             print("nan")
         } else if (field.to - field.from) < 8 {
-            toDisplay = String(format: ":%02X", Int(field.getValue()))
+            toDisplay = String(format: "%02X", Int(field.getValue()))
         } else {
-            toDisplay = String(format: ":%04X", Int(field.getValue()))
+            toDisplay = String(format: "%04X", Int(field.getValue()))
         }
         return toDisplay
 
@@ -219,6 +219,7 @@ class FirmwareViewController: CanZeViewController {
 
         let ecu = arrayEcu[i!.row]
         queue2 = []
+        lastId = 0
         lblResult1.text = " "
         lblResult2.text = " "
         lblResult3.text = " "

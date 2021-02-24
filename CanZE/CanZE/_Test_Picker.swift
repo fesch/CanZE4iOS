@@ -68,7 +68,7 @@ extension _TestViewController: UIPickerViewDataSource {
         label.numberOfLines = 0
         label.lineBreakMode = .byCharWrapping
         label.minimumScaleFactor = 0.15
-        label.frame = CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 1000)
+        label.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 1000)
 
         return label
     }

@@ -111,6 +111,7 @@ class LeakCurrentsViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         if !doneOneTimeOnly {
             addField(Sid.BcbTesterInit, intervalMs: 0)
@@ -158,7 +159,11 @@ class LeakCurrentsViewController: CanZeViewController {
                     leakCurrentEhfEntries.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     updateLeakCurrentEhfChart()
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

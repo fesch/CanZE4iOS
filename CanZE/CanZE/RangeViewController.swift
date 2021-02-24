@@ -124,6 +124,7 @@ class RangeViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField_(Sid.RangeEstimate, intervalMs: 2000)
         addField_(Sid.AvailableEnergy, intervalMs: 2000)
@@ -172,7 +173,11 @@ class RangeViewController: CanZeViewController {
                     rangeBest = energy / consumptionBest * 100
                     updateRange()
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

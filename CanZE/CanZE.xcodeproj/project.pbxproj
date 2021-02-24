@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		46FC578625E25C3B00587E46 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FC578525E25C3B00587E46 /* RootViewController.swift */; };
+		6210A8B425E3F0E500098B54 /* CanZEicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6210A8B325E3F0E500098B54 /* CanZEicon.png */; };
 		621AC0E425C7F673004A293C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0E325C7F673004A293C /* Logger.swift */; };
 		621AC0E925C811D2004A293C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0E825C811D2004A293C /* Data.swift */; };
 		621AC0EC25C81B2C004A293C /* FirmwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0EB25C81B2C004A293C /* FirmwareViewController.swift */; };
@@ -26,7 +27,6 @@
 		6267689625C99ECE00F05EA7 /* fragment_technical.png in Resources */ = {isa = PBXBuildFile; fileRef = 6267689425C99C4800F05EA7 /* fragment_technical.png */; };
 		6267689925C9A8F300F05EA7 /* fragment_experimental.png in Resources */ = {isa = PBXBuildFile; fileRef = 6267689825C9A8F300F05EA7 /* fragment_experimental.png */; };
 		6267689C25C9A95800F05EA7 /* fragment_experimental@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6267689B25C9A95800F05EA7 /* fragment_experimental@2x.png */; };
-		626B0BFD25BEC3B4003331F7 /* CanZEicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 626B0BFC25BEC3B4003331F7 /* CanZEicon.png */; };
 		626C004025B9B44000121456 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626C003F25B9B44000121456 /* UITextView.swift */; };
 		626C004425B9C66000121456 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626C004325B9C66000121456 /* UIDevice.swift */; };
 		626C004725B9DFDF00121456 /* CanZEiconSmall.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 626C004625B9DFDF00121456 /* CanZEiconSmall.jpg */; };
@@ -102,6 +102,7 @@
 
 /* Begin PBXFileReference section */
 		46FC578525E25C3B00587E46 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		6210A8B325E3F0E500098B54 /* CanZEicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CanZEicon.png; sourceTree = "<group>"; };
 		621AC0E325C7F673004A293C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		621AC0E625C80287004A293C /* CanZE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CanZE.entitlements; sourceTree = "<group>"; };
 		621AC0E825C811D2004A293C /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -116,7 +117,6 @@
 		6267689425C99C4800F05EA7 /* fragment_technical.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fragment_technical.png; sourceTree = "<group>"; };
 		6267689825C9A8F300F05EA7 /* fragment_experimental.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fragment_experimental.png; sourceTree = "<group>"; };
 		6267689B25C9A95800F05EA7 /* fragment_experimental@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fragment_experimental@2x.png"; sourceTree = "<group>"; };
-		626B0BFC25BEC3B4003331F7 /* CanZEicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CanZEicon.png; sourceTree = "<group>"; };
 		626C003F25B9B44000121456 /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextView.swift; sourceTree = "<group>"; };
 		626C004325B9C66000121456 /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
 		626C004625B9DFDF00121456 /* CanZEiconSmall.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = CanZEiconSmall.jpg; sourceTree = "<group>"; };
@@ -230,11 +230,11 @@
 		626B0BFF25BEC3BF003331F7 /* _graphics */ = {
 			isa = PBXGroup;
 			children = (
+				6210A8B325E3F0E500098B54 /* CanZEicon.png */,
 				6267689425C99C4800F05EA7 /* fragment_technical.png */,
 				6267689825C9A8F300F05EA7 /* fragment_experimental.png */,
 				6267689B25C9A95800F05EA7 /* fragment_experimental@2x.png */,
 				626C004625B9DFDF00121456 /* CanZEiconSmall.jpg */,
-				626B0BFC25BEC3B4003331F7 /* CanZEicon.png */,
 			);
 			path = _graphics;
 			sourceTree = "<group>";
@@ -459,10 +459,10 @@
 			files = (
 				629204E1258BB05400288D1E /* LaunchScreen.storyboard in Resources */,
 				62B1DFB025A9A255006454EE /* _assets in Resources */,
+				6210A8B425E3F0E500098B54 /* CanZEicon.png in Resources */,
 				62D0A0B825A84B5400FB2EB7 /* Localizable.strings in Resources */,
 				626C004725B9DFDF00121456 /* CanZEiconSmall.jpg in Resources */,
 				629204DE258BB05400288D1E /* Assets.xcassets in Resources */,
-				626B0BFD25BEC3B4003331F7 /* CanZEicon.png in Resources */,
 				6267689C25C9A95800F05EA7 /* fragment_experimental@2x.png in Resources */,
 				629204DC258BB05000288D1E /* Main.storyboard in Resources */,
 				62759A8B259B62300021415C /* GoogleService-Info.plist in Resources */,

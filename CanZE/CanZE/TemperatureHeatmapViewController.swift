@@ -83,6 +83,7 @@ class TemperatureHeatmapViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         for i in 1 ..< lastCell+1 {
             let sid = "\(Sid.Preamble_CompartmentTemperatures)\(8+i * 24)" // remember, first is pos 16, i starts s at 1

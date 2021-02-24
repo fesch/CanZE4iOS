@@ -39,7 +39,6 @@ class SettingsViewController: CanZeViewController {
 
         setupPickers()
 
-        loadSettings()
         organizeSettings()
 
         settingsTableView.reloadData()
@@ -120,15 +119,15 @@ class SettingsViewController: CanZeViewController {
         // picker
         pickerView.alpha = 0.0
         picker.delegate = self
-        //btnPickerDone.backgroundColor = .lightGray
-        //btnPickerCancel.backgroundColor = .lightGray
+        // btnPickerDone.backgroundColor = .lightGray
+        // btnPickerCancel.backgroundColor = .lightGray
         btnPickerDone.setTitle(NSLocalizedString_("default_Ok", comment: "").uppercased(), for: .normal)
         btnPickerCancel.setTitle(NSLocalizedString_("default_Cancel", comment: "").lowercased(), for: .normal)
 
         // textfield
         textFieldView.alpha = 0.0
-        //btnTextFieldDone.backgroundColor = .lightGray
-        //btnTextFieldCancel.backgroundColor = .lightGray
+        // btnTextFieldDone.backgroundColor = .lightGray
+        // btnTextFieldCancel.backgroundColor = .lightGray
         btnTextFieldDone.setTitle(NSLocalizedString_("default_Ok", comment: "").uppercased(), for: .normal)
         btnTextFieldCancel.setTitle(NSLocalizedString_("default_Cancel", comment: "").lowercased(), for: .normal)
     }
@@ -278,6 +277,7 @@ class SettingsViewController: CanZeViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(endDongleTest), name: Notification.Name("endQueue2"), object: nil)
 
         queue2 = []
+        lastId = 0
         if Utils.isPh2() {
             addField(Sid.EVC, intervalMs: 2000) // open EVC
         }
@@ -329,14 +329,6 @@ class SettingsViewController: CanZeViewController {
         case AppSettings.SETTINGS_CAR:
             ud.setValue(value, forKey: AppSettings.SETTINGS_CAR)
             ud.synchronize()
-        case AppSettings.SETTINGS_DEVICE_CONNECTION:
-
-            Globals.shared.deviceConnection = AppSettings.DEVICE_CONNECTION(rawValue: value as! Int) ?? .NONE
-
-            ud.setValue(Globals.shared.deviceConnection.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
-            ud.synchronize()
-
-            disconnect(showToast: false)
 
         case AppSettings.SETTINGS_DEVICE_TYPE:
 
@@ -346,13 +338,30 @@ class SettingsViewController: CanZeViewController {
 
             if Globals.shared.deviceType == .HTTP_GW { // http gw is only supported via http
                 ud.setValue(AppSettings.DEVICE_CONNECTION.HTTP.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+            } else if Globals.shared.deviceType == .ELM327, Globals.shared.deviceConnection == .WIFI {
+                ud.setValue(AppSettings.DEVICE_CONNECTION.WIFI.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
                 ud.setValue("192.168.0.10", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
-            }
-            if Globals.shared.deviceType == .CANSEE { // cansee is only supported with wifi
+            } else if Globals.shared.deviceType == .CANSEE { // cansee is only supported with wifi
                 ud.setValue(AppSettings.DEVICE_CONNECTION.WIFI.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
                 ud.setValue("192.168.4.1", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
             }
             ud.synchronize()
+
+        case AppSettings.SETTINGS_DEVICE_CONNECTION:
+
+            Globals.shared.deviceConnection = AppSettings.DEVICE_CONNECTION(rawValue: value as! Int) ?? .NONE
+
+            ud.setValue(Globals.shared.deviceConnection.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+
+            if Globals.shared.deviceType == .ELM327, Globals.shared.deviceConnection == .WIFI {
+                ud.setValue("192.168.0.10", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+            } else if Globals.shared.deviceType == .CANSEE { // cansee is only supported with wifi
+                ud.setValue("192.168.4.1", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+            }
+
+            ud.synchronize()
+
+            disconnect(showToast: false)
 
         case AppSettings.SETTINGS_DEVICE_BLE_NAME:
 
@@ -633,8 +642,8 @@ extension SettingsViewController: UITableViewDelegate {
             textFieldView.alpha = 1.0
             textField.text = setting.stringValue
             textField.placeholder = setting.placeholder
-            //btnTextFieldDone.backgroundColor = .lightGray
-            //btnTextFieldCancel.backgroundColor = .lightGray
+            // btnTextFieldDone.backgroundColor = .lightGray
+            // btnTextFieldCancel.backgroundColor = .lightGray
 
         case .SWITCH:
 

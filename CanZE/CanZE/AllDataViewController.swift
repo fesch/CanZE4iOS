@@ -22,7 +22,8 @@ class AllDataViewController: CanZeViewController {
     @IBOutlet var btnPickerCancel: UIButton!
     @IBOutlet var btnPickerDone: UIButton!
     var tmpPickerIndex = 0
-    var lastSid = ""
+
+    var logger = AllDataLogger()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,7 +68,7 @@ class AllDataViewController: CanZeViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(endQueue2), name: Notification.Name("endQueue2"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(autoInit2), name: Notification.Name("autoInit"), object: nil)
 
-        btnSelect()
+        // btnSelect()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -117,24 +118,26 @@ class AllDataViewController: CanZeViewController {
         let field = Fields.getInstance.fieldsBySid[sid!]
 
         DispatchQueue.main.async { [self] in
-            if lastSid != sid {
-                if field!.isString() || field!.isHexString() {
-                    tv.text += "\(sid!),\(field!.name ?? ""),\(field?.strVal ?? "")\n"
-                    lastSid = sid!
-                } else if Globals.shared.fieldResultsDouble[sid!] != nil {
-                    tv.text += "\(sid!),\(field!.name ?? ""),\(field!.getValue())\n"
-                    lastSid = sid!
-                } else {
-                    tv.text += "\(sid!),\(field!.name ?? "")\n"
-                    lastSid = sid!
-                }
-                tv.scrollToBottom()
+            if field!.isString() || field!.isHexString() {
+                let s = "\(sid!),\(field!.name ?? ""),\(field?.strVal ?? "")"
+                tv.text += "\(s)\n"
+                logger.add(s, ecu: field!.frame.sendingEcu)
+            } else if Globals.shared.fieldResultsDouble[sid!] != nil {
+                let s = "\(sid!),\(field!.name ?? ""),\(field!.getValue())"
+                tv.text += "\(s)\n"
+                logger.add(s, ecu: field!.frame.sendingEcu)
+            } else {
+                let s = "\(sid!),\(field!.name ?? "")"
+                tv.text += "\(s)\n"
+                logger.add(s, ecu: field!.frame.sendingEcu)
             }
+            tv.scrollToBottom()
         }
     }
 
     @IBAction func btnSelect() {
         queue2 = []
+        lastId = 0
         showPicker()
     }
 
@@ -145,7 +148,9 @@ class AllDataViewController: CanZeViewController {
 
         tv.text = ""
         let ecu = arrayEcu[tmpPickerIndex]
+        logger = AllDataLogger()
         queue2 = []
+        lastId = 0
 
         Frames.getInstance.load(ecu: ecu)
         Fields.getInstance.load(assetName: ecu.mnemonic + "_Fields.csv")
@@ -179,8 +184,8 @@ class AllDataViewController: CanZeViewController {
     func setupPicker() {
         pickerView.alpha = 0.0
         picker.delegate = self
-        //btnPickerDone.backgroundColor = .lightGray
-        //btnPickerCancel.backgroundColor = .lightGray
+        // btnPickerDone.backgroundColor = .lightGray
+        // btnPickerCancel.backgroundColor = .lightGray
         btnPickerDone.setTitle(NSLocalizedString_("default_Ok", comment: "").uppercased(), for: .normal)
         btnPickerCancel.setTitle(NSLocalizedString_("default_Cancel", comment: "").lowercased(), for: .normal)
     }
@@ -212,6 +217,31 @@ class AllDataViewController: CanZeViewController {
 
     @IBAction func btnPickerCancel_() {
         hidePicker()
+    }
+}
+
+class AllDataLogger {
+    var url: URL?
+    func add(_ s: String, ecu: Ecu?) {
+        if url == nil {
+            let dir: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last! as URL
+
+            let df = DateFormatter()
+            df.dateFormat = "YYYY-MM-dd-HH-mm-ss"
+            let s = "\(ecu?.mnemonic ?? "ecu")-\(df.string(from: Date())).txt"
+            url = dir.appendingPathComponent(s)
+
+//            do {
+//                try "\(Date())".appendLineToURL(fileURL: url! as URL)
+//            } catch {
+//                print("can't create log file")
+//            }
+        }
+        do {
+            try s.appendLineToURL(fileURL: url! as URL)
+        } catch {
+            print("can't write to log file")
+        }
     }
 }
 

@@ -127,6 +127,7 @@ class ChargingPredictionViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField_(Sid.RangeEstimate, intervalMs: 10000) // 0x08
         addField_(Sid.AvailableChargingPower, intervalMs: 10000) // 0x01
@@ -178,7 +179,11 @@ class ChargingPredictionViewController: CanZeViewController {
                     car_soh = val!
                     car_status |= 0x20
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
 
                 if car_status == 0x3f {

@@ -162,22 +162,22 @@ class ChargingHistoryViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         for i in 0 ..< 10 {
-            addField("\(Sid.Preamble_KM)\(240 - i * 24)", intervalMs: 6000)
-            addField("\(Sid.Preamble_END)\(96 - i * 8)", intervalMs: 6000)
-            addField("\(Sid.Preamble_TYP)\(96 - i * 8)", intervalMs: 6000)
-            addField("\(Sid.Preamble_SOC)\(168 - i * 16)", intervalMs: 6000)
-            addField("\(Sid.Preamble_TMP)\(96 - i * 8)", intervalMs: 6000)
-            addField("\(Sid.Preamble_DUR)\(168 - i * 16)", intervalMs: 6000)
+            addField_("\(Sid.Preamble_KM)\(240 - i * 24)", intervalMs: 6000)
+            addField_("\(Sid.Preamble_END)\(96 - i * 8)", intervalMs: 6000)
+            addField_("\(Sid.Preamble_TYP)\(96 - i * 8)", intervalMs: 6000)
+            addField_("\(Sid.Preamble_SOC)\(168 - i * 16)", intervalMs: 6000)
+            addField_("\(Sid.Preamble_TMP)\(96 - i * 8)", intervalMs: 6000)
+            addField_("\(Sid.Preamble_DUR)\(168 - i * 16)", intervalMs: 6000)
         }
-        addField(Sid.Total_kWh, intervalMs: 6000)
-        addField(Sid.Counter_Full, intervalMs: 6000)
-        addField(Sid.Counter_Partial, intervalMs: 6000)
-
+        addField_(Sid.Total_kWh, intervalMs: 6000)
         if Utils.isPh2() {
-            addField(Sid.Total_Regen_kWh, intervalMs: 6000)
+            addField_(Sid.Total_Regen_kWh, intervalMs: 6000)
         }
+        addField_(Sid.Counter_Full, intervalMs: 6000)
+        addField_(Sid.Counter_Partial, intervalMs: 6000)
 
         startQueue2()
     }
@@ -266,7 +266,11 @@ class ChargingHistoryViewController: CanZeViewController {
                     case Sid.Counter_Partial:
                         textCountPartial.text = String(format: "%.0f", val!)
                     default:
-                        print("unknown sid \(sid!)")
+                        if let f = Fields.getInstance.fieldsBySid[sid!] {
+                            print("unknown sid \(sid!) \(f.name ?? "")")
+                        } else {
+                            print("unknown sid \(sid!)")
+                        }
                     }
                 }
             }

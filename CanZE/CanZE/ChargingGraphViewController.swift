@@ -112,6 +112,7 @@ class ChargingGraphViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField_(Sid.ACPilot, intervalMs: 10000)
         addField_(Sid.AvailableChargingPower, intervalMs: 10000)
@@ -164,7 +165,11 @@ class ChargingGraphViewController: CanZeViewController {
                     energyTemperatureChartEntries2.append(ChartDataEntry(x: Date().timeIntervalSince1970, y: val!))
                     updateEnergyTemperatureChart()
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

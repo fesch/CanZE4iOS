@@ -188,6 +188,7 @@ class DrivingViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField(Sid.Pedal, intervalMs: 0)  // 1st time
         addField(Sid.DcPowerOut, intervalMs: 0)
@@ -288,7 +289,11 @@ class DrivingViewController: CanZeViewController {
                 //    break;
 
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

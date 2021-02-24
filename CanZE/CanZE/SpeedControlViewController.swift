@@ -98,9 +98,10 @@ class SpeedControlViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
-        addField(Sid.TripMeterB, intervalMs: 100)
-        addField(Sid.RealSpeed, intervalMs: 100)
+        addField_(Sid.TripMeterB, intervalMs: 100)
+        addField_(Sid.RealSpeed, intervalMs: 100)
 
         startQueue2()
     }
@@ -184,7 +185,11 @@ class SpeedControlViewController: CanZeViewController {
                         }
                     }
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }

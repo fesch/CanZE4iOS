@@ -119,6 +119,7 @@ class AuxBatteryViewController: CanZeViewController {
         }
 
         queue2 = []
+        lastId = 0
 
         addField_(Sid.Aux12V, intervalMs: 2000)
         addField_(Sid.Aux12A, intervalMs: 1000)
@@ -172,7 +173,11 @@ class AuxBatteryViewController: CanZeViewController {
                 case Sid.CurrentUnderLoad:
                     textCurrentUnderLoad.text = String(format: "%.1f", val!)
                 default:
-                    print("unknown sid \(sid!)")
+                    if let f = Fields.getInstance.fieldsBySid[sid!] {
+                        print("unknown sid \(sid!) \(f.name ?? "")")
+                    } else {
+                        print("unknown sid \(sid!)")
+                    }
                 }
             }
         }
