@@ -144,8 +144,8 @@ class BrakingViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField(Sid.TotalPotentialResistiveWheelsTorque, intervalMs: 0)
         addField(Sid.FrictionTorque, intervalMs: 0)

@@ -61,4 +61,50 @@ class Globals: NSObject {
     var lastTime: [String: Double] = [:]
 
     static let K_TAG_vBG = 99999
+
+    let ud = UserDefaults.standard
+
+    // init elm327
+    let autoInitElm327: [String] = ["ate0", "ats0", "ath0", "atl0", "atal", "atcaf0", "atfcsh77b", "atfcsd300000", "atfcsm1", "atsp6"]
+
+    var timeoutTimer: Timer!
+
+    // queue
+    // var queue: [String] = []
+    var queueInit: [String] = []
+    var queue2: [Sequence] = []
+    var indiceCmd = 0
+    var lastRxString = ""
+    var lastId = -1
+    var lastDebugMessage = ""
+    var lastReply = ""
+
+    var pickerTitles: [String]? = []
+    var pickerValues: [Any]? = []
+    enum PickerPhase: String {
+        case PERIPHERAL
+        case SERVICES
+        case WRITE_CHARACTERISTIC
+        case READ_CHARACTERISTIC
+    }
+
+    var pickerPhase: PickerPhase = .PERIPHERAL
+
+    // WIFI
+    var timeoutTimerWifi: Timer!
+    let maxReadLength = 4096
+    var inputStream: InputStream!
+    var outputStream: OutputStream!
+    var incompleteReply = ""
+    var repliesAddedCounter = 0
+
+    // BLE
+    var centralManager: CBCentralManager!
+    var timeoutTimerBle: Timer!
+    enum BlePhase: String {
+        case DISCOVER
+        case DISCOVERED
+    }
+
+    var blePhase: BlePhase = .DISCOVERED
 }

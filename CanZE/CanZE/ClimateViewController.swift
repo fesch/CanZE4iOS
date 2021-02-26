@@ -148,8 +148,8 @@ class ClimateViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField(Sid.EngineFanSpeed, intervalMs: 0)
         addField(Sid.HvCoolingState, intervalMs: 0)

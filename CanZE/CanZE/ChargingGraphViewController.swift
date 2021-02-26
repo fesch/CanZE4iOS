@@ -111,8 +111,8 @@ class ChargingGraphViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField_(Sid.ACPilot, intervalMs: 10000)
         addField_(Sid.AvailableChargingPower, intervalMs: 10000)

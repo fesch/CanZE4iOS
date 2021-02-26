@@ -70,8 +70,8 @@ class RangeViewController: CanZeViewController {
 
         initChart()
 
-        if ud.exists(key: "loss") {
-            loss = Double(ud.integer(forKey: "loss")) / 100.0
+        if Globals.shared.ud.exists(key: "loss") {
+            loss = Double(Globals.shared.ud.integer(forKey: "loss")) / 100.0
         } else {
             loss = 60.0
         }
@@ -123,8 +123,8 @@ class RangeViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField_(Sid.RangeEstimate, intervalMs: 2000)
         addField_(Sid.AvailableEnergy, intervalMs: 2000)
@@ -238,8 +238,8 @@ class RangeViewController: CanZeViewController {
     @IBAction func sliderValue() {
         updateSeekBar()
         // save value
-        ud.setValue(slider.value * 100, forKey: "loss")
-        ud.synchronize()
+        Globals.shared.ud.setValue(slider.value * 100, forKey: "loss")
+        Globals.shared.ud.synchronize()
     }
 
     func updateSeekBar() {

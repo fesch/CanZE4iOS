@@ -97,8 +97,8 @@ class SpeedControlViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField_(Sid.TripMeterB, intervalMs: 100)
         addField_(Sid.RealSpeed, intervalMs: 100)

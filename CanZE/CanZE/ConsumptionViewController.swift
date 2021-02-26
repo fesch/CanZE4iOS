@@ -192,8 +192,8 @@ class ConsumptionViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField(Sid.TotalPositiveTorque, intervalMs: 0)
         addField(Sid.TotalNegativeTorque, intervalMs: 0)

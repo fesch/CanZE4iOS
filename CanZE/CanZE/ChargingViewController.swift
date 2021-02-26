@@ -116,8 +116,8 @@ class ChargingViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         if Utils.isPh2() {
             addField_(Sid.EVC, intervalMs: 20000) // open EVC

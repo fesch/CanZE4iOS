@@ -118,8 +118,8 @@ class AuxBatteryViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField_(Sid.Aux12V, intervalMs: 2000)
         addField_(Sid.Aux12A, intervalMs: 1000)

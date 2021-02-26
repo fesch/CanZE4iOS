@@ -136,8 +136,8 @@ class AllDataViewController: CanZeViewController {
     }
 
     @IBAction func btnSelect() {
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
         showPicker()
     }
 
@@ -149,8 +149,8 @@ class AllDataViewController: CanZeViewController {
         tv.text = ""
         let ecu = arrayEcu[tmpPickerIndex]
         logger = AllDataLogger()
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         Frames.getInstance.load(ecu: ecu)
         Fields.getInstance.load(assetName: ecu.mnemonic + "_Fields.csv")

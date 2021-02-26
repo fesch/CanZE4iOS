@@ -3454,7 +3454,11 @@
                                     <segment title="ELM327 BLE"/>
                                     <segment title="ELM327 WIFI"/>
                                     <segment title="CANSEE WIFI"/>
+                                    <segment title="HTTP GW"/>
                                 </segments>
+                                <connections>
+                                    <action selector="deviceType" destination="GVO-Br-fja" eventType="valueChanged" id="lqd-DH-RAo"/>
+                                </connections>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BzE-mb-vMd">
                                 <rect key="frame" x="5" y="138" width="187.66666666666666" height="40"/>
@@ -3576,7 +3580,7 @@ Conn Sett</string>
                                 <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                                 <state key="normal" title="TEST"/>
                                 <connections>
-                                    <action selector="requestIsoTpFrame" destination="GVO-Br-fja" eventType="touchUpInside" id="sWM-eJ-1Z6"/>
+                                    <action selector="requestIsoTpFrame_" destination="GVO-Br-fja" eventType="touchUpInside" id="Rlc-as-e0N"/>
                                 </connections>
                             </button>
                         </subviews>

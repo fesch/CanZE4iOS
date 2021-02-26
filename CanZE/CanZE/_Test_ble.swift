@@ -1,11 +1,154 @@
 //
-//  _Test_Peripheral.swift
+//  _Test_CentralManager.swift
 //  CanZE
 //
 //  Created by Roberto Sonzogni on 21/01/21.
 //
 
 import CoreBluetooth
+
+extension _TestViewController {
+    func connectBle() {
+        peripheralsDic = [:]
+        peripheralsArray = []
+        selectedPeripheral = nil
+        if blePhase == .DISCOVERED {
+            timeoutTimerBle = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false, block: { timer in
+                if self.selectedPeripheral == nil {
+                    // timeout
+                    self.centralManager.stopScan()
+                    timer.invalidate()
+                    self.view.hideAllToasts()
+                    self.view.makeToast("can't connect to ble device: TIMEOUT")
+                }
+            })
+        }
+        centralManager = CBCentralManager(delegate: self, queue: nil)
+    }
+
+    func disconnectBle() {
+        if selectedPeripheral != nil, selectedPeripheral.blePeripheral != nil {
+            centralManager.cancelPeripheralConnection(selectedPeripheral.blePeripheral)
+            selectedPeripheral.blePeripheral = nil
+            selectedService = nil
+            selectedReadCharacteristic = nil
+            selectedWriteCharacteristic = nil
+        }
+    }
+
+    func writeBle(s: String) {
+        if selectedWriteCharacteristic != nil {
+            let ss = s.appending("\r")
+            if let data = ss.data(using: .utf8) {
+                if selectedWriteCharacteristic.properties.contains(.write) {
+                    selectedPeripheral.blePeripheral.writeValue(data, for: selectedWriteCharacteristic, type: .withResponse)
+                    debug2("> \(s)")
+                } else if selectedWriteCharacteristic.properties.contains(.writeWithoutResponse) {
+                    selectedPeripheral.blePeripheral.writeValue(data, for: selectedWriteCharacteristic, type: .withoutResponse)
+                    debug2("> \(s)")
+                } else {
+                    debug2("can't write to characteristic")
+                }
+            } else {
+                debug2("data is nil")
+            }
+        }
+    }
+}
+
+// MARK: CBCentralManagerDelegate
+
+extension _TestViewController: CBCentralManagerDelegate {
+    // CentralManager
+    // CentralManager
+    // CentralManager
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch central.state {
+        case .unknown:
+            debug2("central.state is .unknown")
+        case .resetting:
+            debug2("central.state is .resetting")
+        case .unsupported:
+            debug2("central.state is .unsupported")
+        case .unauthorized:
+            debug2("central.state is .unauthorized")
+        case .poweredOff:
+            debug2("central.state is .poweredOff")
+        case .poweredOn:
+            debug2("central.state is .poweredOn")
+            //            centralManager.scanForPeripherals(withServices: [serviceCBUUID])
+            centralManager.scanForPeripherals(withServices: [])
+        @unknown default:
+            debug2("central.state is unknown")
+        }
+    }
+
+    // Peripheral
+    // Peripheral
+    // Peripheral
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
+        let p = BlePeripheral()
+        p.blePeripheral = peripheral
+        p.rssi = RSSI
+        peripheralsDic[peripheral.identifier.uuidString] = p
+
+        if blePhase == .DISCOVER {
+            pickerView.alpha = 1
+            btn_PickerDone.setTitle("select peripheral", for: .normal)
+
+            var trovato = false
+            for pp in peripheralsArray {
+                if pp.blePeripheral.identifier.uuidString == p.blePeripheral.identifier.uuidString {
+                    trovato = true
+                    break
+                }
+            }
+            if !trovato {
+                debug2("discovered \(peripheral.name ?? "?")")
+                peripheralsArray.append(p)
+                picker.reloadAllComponents()
+            }
+        }
+        //        peripheralsArray.sort { (a:Peripheral, b:Peripheral) -> Bool in
+        //            a.peripheral.name ?? "" < b.peripheral.name ?? ""
+        //        }
+
+        if blePhase == .DISCOVERED, Globals.shared.deviceBlePeripheralName == p.blePeripheral.name {
+            timeoutTimerBle.invalidate()
+            centralManager.stopScan()
+            p.blePeripheral.delegate = self
+            selectedPeripheral = p
+            debug2("found selected Peripheral \(selectedPeripheral.blePeripheral.name ?? "")")
+            centralManager.connect(selectedPeripheral.blePeripheral)
+        }
+    }
+
+    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        debug2("didConnect \(peripheral.name ?? "?") \(peripheral.identifier.uuidString)")
+        servicesArray = []
+        pickerPhase = .SERVICES
+        tmpPickerIndex = 0
+        //  peripheral.delegate = self
+        peripheral.discoverServices(nil)
+    }
+
+    func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
+        debug2("didFailToConnect \(peripheral) \(error?.localizedDescription ?? "")")
+    }
+
+    func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
+        debug2("connectionEventDidOccur \(peripheral)")
+    }
+
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        debug2("didDisconnectPeripheral \(peripheral.name ?? "")")
+    }
+
+    func centralManager(_ central: CBCentralManager, didUpdateANCSAuthorizationFor peripheral: CBPeripheral) {}
+
+    //    func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
+    //    }
+}
 
 // MARK: CBPeripheralDelegate
 
@@ -159,28 +302,24 @@ extension _TestViewController: CBPeripheralDelegate {
             let s = String(data: characteristic.value!, encoding: .utf8)
             if s?.last == ">" {
                 lastRxString += s!
+                var reply = lastRxString.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines.inverted)
+                reply = String(reply.filter { !" \n\t\r".contains($0) })
 
-                var reply = lastRxString.trimmingCharacters(in: .whitespacesAndNewlines)
-                reply = String(reply.filter { !">".contains($0) })
-                reply = String(reply.filter { !"\r".contains($0) })
+                if reply.subString(to: 1) == "1" { // multi frame
+                    var finalReply = ""
+                    for i in 0 ..< reply.count / 16 {
+                        let s1 = reply.subString(from: i * 16 + 2, to: (i + 1) * 16)
+                        finalReply.append(s1)
+                    }
+                    reply = finalReply.subString(from: 2)
+                }
 
                 let dic: [String: String] = ["reply": reply]
-
-//                var ss = String(lastRxString.filter { !"\r".contains($0) })
-//                ss = String(ss.filter { !"\n".contains($0) })
-//                ss = String(ss.filter { !">".contains($0) })
-                //  ss = ss.trimmingCharacters(in: .whitespacesAndNewlines)
-
                 NotificationCenter.default.post(name: Notification.Name("received"), object: dic)
+
                 lastRxString = ""
-//                if queue.count > 0, timeoutTimer != nil, timeoutTimer.isValid {
-//                    timeoutTimer.invalidate()
-                // print("reply ricevuta")
-//                    continueQueue()
-//                }
             } else {
                 lastRxString += s ?? ""
-                // print(".")
             }
         } else {
             print("received dati da char sconosciuta \(characteristic.uuid.uuidString)")

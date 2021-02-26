@@ -19,7 +19,7 @@ class DisclaimerViewController: CanZeViewController {
         
         tv.attributedText = NSLocalizedString_("prompt_DisclaimerText", comment: "").htmlToAttributedString
         
-        ud.setValue(true, forKey: "disclaimer")
-        ud.synchronize()
+        Globals.shared.ud.setValue(true, forKey: "disclaimer")
+        Globals.shared.ud.synchronize()
     }
 }

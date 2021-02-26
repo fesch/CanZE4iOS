@@ -218,8 +218,8 @@ class FirmwareViewController: CanZeViewController {
         }
 
         let ecu = arrayEcu[i!.row]
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
         lblResult1.text = " "
         lblResult2.text = " "
         lblResult3.text = " "

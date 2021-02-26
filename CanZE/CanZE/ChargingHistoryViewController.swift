@@ -161,8 +161,8 @@ class ChargingHistoryViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         for i in 0 ..< 10 {
             addField_("\(Sid.Preamble_KM)\(240 - i * 24)", intervalMs: 6000)

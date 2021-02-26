@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		46FC578625E25C3B00587E46 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FC578525E25C3B00587E46 /* RootViewController.swift */; };
+		46FC578625E25C3B00587E46 /* RootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FC578525E25C3B00587E46 /* RootVC.swift */; };
 		6210A8B425E3F0E500098B54 /* CanZEicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6210A8B325E3F0E500098B54 /* CanZEicon.png */; };
 		621AC0E425C7F673004A293C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0E325C7F673004A293C /* Logger.swift */; };
 		621AC0E925C811D2004A293C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0E825C811D2004A293C /* Data.swift */; };
@@ -18,8 +18,7 @@
 		622B485125CAC29300F27323 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622B485025CAC29300F27323 /* UIColor.swift */; };
 		622B485425CB051400F27323 /* AuxBatteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622B485325CB051400F27323 /* AuxBatteryViewController.swift */; };
 		6232908625DAD56A006AC42C /* _TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DFAB5C25924CB800B00C5C /* _TestViewController.swift */; };
-		6232908825DAD56D006AC42C /* _Test_CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602AE25B971130018D36C /* _Test_CentralManager.swift */; };
-		6232908A25DAD570006AC42C /* _Test_Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602B125B9714A0018D36C /* _Test_Peripheral.swift */; };
+		6232908825DAD56D006AC42C /* _Test_ble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602AE25B971130018D36C /* _Test_ble.swift */; };
 		6232908C25DAD573006AC42C /* _Test_Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602A425B9704A0018D36C /* _Test_Picker.swift */; };
 		6232908E25DAD575006AC42C /* _Test_Wifi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E602A725B970620018D36C /* _Test_Wifi.swift */; };
 		6255283F259CEA1300C2772E /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255283E259CEA1300C2772E /* AppSettings.swift */; };
@@ -49,7 +48,16 @@
 		62B1FBEB25DA9B4D000BFBFB /* GradientViewGreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1FBE525DA9B4D000BFBFB /* GradientViewGreen.swift */; };
 		62B1FC0225DAA772000BFBFB /* GradientViewDecelAimRight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1FBD725DA9AF3000BFBFB /* GradientViewDecelAimRight.swift */; };
 		62B1FC0525DAADDA000BFBFB /* LoggerEmulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B1FC0425DAADDA000BFBFB /* LoggerEmulator.swift */; };
+		62B56B1A25E796C600D807B4 /* RootVC_connect_disconnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B56B1925E796C600D807B4 /* RootVC_connect_disconnect.swift */; };
+		62B56B1D25E798A800D807B4 /* RootVC_initDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B56B1C25E798A800D807B4 /* RootVC_initDevice.swift */; };
+		62B56B2025E7B1DA00D807B4 /* _Test_http.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B56B1F25E7B1DA00D807B4 /* _Test_http.swift */; };
 		62B5A56225A8B10600C4F050 /* Localizable.plist in Resources */ = {isa = PBXBuildFile; fileRef = 62B5A56425A8B10600C4F050 /* Localizable.plist */; };
+		62B8128625E787C40039E6C0 /* RootVC_queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B8128525E787C40039E6C0 /* RootVC_queue.swift */; };
+		62B8128925E787D40039E6C0 /* RootVC_wifi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B8128825E787D40039E6C0 /* RootVC_wifi.swift */; };
+		62B8128C25E787E60039E6C0 /* RootVC_ble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B8128B25E787E60039E6C0 /* RootVC_ble.swift */; };
+		62B8128F25E787F60039E6C0 /* RootVC_Encode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B8128E25E787F60039E6C0 /* RootVC_Encode.swift */; };
+		62B8129225E788080039E6C0 /* RootVC_Decode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B8129125E788080039E6C0 /* RootVC_Decode.swift */; };
+		62B8129625E788230039E6C0 /* RootVC_http.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B8129525E788230039E6C0 /* RootVC_http.swift */; };
 		62C5C3E525E10282008160CC /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C5C3E425E10282008160CC /* Button.swift */; };
 		62D0A0B825A84B5400FB2EB7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 62D0A0BA25A84B5400FB2EB7 /* Localizable.strings */; };
 		62D1FFAE25C40E17006EDDA5 /* AllDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1FFAD25C40E17006EDDA5 /* AllDataViewController.swift */; };
@@ -101,7 +109,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		46FC578525E25C3B00587E46 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		46FC578525E25C3B00587E46 /* RootVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC.swift; sourceTree = "<group>"; };
 		6210A8B325E3F0E500098B54 /* CanZEicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CanZEicon.png; sourceTree = "<group>"; };
 		621AC0E325C7F673004A293C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		621AC0E625C80287004A293C /* CanZE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CanZE.entitlements; sourceTree = "<group>"; };
@@ -141,6 +149,9 @@
 		62B1FBE425DA9B4D000BFBFB /* GradientViewRed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientViewRed.swift; sourceTree = "<group>"; };
 		62B1FBE525DA9B4D000BFBFB /* GradientViewGreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientViewGreen.swift; sourceTree = "<group>"; };
 		62B1FC0425DAADDA000BFBFB /* LoggerEmulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerEmulator.swift; sourceTree = "<group>"; };
+		62B56B1925E796C600D807B4 /* RootVC_connect_disconnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC_connect_disconnect.swift; sourceTree = "<group>"; };
+		62B56B1C25E798A800D807B4 /* RootVC_initDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC_initDevice.swift; sourceTree = "<group>"; };
+		62B56B1F25E7B1DA00D807B4 /* _Test_http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Test_http.swift; sourceTree = "<group>"; };
 		62B5A55625A8AD4F00C4F050 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		62B5A55725A8AD5900C4F050 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		62B5A55925A8AE1600C4F050 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -149,6 +160,12 @@
 		62B5A56725A8B10C00C4F050 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = de; path = de.lproj/Localizable.plist; sourceTree = "<group>"; };
 		62B5A56825A8B10D00C4F050 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ru; path = ru.lproj/Localizable.plist; sourceTree = "<group>"; };
 		62B5A56925A8B10D00C4F050 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = uk; path = uk.lproj/Localizable.plist; sourceTree = "<group>"; };
+		62B8128525E787C40039E6C0 /* RootVC_queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC_queue.swift; sourceTree = "<group>"; };
+		62B8128825E787D40039E6C0 /* RootVC_wifi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC_wifi.swift; sourceTree = "<group>"; };
+		62B8128B25E787E60039E6C0 /* RootVC_ble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC_ble.swift; sourceTree = "<group>"; };
+		62B8128E25E787F60039E6C0 /* RootVC_Encode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC_Encode.swift; sourceTree = "<group>"; };
+		62B8129125E788080039E6C0 /* RootVC_Decode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC_Decode.swift; sourceTree = "<group>"; };
+		62B8129525E788230039E6C0 /* RootVC_http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC_http.swift; sourceTree = "<group>"; };
 		62C5C3E425E10282008160CC /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		62D0A0B925A84B5400FB2EB7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		62D0A0BF25A84B9900FB2EB7 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -192,8 +209,7 @@
 		62E4920A25A8CA2B00AA45CE /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		62E602A425B9704A0018D36C /* _Test_Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Test_Picker.swift; sourceTree = "<group>"; };
 		62E602A725B970620018D36C /* _Test_Wifi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Test_Wifi.swift; sourceTree = "<group>"; };
-		62E602AE25B971130018D36C /* _Test_CentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Test_CentralManager.swift; sourceTree = "<group>"; };
-		62E602B125B9714A0018D36C /* _Test_Peripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Test_Peripheral.swift; sourceTree = "<group>"; };
+		62E602AE25B971130018D36C /* _Test_ble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Test_ble.swift; sourceTree = "<group>"; };
 		62E602B425B971790018D36C /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		62EF1D0625D2A6EA00E59E77 /* ClimateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimateViewController.swift; sourceTree = "<group>"; };
 		62EF1D0925D2B60200E59E77 /* BrakingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrakingViewController.swift; sourceTree = "<group>"; };
@@ -265,7 +281,15 @@
 				629204DF258BB05400288D1E /* LaunchScreen.storyboard */,
 				629204D4258BB05000288D1E /* AppDelegate.swift */,
 				62D3F96425933793002CB6C7 /* NavigationController.swift */,
-				46FC578525E25C3B00587E46 /* RootViewController.swift */,
+				46FC578525E25C3B00587E46 /* RootVC.swift */,
+				62B56B1925E796C600D807B4 /* RootVC_connect_disconnect.swift */,
+				62B8128B25E787E60039E6C0 /* RootVC_ble.swift */,
+				62B8129525E788230039E6C0 /* RootVC_http.swift */,
+				62B8128825E787D40039E6C0 /* RootVC_wifi.swift */,
+				62B8128525E787C40039E6C0 /* RootVC_queue.swift */,
+				62B8128E25E787F60039E6C0 /* RootVC_Encode.swift */,
+				62B8129125E788080039E6C0 /* RootVC_Decode.swift */,
+				62B56B1C25E798A800D807B4 /* RootVC_initDevice.swift */,
 				62D3F97825934B6C002CB6C7 /* CanZeViewController.swift */,
 				629204D8258BB05000288D1E /* HomeViewController.swift */,
 				62D2649C25B5BE9200421F14 /* DisclaimerViewController.swift */,
@@ -292,10 +316,10 @@
 				62FAC76225D3CFF700BA3AFD /* SpeedControlViewController.swift */,
 				62FAC76625D3E0C800BA3AFD /* TiresViewController.swift */,
 				62DFAB5C25924CB800B00C5C /* _TestViewController.swift */,
-				62E602AE25B971130018D36C /* _Test_CentralManager.swift */,
-				62E602B125B9714A0018D36C /* _Test_Peripheral.swift */,
-				62E602A425B9704A0018D36C /* _Test_Picker.swift */,
+				62E602AE25B971130018D36C /* _Test_ble.swift */,
+				62B56B1F25E7B1DA00D807B4 /* _Test_http.swift */,
 				62E602A725B970620018D36C /* _Test_Wifi.swift */,
+				62E602A425B9704A0018D36C /* _Test_Picker.swift */,
 				62DB50B725DA6B80002FE369 /* GradientView.swift */,
 				62DB50BC25DA7711002FE369 /* GradientViewAccel.swift */,
 				62DB50BB25DA7711002FE369 /* GradientViewDecel.swift */,
@@ -540,6 +564,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				62D3F93A25926BF1002CB6C7 /* Field.swift in Sources */,
+				62B56B1A25E796C600D807B4 /* RootVC_connect_disconnect.swift in Sources */,
 				629204D9258BB05000288D1E /* HomeViewController.swift in Sources */,
 				62D3F97C25935E51002CB6C7 /* CanSee.swift in Sources */,
 				62D3F97F25935E5F002CB6C7 /* Http.swift in Sources */,
@@ -550,25 +575,28 @@
 				625DF0F825D5871000AE2AAA /* FieldResult.swift in Sources */,
 				62DFAB6025924CF300B00C5C /* BlePeripheral.swift in Sources */,
 				62D3F968259337B3002CB6C7 /* AnyDecodable.swift in Sources */,
+				62B56B1D25E798A800D807B4 /* RootVC_initDevice.swift in Sources */,
 				62D3F93625926B5C002CB6C7 /* Ecu.swift in Sources */,
 				62D3F95725932DAE002CB6C7 /* Frames.swift in Sources */,
 				629204D5258BB05000288D1E /* AppDelegate.swift in Sources */,
 				62B1DFC525A9BA3C006454EE /* BatteryViewController.swift in Sources */,
 				62B1FC0225DAA772000BFBFB /* GradientViewDecelAimRight.swift in Sources */,
 				62E602B525B971790018D36C /* String.swift in Sources */,
-				6232908A25DAD570006AC42C /* _Test_Peripheral.swift in Sources */,
 				621AC0E925C811D2004A293C /* Data.swift in Sources */,
 				62D3F95A25932DFA002CB6C7 /* Message.swift in Sources */,
 				6232908E25DAD575006AC42C /* _Test_Wifi.swift in Sources */,
 				62C5C3E525E10282008160CC /* Button.swift in Sources */,
+				62B8128F25E787F60039E6C0 /* RootVC_Encode.swift in Sources */,
 				6279AB0A25BC3A36009DE847 /* UserDefaults.swift in Sources */,
 				62EF1D0D25D2DA0600E59E77 /* LeakCurrentsViewController.swift in Sources */,
 				62DB50C025DA7711002FE369 /* GradientViewDecelAim.swift in Sources */,
 				62D3F94325927126002CB6C7 /* Ecus.swift in Sources */,
 				629D902725C31187007EF21A /* ChargingGraphViewController.swift in Sources */,
+				62B8128925E787D40039E6C0 /* RootVC_wifi.swift in Sources */,
 				62D1FFAE25C40E17006EDDA5 /* AllDataViewController.swift in Sources */,
 				62FAC76325D3CFF700BA3AFD /* SpeedControlViewController.swift in Sources */,
 				62A2D4DB25DFF4A500998571 /* StringProtocol.swift in Sources */,
+				62B8128625E787C40039E6C0 /* RootVC_queue.swift in Sources */,
 				6232908625DAD56A006AC42C /* _TestViewController.swift in Sources */,
 				622B484D25CAA54B00F27323 /* TemperatureHeatmapViewController.swift in Sources */,
 				622B484A25CAA53C00F27323 /* VoltageHeatmapViewController.swift in Sources */,
@@ -589,14 +617,16 @@
 				62D3F970259339EE002CB6C7 /* ELM327.swift in Sources */,
 				62D3F96D2593380A002CB6C7 /* Device.swift in Sources */,
 				62D3F94025926FBC002CB6C7 /* Fields.swift in Sources */,
+				62B8128C25E787E60039E6C0 /* RootVC_ble.swift in Sources */,
 				62B1FBEA25DA9B4D000BFBFB /* GradientViewRed.swift in Sources */,
 				62DB50BE25DA7711002FE369 /* GradientViewDecel.swift in Sources */,
 				62DFAB38259231C600B00C5C /* ButtonWithImage.swift in Sources */,
-				6232908825DAD56D006AC42C /* _Test_CentralManager.swift in Sources */,
+				6232908825DAD56D006AC42C /* _Test_ble.swift in Sources */,
 				626C004425B9C66000121456 /* UIDevice.swift in Sources */,
 				62D67DFB25C1D1260075D7AB /* ChargingTechViewController.swift in Sources */,
-				46FC578625E25C3B00587E46 /* RootViewController.swift in Sources */,
+				46FC578625E25C3B00587E46 /* RootVC.swift in Sources */,
 				62EF1D0A25D2B60200E59E77 /* BrakingViewController.swift in Sources */,
+				62B8129225E788080039E6C0 /* RootVC_Decode.swift in Sources */,
 				6232908C25DAD573006AC42C /* _Test_Picker.swift in Sources */,
 				62DFAB322592300500B00C5C /* Utils.swift in Sources */,
 				62DA73ED259493AD0068CDF8 /* Setting.swift in Sources */,
@@ -611,11 +641,13 @@
 				62DA73F12594AF880068CDF8 /* SettingsSwitchTableViewCell.swift in Sources */,
 				62D2649D25B5BE9200421F14 /* DisclaimerViewController.swift in Sources */,
 				621AC0E425C7F673004A293C /* Logger.swift in Sources */,
+				62B56B2025E7B1DA00D807B4 /* _Test_http.swift in Sources */,
 				62D3F93D25926D36002CB6C7 /* Frame.swift in Sources */,
 				62B1FBEB25DA9B4D000BFBFB /* GradientViewGreen.swift in Sources */,
 				62B1FC0525DAADDA000BFBFB /* LoggerEmulator.swift in Sources */,
 				62D3F95025932CF9002CB6C7 /* Dtc.swift in Sources */,
 				62D3F97925934B6C002CB6C7 /* CanZeViewController.swift in Sources */,
+				62B8129625E788230039E6C0 /* RootVC_http.swift in Sources */,
 				62A01DE825CD92CA00D69A01 /* DrivingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

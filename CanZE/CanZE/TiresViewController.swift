@@ -166,8 +166,8 @@ class TiresViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField_(Sid.TpmsState, intervalMs: 1000)
         addField_(Sid.TireSpdPresMisadaption, intervalMs: 6000)
@@ -295,10 +295,10 @@ class TiresViewController: CanZeViewController {
     }
 
     func load(_ set: String?) {
-        let idsRead1 = ud.string(forKey: "ids1\(set ?? "")") ?? ""
-        let idsRead2 = ud.string(forKey: "ids2\(set ?? "")") ?? ""
-        let idsRead3 = ud.string(forKey: "ids3\(set ?? "")") ?? ""
-        let idsRead4 = ud.string(forKey: "ids4\(set ?? "")") ?? ""
+        let idsRead1 = Globals.shared.ud.string(forKey: "ids1\(set ?? "")") ?? ""
+        let idsRead2 = Globals.shared.ud.string(forKey: "ids2\(set ?? "")") ?? ""
+        let idsRead3 = Globals.shared.ud.string(forKey: "ids3\(set ?? "")") ?? ""
+        let idsRead4 = Globals.shared.ud.string(forKey: "ids4\(set ?? "")") ?? ""
         text_TireFLId.text = idsRead1
         text_TireFRId.text = idsRead2
         text_TireRRId.text = idsRead3
@@ -306,11 +306,11 @@ class TiresViewController: CanZeViewController {
     }
 
     func save(_ set: String) {
-        ud.setValue(text_TireFLId.text, forKey: "ids1\(set)")
-        ud.setValue(text_TireFRId.text, forKey: "ids2\(set)")
-        ud.setValue(text_TireRLId.text, forKey: "ids3\(set)")
-        ud.setValue(text_TireRRId.text, forKey: "ids4\(set)")
-        ud.synchronize()
+        Globals.shared.ud.setValue(text_TireFLId.text, forKey: "ids1\(set)")
+        Globals.shared.ud.setValue(text_TireFRId.text, forKey: "ids2\(set)")
+        Globals.shared.ud.setValue(text_TireRLId.text, forKey: "ids3\(set)")
+        Globals.shared.ud.setValue(text_TireRRId.text, forKey: "ids4\(set)")
+        Globals.shared.ud.synchronize()
     }
 
     func buttonRead() {

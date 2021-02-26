@@ -126,8 +126,8 @@ class ChargingPredictionViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField_(Sid.RangeEstimate, intervalMs: 10000) // 0x08
         addField_(Sid.AvailableChargingPower, intervalMs: 10000) // 0x01

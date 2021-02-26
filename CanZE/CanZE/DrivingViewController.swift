@@ -187,8 +187,8 @@ class DrivingViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         addField(Sid.Pedal, intervalMs: 0)  // 1st time
         addField(Sid.DcPowerOut, intervalMs: 0)
@@ -335,8 +335,8 @@ class DrivingViewController: CanZeViewController {
 
     func saveDestOdo(d: Double) {
         if !d.isNaN {
-            ud.setValue(d, forKey: "destOdo")
-            ud.synchronize()
+            Globals.shared.ud.setValue(d, forKey: "destOdo")
+            Globals.shared.ud.synchronize()
             destOdo = d
             displayDistToDest()
         }
@@ -344,8 +344,8 @@ class DrivingViewController: CanZeViewController {
 
     func getDestOdo() {
         destOdo = 0
-        if ud.exists(key: "destOdo") {
-            destOdo = ud.value(forKey: "destOdo") as! Double
+        if Globals.shared.ud.exists(key: "destOdo") {
+            destOdo = Globals.shared.ud.value(forKey: "destOdo") as! Double
         }
         displayDistToDest()
     }
@@ -365,27 +365,27 @@ class DrivingViewController: CanZeViewController {
             savedTripStart = odo - tripBdistance
             startBdistance = tripBdistance
             startBenergy = tripBenergy
-            ud.setValue(savedTripStart, forKey: "savedTripStart")
-            ud.setValue(startBdistance, forKey: "startBdistance")
-            ud.setValue(startBenergy, forKey: "startBenergy")
-            ud.synchronize()
+            Globals.shared.ud.setValue(savedTripStart, forKey: "savedTripStart")
+            Globals.shared.ud.setValue(startBdistance, forKey: "startBdistance")
+            Globals.shared.ud.setValue(startBenergy, forKey: "startBenergy")
+            Globals.shared.ud.synchronize()
             displayTripData()
         }
     }
 
     func getSavedTripStart() {
-        if ud.exists(key: "savedTripStart") {
-            savedTripStart = ud.value(forKey: "savedTripStart") as! Double
+        if Globals.shared.ud.exists(key: "savedTripStart") {
+            savedTripStart = Globals.shared.ud.value(forKey: "savedTripStart") as! Double
         } else {
             savedTripStart = 0
         }
-        if ud.exists(key: "startBdistance") {
-            startBdistance = ud.value(forKey: "startBdistance") as! Double
+        if Globals.shared.ud.exists(key: "startBdistance") {
+            startBdistance = Globals.shared.ud.value(forKey: "startBdistance") as! Double
         } else {
             startBdistance = 0
         }
-        if ud.exists(key: "startBenergy") {
-            startBenergy = ud.value(forKey: "startBenergy") as! Double
+        if Globals.shared.ud.exists(key: "startBenergy") {
+            startBenergy = Globals.shared.ud.value(forKey: "startBenergy") as! Double
         } else {
             startBenergy = 0
         }

@@ -366,8 +366,8 @@ class ChargingTechViewController: CanZeViewController {
             return
         }
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
 
         if !doneOneTimeOnly {
             addField_(Sid.BcbTesterInit, intervalMs: 0) // INTERVAL_ONCE)

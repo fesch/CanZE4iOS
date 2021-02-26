@@ -131,7 +131,7 @@ class HomeViewController: CanZeViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if !ud.bool(forKey: "disclaimer") {
+        if !Globals.shared.ud.bool(forKey: "disclaimer") {
             performSegue(withIdentifier: "disclaimer", sender: nil)
         } else if deviceIsConnectable() {
             // connect()

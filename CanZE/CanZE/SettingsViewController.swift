@@ -276,8 +276,8 @@ class SettingsViewController: CanZeViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(endDongleTest), name: Notification.Name("endQueue2"), object: nil)
 
-        queue2 = []
-        lastId = 0
+        Globals.shared.queue2 = []
+        Globals.shared.lastId = 0
         if Utils.isPh2() {
             addField(Sid.EVC, intervalMs: 2000) // open EVC
         }
@@ -323,43 +323,43 @@ class SettingsViewController: CanZeViewController {
         let arraySettings = settingsDic[myKey]
         let setting = arraySettings?[lastSelectedIndexPath.row]
 
-        let value = pickerValues![picker.selectedRow(inComponent: 0)]
+        let value = Globals.shared.pickerValues![picker.selectedRow(inComponent: 0)]
 
         switch setting?.tag {
         case AppSettings.SETTINGS_CAR:
-            ud.setValue(value, forKey: AppSettings.SETTINGS_CAR)
-            ud.synchronize()
+            Globals.shared.ud.setValue(value, forKey: AppSettings.SETTINGS_CAR)
+            Globals.shared.ud.synchronize()
 
         case AppSettings.SETTINGS_DEVICE_TYPE:
 
             Globals.shared.deviceType = AppSettings.DEVICE_TYPE(rawValue: value as! Int) ?? .NONE
 
-            ud.setValue(Globals.shared.deviceType.rawValue, forKey: AppSettings.SETTINGS_DEVICE_TYPE)
+            Globals.shared.ud.setValue(Globals.shared.deviceType.rawValue, forKey: AppSettings.SETTINGS_DEVICE_TYPE)
 
             if Globals.shared.deviceType == .HTTP_GW { // http gw is only supported via http
-                ud.setValue(AppSettings.DEVICE_CONNECTION.HTTP.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+                Globals.shared.ud.setValue(AppSettings.DEVICE_CONNECTION.HTTP.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
             } else if Globals.shared.deviceType == .ELM327, Globals.shared.deviceConnection == .WIFI {
-                ud.setValue(AppSettings.DEVICE_CONNECTION.WIFI.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
-                ud.setValue("192.168.0.10", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+                Globals.shared.ud.setValue(AppSettings.DEVICE_CONNECTION.WIFI.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+                Globals.shared.ud.setValue("192.168.0.10", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
             } else if Globals.shared.deviceType == .CANSEE { // cansee is only supported with wifi
-                ud.setValue(AppSettings.DEVICE_CONNECTION.WIFI.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
-                ud.setValue("192.168.4.1", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+                Globals.shared.ud.setValue(AppSettings.DEVICE_CONNECTION.WIFI.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+                Globals.shared.ud.setValue("192.168.4.1", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
             }
-            ud.synchronize()
+            Globals.shared.ud.synchronize()
 
         case AppSettings.SETTINGS_DEVICE_CONNECTION:
 
             Globals.shared.deviceConnection = AppSettings.DEVICE_CONNECTION(rawValue: value as! Int) ?? .NONE
 
-            ud.setValue(Globals.shared.deviceConnection.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
+            Globals.shared.ud.setValue(Globals.shared.deviceConnection.rawValue, forKey: AppSettings.SETTINGS_DEVICE_CONNECTION)
 
             if Globals.shared.deviceType == .ELM327, Globals.shared.deviceConnection == .WIFI {
-                ud.setValue("192.168.0.10", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+                Globals.shared.ud.setValue("192.168.0.10", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
             } else if Globals.shared.deviceType == .CANSEE { // cansee is only supported with wifi
-                ud.setValue("192.168.4.1", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+                Globals.shared.ud.setValue("192.168.4.1", forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
             }
 
-            ud.synchronize()
+            Globals.shared.ud.synchronize()
 
             disconnect(showToast: false)
 
@@ -367,26 +367,26 @@ class SettingsViewController: CanZeViewController {
 
             Globals.shared.deviceBleName = AppSettings.DEVICE_BLE_NAME(rawValue: value as! Int) ?? .NONE
 
-            ud.setValue(Globals.shared.deviceBleName.rawValue, forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
+            Globals.shared.ud.setValue(Globals.shared.deviceBleName.rawValue, forKey: AppSettings.SETTINGS_DEVICE_BLE_NAME)
 
             if Globals.shared.deviceBleName == .VGATE {
-//                ud.setValue("D63109B1-C246-911F-F180-CAE0377D718D", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
-                ud.setValue("IOS-Vlink", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME)
-                ud.setValue("C77D5F27-9FF8-837E-B370-1A4FAF0DAEDB", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
-                ud.setValue("E7810A71-73AE-499D-8C15-FAA9AEF0C3F2", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
-                ud.setValue("BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
-                ud.setValue("BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
+//                Globals.shared.ud.setValue("D63109B1-C246-911F-F180-CAE0377D718D", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
+                Globals.shared.ud.setValue("IOS-Vlink", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME)
+                Globals.shared.ud.setValue("C77D5F27-9FF8-837E-B370-1A4FAF0DAEDB", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
+                Globals.shared.ud.setValue("E7810A71-73AE-499D-8C15-FAA9AEF0C3F2", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
+                Globals.shared.ud.setValue("BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
+                Globals.shared.ud.setValue("BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
             } else if Globals.shared.deviceBleName == .LELINK {
-                ud.setValue("OBDBLE", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME)
-                ud.setValue("7A4984CB-7607-37D8-337E-7CA5AC17C9B0", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
-                ud.setValue("FFE0", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
-                ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
-                ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
+                Globals.shared.ud.setValue("OBDBLE", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME)
+                Globals.shared.ud.setValue("7A4984CB-7607-37D8-337E-7CA5AC17C9B0", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
+                Globals.shared.ud.setValue("FFE0", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
+                Globals.shared.ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
+                Globals.shared.ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
             } else {
                 print("unknown ble device")
             }
 
-            ud.synchronize()
+            Globals.shared.ud.synchronize()
 
         default:
             print("setting?.tag unknown")
@@ -403,7 +403,7 @@ class SettingsViewController: CanZeViewController {
     }
 
     @IBAction func btnPickerCancel_() {
-        pickerPhase = .PERIPHERAL
+        Globals.shared.pickerPhase = .PERIPHERAL
         hidePicker()
 
         loadSettings()
@@ -425,20 +425,20 @@ class SettingsViewController: CanZeViewController {
 
         let value = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        ud.setValue(value, forKey: setting!.tag!)
-        ud.synchronize()
+        Globals.shared.ud.setValue(value, forKey: setting!.tag!)
+        Globals.shared.ud.synchronize()
 
         /*
          switch setting?.tag {
          case AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS:
-             ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
-             ud.synchronize()
+             Globals.shared.ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+             Globals.shared.ud.synchronize()
          case AppSettings.SETTINGS_DEVICE_WIFI_PORT:
-             ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_WIFI_PORT)
-             ud.synchronize()
+             Globals.shared.ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_WIFI_PORT)
+             Globals.shared.ud.synchronize()
          case AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS:
-             ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS)
-             ud.synchronize()
+             Globals.shared.ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS)
+             Globals.shared.ud.synchronize()
          default:
              break
          }
@@ -599,8 +599,8 @@ extension SettingsViewController: UITableViewDelegate {
             Globals.shared.deviceIsInitialized = false
             NotificationCenter.default.post(name: Notification.Name("deviceDisconnected"), object: nil)
 
-            pickerTitles = setting.listTitles
-            pickerValues = setting.listValues
+            Globals.shared.pickerTitles = setting.listTitles
+            Globals.shared.pickerValues = setting.listValues
             picker.selectRow(0, inComponent: 0, animated: false)
             showPicker()
 
@@ -654,8 +654,8 @@ extension SettingsViewController: UITableViewDelegate {
             }
 //            arraySettings![indexPath.row] = setting
 //            settingsDic[myKey] = arraySettings
-            ud.setValue(setting.boolValue, forKey: setting.tag!)
-            ud.synchronize()
+            Globals.shared.ud.setValue(setting.boolValue, forKey: setting.tag!)
+            Globals.shared.ud.synchronize()
 
             loadSettings()
             organizeSettings()
@@ -680,11 +680,11 @@ extension SettingsViewController: UIPickerViewDataSource {
     }
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerValues!.count
+        return Globals.shared.pickerValues!.count
     }
 
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickerTitles![row]
+        return Globals.shared.pickerTitles![row]
     }
 }
 
