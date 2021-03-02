@@ -383,13 +383,18 @@ class ConsumptionViewController: CanZeViewController {
         let yAxisRight = chartView1.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 100
+        yAxisRight.axisLineColor = .blue
+        yAxisRight.axisLineWidth = 1.0
+        yAxisRight.gridColor = .blue
+        yAxisRight.gridLineDashPhase = 1.0
+        yAxisRight.gridLineDashLengths = [5.0, 2.5]
 
         line1b = LineChartDataSet(entries: chartEntries1b, label: nil)
         line1b.axisDependency = .right
         //        line2.lineWidth = 0
         line1b.drawCirclesEnabled = false
         line1b.drawValuesEnabled = false
-        line1b.colors = [.red]
+        line1b.colors = [.blue]
 //        line1b.lineWidth = 2.0
 
 //        let gradientColors1b = [ChartColorTemplates.colorFromString("#cc00ff").cgColor,
@@ -438,11 +443,17 @@ class ConsumptionViewController: CanZeViewController {
         let yAxisRight = chartView2.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 40
+        yAxisRight.axisLineColor = .blue
+        yAxisRight.axisLineWidth = 1.0
+        yAxisRight.gridColor = .blue
+        yAxisRight.gridLineDashPhase = 1.0
+        yAxisRight.gridLineDashLengths = [5.0, 2.5]
 
         line2b = LineChartDataSet(entries: chartEntries2b, label: nil)
         line2b.axisDependency = .right
         line2b.drawCirclesEnabled = false
         line2b.drawValuesEnabled = false
+        line2b.colors = [.blue]
 
 //        let gradientColors4 = [ChartColorTemplates.colorFromString("#ff0000").cgColor,
 //                               ChartColorTemplates.colorFromString("#00ff00").cgColor,

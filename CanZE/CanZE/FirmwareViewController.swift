@@ -139,7 +139,6 @@ class FirmwareViewController: CanZeViewController {
             }
             return
         }
-
         startQueue2()
     }
 
@@ -149,6 +148,7 @@ class FirmwareViewController: CanZeViewController {
                 v.removeFromSuperview()
             }
             view.makeToast("_end")
+            multi = false
         }
     }
 
@@ -203,7 +203,7 @@ class FirmwareViewController: CanZeViewController {
                     s.append("version:\(formatta(field))")
                     lblResult4.text = s
                 }
-                if multi, !sid!.contains(".5003."), s != lastStringLogged, s != "" {
+                if multi, !sid!.contains(".5003."), s != lastStringLogged, formatta(field) != "" {
                     logger.add(s)
                     lastStringLogged = s
                 }

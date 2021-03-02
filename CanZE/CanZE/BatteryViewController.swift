@@ -244,7 +244,7 @@ class BatteryViewController: CanZeViewController {
 
         let yAxis = socChartView.leftAxis
         yAxis.axisMinimum = 0
-        yAxis.axisMaximum = 100
+        yAxis.axisMaximum = 120
 
         realSocChartLine = LineChartDataSet(entries: realSocChartEntries, label: nil)
         realSocChartLine.colors = [.red]
@@ -273,9 +273,9 @@ class BatteryViewController: CanZeViewController {
         xAxis.drawLabelsEnabled = false
 
         let yAxis = voltChartView.leftAxis
-        yAxis.axisMinimum = 3
-        yAxis.axisMaximum = 5
-        yAxis.drawLabelsEnabled = false
+        yAxis.axisMinimum = 2.5
+        yAxis.axisMaximum = 5.5
+        // yAxis.drawLabelsEnabled = false
 
         voltChartLine = LineChartDataSet(entries: voltChartEntries, label: nil)
         voltChartLine.drawCirclesEnabled = false
@@ -302,7 +302,7 @@ class BatteryViewController: CanZeViewController {
         xAxis.drawLabelsEnabled = false
 
         let yAxis = tempChartView.leftAxis
-        yAxis.drawLabelsEnabled = false
+        // yAxis.drawLabelsEnabled = false
         yAxis.axisMinimum = 0
         yAxis.axisMaximum = 50
 

@@ -1,5 +1,5 @@
 //
-//  RootVC_connect_disconnect.swift
+//  CanZeVC_connect_disconnect.swift
 //  CanZE
 //
 //  Created by Roberto Sonzogni on 25/02/21.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-extension RootViewController {
+extension CanZeViewController {
     @IBAction func btnConnect() {
         if Globals.shared.deviceIsConnected {
             disconnect(showToast: true)

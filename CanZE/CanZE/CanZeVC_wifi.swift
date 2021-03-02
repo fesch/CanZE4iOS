@@ -1,5 +1,5 @@
 //
-//  RootVC_wifi.swift
+//  CanZeVC_wifi.swift
 //  CanZE
 //
 //  Created by Roberto on 25/02/2021.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension RootViewController {
+extension CanZeViewController {
     // ELM327 WIFI
     // ELM327 WIFI
     // ELM327 WIFI
@@ -28,8 +28,8 @@ extension RootViewController {
         Globals.shared.inputStream = readStream!.takeRetainedValue()
         Globals.shared.outputStream = writeStream!.takeRetainedValue()
 
-        Globals.shared.inputStream.delegate = self
-        Globals.shared.outputStream.delegate = self
+        Globals.shared.inputStream.delegate = navigationController as? StreamDelegate
+        Globals.shared.outputStream.delegate = navigationController as? StreamDelegate
 
         Globals.shared.inputStream.schedule(in: RunLoop.main, forMode: .common)
         Globals.shared.outputStream.schedule(in: RunLoop.main, forMode: .common)
@@ -142,79 +142,6 @@ extension RootViewController {
             for k in notificationObject!.keys {
                 let reply = notificationObject![k] as! String
                 NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
-            }
-        }
-    }
-}
-
-// MARK: StreamDelegate
-
-// wifi
-extension RootViewController: StreamDelegate {
-    func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
-        switch eventCode {
-        case .hasBytesAvailable:
-            if aStream == Globals.shared.inputStream, aStream.streamStatus == .open {
-                readAvailableBytes(stream: aStream as! InputStream)
-            }
-        case .endEncountered:
-            debug("\(aStream) endEncountered")
-        case .hasSpaceAvailable:
-            break
-        case .errorOccurred:
-            debug("\(aStream) errorOccurred")
-            disconnect(showToast: true)
-        case .openCompleted:
-            debug("\(aStream) openCompleted")
-        default:
-            debug("\(aStream) \(eventCode.rawValue)")
-        }
-    }
-
-    private func readAvailableBytes(stream: InputStream) {
-        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: Globals.shared.maxReadLength)
-
-        while stream.hasBytesAvailable {
-            let numberOfBytesRead = stream.read(buffer, maxLength: Globals.shared.maxReadLength)
-            if numberOfBytesRead < 0, let error = stream.streamError {
-                debug(error.localizedDescription)
-                break
-            }
-            if var string = String(bytesNoCopy: buffer, length: numberOfBytesRead, encoding: .utf8, freeWhenDone: true), string.count > 0 {
-                if Globals.shared.deviceType == .CANSEE {
-                    let a = string.components(separatedBy: ",")
-                    if a.count > 0 {
-                        string = a.last!
-                        let dic: [String: String] = ["reply": string]
-                        NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
-                        return
-                    }
-                }
-                string = string.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
-                string = String(string.filter { !" \n\t\r".contains($0) })
-                if string.subString(to: 1) == "1" { // multi frame, first frame
-                    Globals.shared.incompleteReply = string
-                    Globals.shared.repliesAddedCounter = 0
-                } else if string.subString(to: 1) == "2" { // multi frame, next frames
-                    if Globals.shared.incompleteReply != "" {
-                        Globals.shared.incompleteReply += string
-                        Globals.shared.repliesAddedCounter += 1
-                        let replyLen = Int(Globals.shared.incompleteReply.subString(from: 1, to: 4), radix: 16)! * 2 // 134
-                        if Globals.shared.incompleteReply.count >= replyLen + Globals.shared.repliesAddedCounter * 2 {
-                            var finalReply = ""
-                            for i in 0 ..< Globals.shared.incompleteReply.count / 16 {
-                                let s1 = Globals.shared.incompleteReply.subString(from: i * 16 + 2, to: (i + 1) * 16)
-                                finalReply.append(s1)
-                            }
-                            finalReply = finalReply.subString(from: 2)
-                            let dic: [String: String] = ["reply": finalReply]
-                            NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
-                        }
-                    }
-                } else { // single frame
-                    let dic: [String: String] = ["reply": string]
-                    NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
-                }
             }
         }
     }

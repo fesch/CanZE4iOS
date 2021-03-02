@@ -1,5 +1,5 @@
 //
-//  RootVC_Encode.swift
+//  CanZeVC_Encode.swift
 //  CanZE
 //
 //  Created by Roberto on 25/02/2021.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension RootViewController {
+extension CanZeViewController {
     func addField(_ sid: String, intervalMs: Int) {
         if let field = Fields.getInstance.getBySID(sid) {
             if field.responseId != "999999" {

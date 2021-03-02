@@ -21,6 +21,13 @@ class ChargingHistoryViewController: CanZeViewController {
     @IBOutlet var label_EndBatteryTemp: UILabel! // textTMP1
     @IBOutlet var label_HistDuration: UILabel! // textDUR1
 
+    @IBOutlet var label_distance_: UILabel! // textKM1
+    @IBOutlet var label_EndOfChargeStatus_: UILabel! // textEND1
+    @IBOutlet var label_TypeOfCharge_: UILabel! // textTYP1
+    @IBOutlet var label_EndSoc_: UILabel! // textSOC1
+    @IBOutlet var label_EndBatteryTemp_: UILabel! // textTMP1
+    @IBOutlet var label_HistDuration_: UILabel! // textDUR1
+
     @IBOutlet var header_ChargeSummary: UILabel!
 
     @IBOutlet var label_TotKwh: UILabel!
@@ -61,12 +68,12 @@ class ChargingHistoryViewController: CanZeViewController {
 
         header_ChargingHistory.text = NSLocalizedString_("header_ChargingHistory", comment: "")
 
-        label_distance.text = NSLocalizedString_("label_distance", comment: "")
-        label_EndOfChargeStatus.text = NSLocalizedString_("label_EndOfChargeStatus", comment: "")
-        label_TypeOfCharge.text = NSLocalizedString_("label_TypeOfCharge", comment: "")
-        label_EndSoc.text = NSLocalizedString_("label_EndSoc", comment: "")
-        label_EndBatteryTemp.text = NSLocalizedString_("label_EndBatteryTemp", comment: "")
-        label_HistDuration.text = NSLocalizedString_("label_HistDuration", comment: "")
+        label_distance_.text = NSLocalizedString_("label_distance", comment: "")
+        label_EndOfChargeStatus_.text = NSLocalizedString_("label_EndOfChargeStatus", comment: "")
+        label_TypeOfCharge_.text = NSLocalizedString_("label_TypeOfCharge", comment: "")
+        label_EndSoc_.text = NSLocalizedString_("label_EndSoc", comment: "")
+        label_EndBatteryTemp_.text = NSLocalizedString_("label_EndBatteryTemp", comment: "")
+        label_HistDuration_.text = NSLocalizedString_("label_HistDuration", comment: "")
 
         header_ChargeSummary.text = NSLocalizedString_("header_ChargeSummary", comment: "")
 
@@ -82,39 +89,39 @@ class ChargingHistoryViewController: CanZeViewController {
         label_CountPartial.text = NSLocalizedString_("label_CountPartial", comment: "")
         textCountPartial.text = "-"
 
-        var s = "\(NSLocalizedString_("label_distance", comment: "")) \n"
+        var s = ""
         for i in 0 ..< 10 {
-            s += "\(km[i])\n"
+            s += "\(String(format: "%.0f", km[i]))\n"
         }
         label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString_("label_EndOfChargeStatus", comment: "")) \n"
+        s = ""
         for i in 0 ..< 10 {
-            s += "\(end[i])\n"
+            s += "\(charging_HistEnd[Int(end[i])])\n"
         }
         label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString_("label_TypeOfCharge", comment: "")) \n"
+        s = ""
         for i in 0 ..< 10 {
-            s += "\(typ[i])\n"
+            s += "\(charging_HistTyp[Int(typ[i])])\n"
         }
         label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString_("label_EndSoc", comment: "")) \n"
+        s = ""
         for i in 0 ..< 10 {
-            s += "\(soc[i])\n"
+            s += "\(String(format: "%.0f", soc[i]))\n"
         }
         label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString_("label_EndBatteryTemp", comment: "")) \n"
+        s = ""
         for i in 0 ..< 10 {
-            s += "\(tmp[i])\n"
+            s += "\(String(format: "%.0f", tmp[i]))\n"
         }
         label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        s = "\(NSLocalizedString_("label_HistDuration", comment: "")) \n"
+        s = ""
         for i in 0 ..< 10 {
-            s += "\(dur[i])\n"
+            s += "\(String(format: "%.0f", dur[i]))\n"
         }
         label_HistDuration.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -200,61 +207,55 @@ class ChargingHistoryViewController: CanZeViewController {
                 case Sid.Preamble_KM:
                     let indice = (264 - startBit!) / 24 - 1
                     km[indice] = val!
-                    var s = "\(NSLocalizedString_("label_distance", comment: "")) \n"
+                    var s = ""
                     for i in 0 ..< 10 {
-                        s += "\(km[i])\n"
+                        s += "\(String(format: "%.0f", km[i]))\n"
                     }
-                    label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_END:
                     let indice = (104 - startBit!) / 8 - 1
-                    end[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString_("label_EndOfChargeStatus", comment: "")) \n"
+                    end[indice] = (val!.isNaN ? 0 : val)!
+                    var s = ""
                     for i in 0 ..< 10 {
                         let ii = Int(end[i])
                         if ii < charging_HistEnd.count {
                             s += "\(charging_HistEnd[ii])\n"
-                        } else {
+                        } else if i < 10 {
                             s += "\n"
                         }
                     }
-                    label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_TYP:
                     let indice = (104 - startBit!) / 8 - 1
-                    typ[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString_("label_TypeOfCharge", comment: "")) \n"
+                    typ[indice] = (val!.isNaN ? 0 : val)!
+                    var s = ""
                     for i in 0 ..< 10 {
                         let ii = Int(typ[i])
                         if ii < charging_HistTyp.count {
                             s += "\(charging_HistTyp[ii])\n"
-                        } else {
+                        } else if i < 10 {
                             s += "\n"
                         }
                     }
-                    label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_SOC:
                     let indice = (184 - startBit!) / 16 - 1
-                    soc[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString_("label_EndSoc", comment: "")) \n"
+                    soc[indice] = (val!.isNaN ? 0 : val)!
+                    var s = ""
                     for i in 0 ..< 10 {
-                        s += "\(soc[i])\n"
+                        s += "\(String(format: "%.0f", soc[i]))\n"
                     }
-                    label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_TMP:
                     let indice = (104 - startBit!) / 8 - 1
-                    tmp[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString_("label_EndBatteryTemp", comment: "")) \n"
+                    tmp[indice] = (val!.isNaN ? 0 : val)!
+                    var s = ""
                     for i in 0 ..< 10 {
-                        s += "\(tmp[i])\n"
+                        s += "\(String(format: "%.0f", tmp[i]))\n"
                     }
-                    label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 case Sid.Preamble_DUR:
                     let indice = (184 - startBit!) / 16 - 1
-                    dur[indice] = (val!.isNaN ? 0.0 : val)!
-                    var s = "\(NSLocalizedString_("label_HistDuration", comment: "")) \n"
+                    dur[indice] = (val!.isNaN ? 0 : val)!
+                    var s = ""
                     for i in 0 ..< 10 {
-                        s += "\(dur[i])\n"
+                        s += "\(String(format: "%.0f", dur[i]))\n"
                     }
-                    label_HistDuration.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
                 default:
                     switch sid {
                     case Sid.Total_kWh:

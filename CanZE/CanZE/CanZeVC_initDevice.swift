@@ -1,5 +1,5 @@
 //
-//  RootVC_initDevice.swift
+//  CanZeVC_initDevice.swift
 //  CanZE
 //
 //  Created by Roberto Sonzogni on 25/02/21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension RootViewController {
+extension CanZeViewController {
     func initDeviceELM327() {
         Globals.shared.queueInit = []
         for s in Globals.shared.autoInitElm327 {
@@ -47,7 +47,7 @@ extension RootViewController {
     
     func continueQueueInit() {
         if Globals.shared.queueInit.count > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in
                 Globals.shared.queueInit.remove(at: 0)
                 processQueueInit()
             }

@@ -300,10 +300,11 @@ extension _TestViewController: CBPeripheralDelegate {
             return
         } else if characteristic.uuid.uuidString == selectedReadCharacteristic.uuid.uuidString {
             let s = String(data: characteristic.value!, encoding: .utf8)
+            print("< '\(s!)' \(s!.count)")
             if s?.last == ">" {
                 lastRxString += s!
-                var reply = lastRxString.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines.inverted)
-                reply = String(reply.filter { !" \n\t\r".contains($0) })
+                var reply = lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
+                reply = String(reply.filter { !"\n\t\r".contains($0) })
 
                 if reply.subString(to: 1) == "1" { // multi frame
                     var finalReply = ""

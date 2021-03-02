@@ -956,7 +956,7 @@ class _TestViewController: UIViewController {
     
     func continueQueue() {
         // next step, after delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in // Change n to the desired number of seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in // Change n to the desired number of seconds
             if queue.count > 0 {
                 queue.remove(at: 0)
                 processQueue()
@@ -1008,7 +1008,7 @@ class _TestViewController: UIViewController {
     func continueQueue2() {
         // next step, after delay
         indiceCmd += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in // Change n to the desired number of seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in // Change n to the desired number of seconds
             processQueue2()
         }
     }

@@ -179,31 +179,25 @@ extension _TestViewController: StreamDelegate {
             if var string = String(bytesNoCopy: buffer, length: numberOfBytesRead, encoding: .utf8,
                                    freeWhenDone: true), string.count > 0
             {
+                print("< '\(string)' \(string.count)")
                 string = string.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
-                string = String(string.filter { !" \n\t\r".contains($0) })
-                if string.subString(to: 1) == "1" { // multi frame, first frame
-                    incompleteReply = string
-                    repliesAddedCounter = 0
-                } else if string.subString(to: 1) == "2" { // multi frame, next frames
-                    if incompleteReply != "" {
-                        incompleteReply += string
-                        repliesAddedCounter += 1
-                        let replyLen = Int(incompleteReply.subString(from: 1, to: 4), radix: 16)! * 2 // 134
-                        if incompleteReply.count >= replyLen + repliesAddedCounter * 2 {
-                            var finalReply = ""
-                            for i in 0 ..< incompleteReply.count / 16 {
-                                let s1 = incompleteReply.subString(from: i * 16 + 2, to: (i + 1) * 16)
-                                finalReply.append(s1)
-                            }
-                            finalReply = finalReply.subString(from: 2)
-                            let dic: [String: String] = ["reply": finalReply]
-                            NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
+                string = String(string.filter { !">\n\t\r".contains($0) })
+                if string.count > 0 {
+                    if string.subString(to: 1) == "1" { // multi frame, first frame
+                        var finalReply = ""
+                        for i in 0 ..< string.count / 16 {
+                            let s1 = string.subString(from: i * 16 + 2, to: (i + 1) * 16)
+                            finalReply.append(s1)
                         }
+                        string = finalReply.subString(from: 2)
                     }
-                } else { // single frame
-                    let dic: [String: String] = ["reply": string]
-                    NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
+
+                    if string.subString(to: 1) == "0" {
+                        string = string.subString(from: 2)
+                    }
                 }
+                let dic: [String: String] = ["reply": string]
+                NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
             }
         }
     }

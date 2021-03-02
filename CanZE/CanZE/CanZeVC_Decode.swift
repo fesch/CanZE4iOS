@@ -1,5 +1,5 @@
 //
-//  RootVC_Decode.swift
+//  CanZeVC_Decode.swift
 //  CanZE
 //
 //  Created by Roberto on 25/02/2021.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension RootViewController {
+extension CanZeViewController {
     func decodeIsoTp(_ elmResponse: String) -> String { // TEST
         var hexData = ""
         var len = 0

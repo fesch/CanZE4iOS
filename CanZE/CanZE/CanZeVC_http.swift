@@ -1,5 +1,5 @@
 //
-//  RootVC_http.swift
+//  CanZeVC_http.swift
 //  CanZE
 //
 //  Created by Roberto on 25/02/2021.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension RootViewController {
+extension CanZeViewController {
     // HTTP
     func writeHttp(s: String) {
         var request = URLRequest(url: URL(string: "\(Globals.shared.deviceHttpAddress)\(s)")!, timeoutInterval: 5)

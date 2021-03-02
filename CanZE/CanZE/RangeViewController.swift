@@ -207,6 +207,11 @@ class RangeViewController: CanZeViewController {
         let yAxisRight = distanceEnergyChartView.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 30
+        yAxisRight.axisLineColor = .blue
+        yAxisRight.axisLineWidth = 1.0
+        //yAxisRight.gridColor = .blue
+        //yAxisRight.gridLineDashPhase = 1.0
+        //yAxisRight.gridLineDashLengths = [5.0, 2.5]
 
         distanceEnergyLine2 = LineChartDataSet(entries: distanceEnergyEntries2, label: nil)
         distanceEnergyLine2.axisDependency = .right

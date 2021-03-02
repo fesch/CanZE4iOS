@@ -5,7 +5,6 @@
 //  Created by Roberto Sonzogni on 23/12/20.
 //
 
-import CoreBluetooth
 import FirebaseAnalytics
 import Toast_Swift
 import UIKit
@@ -289,7 +288,7 @@ class SettingsViewController: CanZeViewController {
     @objc func endDongleTest() {
         NotificationCenter.default.removeObserver(self, name: Notification.Name("endQueue2"), object: nil)
 
-        let sid1 = Sid.SoC
+        let sid1 = Sid.UserSoC
         let v1 = Globals.shared.fieldResultsDouble[sid1]
 //        let f1 = Fields.getInstance.getBySID(sid1)
 
@@ -301,7 +300,7 @@ class SettingsViewController: CanZeViewController {
 //            view.hideAllToasts()
 //            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)", duration: 5.0, position: ToastPosition.center, title: nil, image: nil, style: ToastStyle(), completion: nil)
 //            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)")
-            let msg = "Soc \(v1 ?? 0.0) %\nSerial \(v2!)"
+            let msg = "User SoC \(String(format: "%.2f", v1!)) %\nSerial \(v2!)"
             let ac = UIAlertController(title: "_Test dongle", message: msg, preferredStyle: .alert)
             let ac1 = UIAlertAction(title: NSLocalizedString_("default_Ok", comment: ""), style: .default, handler: nil)
             ac.addAction(ac1)

@@ -1,5 +1,5 @@
 //
-//  RootVC_queue.swift
+//  CanZeVC_queue.swift
 //  CanZE
 //
 //  Created by Roberto on 25/02/2021.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-extension RootViewController {
+extension CanZeViewController {
     func startQueue2() {
         UIApplication.shared.isIdleTimerDisabled = true
         Globals.shared.indiceCmd = 0
@@ -96,7 +96,7 @@ extension RootViewController {
  
     func continueQueue2() {
         Globals.shared.indiceCmd += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in
             processQueue2()
         }
     }

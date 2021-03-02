@@ -200,6 +200,14 @@ class ChargingGraphViewController: CanZeViewController {
         let yAxisRight = pilotPowerView.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 40
+        yAxisRight.axisLineColor = .blue
+        yAxisRight.axisLineWidth = 1.0
+        yAxisRight.gridColor = .blue
+        yAxisRight.gridLineDashPhase = 1.0
+        yAxisRight.gridLineDashLengths = [5.0, 2.5]
+        // yAxisRight.granularityEnabled = true
+        // yAxisRight.granularity = 13.5
+        // yAxisRight.gridLineWidth = 0.5
 
         pilotPowerChartLine2 = LineChartDataSet(entries: pilotPowerChartEntries2, label: nil)
         pilotPowerChartLine2.axisDependency = .right
@@ -235,6 +243,11 @@ class ChargingGraphViewController: CanZeViewController {
         let yAxisRight = maxRealChPwrView.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 50
+        yAxisRight.axisLineColor = .blue
+        yAxisRight.axisLineWidth = 1.0
+        //yAxisRight.gridColor = .blue
+        //yAxisRight.gridLineDashPhase = 1.0
+        //yAxisRight.gridLineDashLengths = [5.0, 2.5]
 
         maxRealChPwrChartLine2 = LineChartDataSet(entries: maxRealChPwrChartEntries2, label: nil)
         maxRealChPwrChartLine2.axisDependency = .right
@@ -263,7 +276,7 @@ class ChargingGraphViewController: CanZeViewController {
         yAxisLeft.axisMaximum = 56
 
         energyTemperatureChartLine1 = LineChartDataSet(entries: energyTemperatureChartEntries1, label: nil)
-        //energyTemperatureChartLine1.colors = [.red]
+        // energyTemperatureChartLine1.colors = [.red]
         energyTemperatureChartLine1.drawCirclesEnabled = false
         energyTemperatureChartLine1.drawValuesEnabled = false
         let gradientColors1 = [ChartColorTemplates.colorFromString("#3ee9ff").cgColor,
@@ -277,6 +290,11 @@ class ChargingGraphViewController: CanZeViewController {
         let yAxisRight = energyTemperatureView.rightAxis
         yAxisRight.axisMinimum = 0
         yAxisRight.axisMaximum = 40
+        yAxisRight.axisLineColor = .blue
+        yAxisRight.axisLineWidth = 1.0
+        yAxisRight.gridColor = .blue
+        yAxisRight.gridLineDashPhase = 1.0
+        yAxisRight.gridLineDashLengths = [5.0, 2.5]
 
         energyTemperatureChartLine2 = LineChartDataSet(entries: energyTemperatureChartEntries2, label: nil)
         energyTemperatureChartLine2.axisDependency = .right
