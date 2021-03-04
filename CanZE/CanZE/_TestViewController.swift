@@ -237,7 +237,7 @@ class _TestViewController: UIViewController {
         case .HTTP:
             writeHttp(s: s)
         default:
-            debug2("can't find device connection")
+            debug("can't find device connection")
         }
     }
     
@@ -286,12 +286,12 @@ class _TestViewController: UIViewController {
        
         ud.synchronize()
         
-        debug2("\(Globals.shared.deviceBleName.rawValue)")
-        debug2(Globals.shared.deviceBlePeripheralName)
-        debug2(Globals.shared.deviceBlePeripheralUuid)
-        debug2(Globals.shared.deviceBleServiceUuid)
-        debug2(Globals.shared.deviceBleReadCharacteristicUuid)
-        debug2(Globals.shared.deviceBleWriteCharacteristicUuid)
+        debug("\(Globals.shared.deviceBleName.rawValue)")
+        debug(Globals.shared.deviceBlePeripheralName)
+        debug(Globals.shared.deviceBlePeripheralUuid)
+        debug(Globals.shared.deviceBleServiceUuid)
+        debug(Globals.shared.deviceBleReadCharacteristicUuid)
+        debug(Globals.shared.deviceBleWriteCharacteristicUuid)
     }
     
     @IBAction func btnLoadBleConnectionParams() {
@@ -307,12 +307,12 @@ class _TestViewController: UIViewController {
         Globals.shared.deviceBleReadCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID) ?? ""
         Globals.shared.deviceBleWriteCharacteristicUuid = ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID) ?? ""
         
-        debug2("\(Globals.shared.deviceBleName.rawValue)")
-        debug2(Globals.shared.deviceBlePeripheralName)
-        debug2(Globals.shared.deviceBlePeripheralUuid)
-        debug2(Globals.shared.deviceBleServiceUuid)
-        debug2(Globals.shared.deviceBleReadCharacteristicUuid)
-        debug2(Globals.shared.deviceBleWriteCharacteristicUuid)
+        debug("\(Globals.shared.deviceBleName.rawValue)")
+        debug(Globals.shared.deviceBlePeripheralName)
+        debug(Globals.shared.deviceBlePeripheralUuid)
+        debug(Globals.shared.deviceBleServiceUuid)
+        debug(Globals.shared.deviceBleReadCharacteristicUuid)
+        debug(Globals.shared.deviceBleWriteCharacteristicUuid)
         
         blePhase = .DISCOVERED
         Globals.shared.deviceConnection = .BLE
@@ -332,7 +332,7 @@ class _TestViewController: UIViewController {
         let s = test[indiceTest]
         write_(s: s)
         
-        debug2(s)
+        debug(s)
         
         indiceTest += 1
     }
@@ -439,16 +439,16 @@ class _TestViewController: UIViewController {
          if Globals.shared.deviceType == AppSettings.DEVICE_TYPE_ELM327 {
          field?.strVal = decodeIsoTp(elmResponse2: s.a2) // ""
          if field!.strVal.hasPrefix("7f") {
-         debug2( "error 7f")
+         debug( "error 7f")
          } else if field!.strVal == "" {
-         debug2( "empty")
+         debug( "empty")
          } else {
          let binString = getAsBinaryString(data: field!.strVal)
          onMessageCompleteEventField(binString_: binString, field: field!)
          if field!.isString() || field!.isHexString() {
-         debug2( "\(field!.strVal)")
+         debug( "\(field!.strVal)")
          } else {
-         debug2( "\(String(format: "%.\(field!.decimals!)f", field!.getValue()))")
+         debug( "\(String(format: "%.\(field!.decimals!)f", field!.getValue()))")
          }
          }
          } else if Globals.shared.deviceType == AppSettings.DEVICE_TYPE_CANSEE {
@@ -456,15 +456,15 @@ class _TestViewController: UIViewController {
          onMessageCompleteEventField(binString_: binString, field: field!)
          
          if field!.isString() || field!.isHexString() {
-         debug2( "\(field!.strVal)")
+         debug( "\(field!.strVal)")
          } else {
-         debug2( " \(String(format: "%.\(field!.decimals!)f", field!.getValue()))")
+         debug( " \(String(format: "%.\(field!.decimals!)f", field!.getValue()))")
          }
          } else {
-         debug2( "device ?")
+         debug( "device ?")
          }
          } else {
-         debug2( "field \(s.a1) not found")
+         debug( "field \(s.a1) not found")
          }
          */
          }
@@ -502,7 +502,7 @@ class _TestViewController: UIViewController {
                 requestIsoTpFrame(frame: field.frame, field: field, virtual: nil)
             }
         } else {
-            //            MainActivity.debug2(this.getClass().getSimpleName() + " (CanzeActivity): SID " + sid + " does not exist in class Fields");
+            //            MainActivity.debug(this.getClass().getSimpleName() + " (CanzeActivity): SID " + sid + " does not exist in class Fields");
             //            MainActivity.toast(MainActivity.TOAST_NONE, String.format(Locale.getDefault(), MainActivity.getStringSingle(R.string.format_NoSid), this.getClass().getSimpleName(), sid));
         }
     }
@@ -794,8 +794,8 @@ class _TestViewController: UIViewController {
                 } else {
                     val = Int("0" + binString, radix: 2)!
                 }
-                // MainActivity.debug2("Value of " + field.getFromIdHex() + "." + field.getResponseId() + "." + field.getFrom()+" = "+val);
-                // MainActivity.debug2("Fields: onMessageCompleteEvent > "+field.getSID()+" = "+val);
+                // MainActivity.debug("Value of " + field.getFromIdHex() + "." + field.getResponseId() + "." + field.getFrom()+" = "+val);
+                // MainActivity.debug("Fields: onMessageCompleteEvent > "+field.getSID()+" = "+val);
                 
                 // update the value of the field. This triggers updating all of all listeners of that field
                 field.value = Double(val)
@@ -810,8 +810,8 @@ class _TestViewController: UIViewController {
             
             //            } catch (Exception e)
             //            {
-            //                MainActivity.debug2("Message.onMessageCompleteEventField: Exception:");
-            //                MainActivity.debug2(e.getMessage());
+            //                MainActivity.debug("Message.onMessageCompleteEventField: Exception:");
+            //                MainActivity.debug(e.getMessage());
             // ignore
             //            }
         }
@@ -874,7 +874,7 @@ class _TestViewController: UIViewController {
                 selectedPeripheral = peripheralsArray[tmpPickerIndex]
                 Globals.shared.deviceBlePeripheralName = selectedPeripheral.blePeripheral.name ?? ""
                 Globals.shared.deviceBlePeripheralUuid = selectedPeripheral.blePeripheral.identifier.uuidString
-                debug2("selected peripheral \(selectedPeripheral.blePeripheral.name ?? "?")")
+                debug("selected peripheral \(selectedPeripheral.blePeripheral.name ?? "?")")
                 selectedPeripheral.blePeripheral.delegate = self
                 centralManager.connect(selectedPeripheral.blePeripheral)
                 btn_PickerDone.setTitle("select service", for: .normal)
@@ -884,7 +884,7 @@ class _TestViewController: UIViewController {
                 pickerPhase = .WRITE_CHARACTERISTIC
                 selectedService = servicesArray[tmpPickerIndex]
                 Globals.shared.deviceBleServiceUuid = selectedService.uuid.uuidString
-                debug2("selected service \(selectedService.uuid)")
+                debug("selected service \(selectedService.uuid)")
                 characteristicArray = []
                 selectedPeripheral.blePeripheral.discoverCharacteristics([selectedService.uuid], for: selectedService)
                 btn_PickerDone.setTitle("select WRITE characteristic", for: .normal)
@@ -893,7 +893,7 @@ class _TestViewController: UIViewController {
             if characteristicArray.count > tmpPickerIndex {
                 selectedWriteCharacteristic = characteristicArray[tmpPickerIndex]
                 Globals.shared.deviceBleWriteCharacteristicUuid = selectedWriteCharacteristic.uuid.uuidString
-                debug2("selected write characteristic \(selectedWriteCharacteristic.uuid)")
+                debug("selected write characteristic \(selectedWriteCharacteristic.uuid)")
                 // peripheral.discoverDescriptors(for: characteristics)
                 btn_PickerDone.setTitle("select NOTIFY characteristic", for: .normal)
                 pickerPhase = .READ_CHARACTERISTIC
@@ -906,7 +906,7 @@ class _TestViewController: UIViewController {
                 pickerPhase = .PERIPHERAL
                 selectedReadCharacteristic = characteristicArray[tmpPickerIndex]
                 Globals.shared.deviceBleReadCharacteristicUuid = selectedReadCharacteristic.uuid.uuidString
-                debug2("selected notify characteristic \(selectedReadCharacteristic.uuid)")
+                debug("selected notify characteristic \(selectedReadCharacteristic.uuid)")
                 if selectedReadCharacteristic.properties.contains(.notify) {
                     for c in selectedService.characteristics! {
                         selectedPeripheral.blePeripheral.setNotifyValue(false, for: c)
@@ -969,7 +969,7 @@ class _TestViewController: UIViewController {
     func startQueue2() {
         // TEST
         // if !deviceIsInitialized {
-        // debug2( "device not Initialized")
+        // debug( "device not Initialized")
         // return
         // }
         // TEST
@@ -998,7 +998,7 @@ class _TestViewController: UIViewController {
         }
         timeoutTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
             timer.invalidate()
-            self.debug2("queue2 timeout !!!")
+            self.debug("queue2 timeout !!!")
             self.view.hideAllToasts()
             self.view.makeToast("TIMEOUT")
             return
@@ -1013,7 +1013,7 @@ class _TestViewController: UIViewController {
         }
     }
     
-    func debug2(_ s: String) {
+    func debug(_ s: String) {
         print(s)
         DispatchQueue.main.async { [self] in
             tv.text += "\n\(s)"
@@ -1037,7 +1037,7 @@ class _TestViewController: UIViewController {
         } else {
             let notificationObject = notification.object as! [String: Any]
             let ss = notificationObject["reply"] as! String
-            debug2("< '\(ss)' \(ss.count)")
+            debug("< '\(ss)' (\(ss.count))")
 //            print(Date().timeIntervalSince1970)
         }
     }
@@ -1046,7 +1046,7 @@ class _TestViewController: UIViewController {
         let notificationObject = notification.object as! [String: Any]
         let reply = notificationObject["reply"] as! String
         
-        debug2("< '\(reply)' \(reply.count)")
+        debug("< '\(reply)' (\(reply.count))")
         
         // TEST
         var sid = ""
@@ -1069,11 +1069,11 @@ class _TestViewController: UIViewController {
         
         if reply.contains("ERROR") {
             // do nothing
-            debug2("ERROR")
+            debug("ERROR")
         } else if reply == "OK" {
             // do nothing
         } else if reply == "" {
-            debug2("empty")
+            debug("empty")
         } else if field != nil {
             if Globals.shared.deviceType == .ELM327 {
                 field?.strVal = decodeIsoTp(elmResponse: reply) // ""
@@ -1086,12 +1086,12 @@ class _TestViewController: UIViewController {
             //            tv.text += "\n\(field?.sid ?? "?") \(field?.name ?? "?")"
             
             if field!.strVal.hasPrefix("7f") {
-                debug2("error 7f")
+                debug("error 7f")
             } else if field!.strVal == "" {
-                debug2("empty")
+                debug("empty")
             } else {
                 let binString = getAsBinaryString(data: field!.strVal)
-                debug2(binString)
+                debug(binString)
                 onMessageCompleteEventField(binString_: binString, field: field!)
                 
                 if seq?.sidVirtual != nil {
@@ -1125,15 +1125,15 @@ class _TestViewController: UIViewController {
                 }
                 
                 if field!.isString() || field!.isHexString() {
-                    debug2("\(field!.strVal)")
+                    debug("\(field!.strVal)")
                 } else {
-                    debug2("\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
+                    debug("\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
                     fieldResult[field!.sid] = field!.getValue()
                 }
             }
             
         } else {
-            debug2("field \(seq?.field.sid ?? "?") not found")
+            debug("field \(seq?.field.sid ?? "?") not found")
         }
         
         if queue2.count > 0, timeoutTimer != nil, timeoutTimer.isValid {

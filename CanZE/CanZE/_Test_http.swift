@@ -9,17 +9,17 @@ import Foundation
 
 extension _TestViewController {
     // http
-    
+
     func writeHttp(s: String) {
         var request = URLRequest(url: URL(string: "\(Globals.shared.deviceHttpAddress)\(s)")!, timeoutInterval: 5)
         request.httpMethod = "GET"
-        
-        debug2("> \(s)")
-        
+
+        debug("> '\(s)'")
+
         let task = URLSession.shared.dataTask(with: request) { [self] data, _, error in
             guard let data = data else {
                 print(String(describing: error))
-                debug2(error?.localizedDescription ?? "")
+                debug(error?.localizedDescription ?? "")
                 return
             }
             //            print(data)
@@ -33,7 +33,7 @@ extension _TestViewController {
                 let dic = ["reply": reply3]
                 NotificationCenter.default.post(name: Notification.Name("received2"), object: dic)
             } else {
-                debug2(reply!)
+                debug(reply!)
             }
         }
         task.resume()

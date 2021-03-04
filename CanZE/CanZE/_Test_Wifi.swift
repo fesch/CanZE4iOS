@@ -12,47 +12,47 @@ extension _TestViewController {
         if timeoutTimerWifi != nil {
             return
         }
-
+        
         if Globals.shared.deviceWifiAddress == "" || Globals.shared.deviceWifiPort == "" {
             view.hideAllToasts()
             view.makeToast("_Please configure")
             return
         }
-
+        
         var readStream: Unmanaged<CFReadStream>?
         var writeStream: Unmanaged<CFWriteStream>?
-
+        
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault,
                                            Globals.shared.deviceWifiAddress as CFString,
                                            UInt32(Globals.shared.deviceWifiPort)!,
                                            &readStream,
                                            &writeStream)
-
+        
         inputStream = readStream!.takeRetainedValue()
         outputStream = writeStream!.takeRetainedValue()
-
+        
         inputStream.delegate = self
         outputStream.delegate = self
-
+        
         inputStream.schedule(in: RunLoop.current, forMode: .default)
         outputStream.schedule(in: RunLoop.current, forMode: .default)
-
+        
         inputStream.open()
         outputStream.open()
-
+        
         print("inputStream \(decodeStatus(inputStream.streamStatus))")
         print("outputStream \(decodeStatus(outputStream.streamStatus))")
-
+        
         var contatore = 5
         timeoutTimerWifi = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [self] _ in
             print(contatore)
-
+            
             if inputStream != nil, outputStream != nil, inputStream.streamStatus == .open, outputStream.streamStatus == .open {
                 // connesso
                 timeoutTimerWifi.invalidate()
                 timeoutTimerWifi = nil
             }
-
+            
             if contatore < 1 {
                 // NON connesso
                 if timeoutTimerWifi != nil {
@@ -65,12 +65,12 @@ extension _TestViewController {
                 view.hideAllToasts()
                 view.makeToast("TIMEOUT")
             }
-
+            
             contatore -= 1
-
+            
         })
     }
-
+    
     func disconnectWifi() {
         if inputStream != nil {
             inputStream.close()
@@ -84,24 +84,24 @@ extension _TestViewController {
             outputStream.delegate = nil
             outputStream = nil
         }
-        debug2("disconnected")
+        debug("disconnected")
     }
-
+    
     func writeWifi(s: String) {
         if outputStream != nil, outputStream.streamStatus == .open {
-            debug2("> \(s)")
+            debug("> '\(s)'")
             let s2 = s.appending("\r")
             let data = s2.data(using: .utf8)!
             data.withUnsafeBytes {
                 guard let pointer = $0.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-                    debug2("Error")
+                    debug("Error")
                     return
                 }
                 outputStream.write(pointer, maxLength: data.count)
             }
         }
     }
-
+    
     // ricezione dati wifi
     @objc func didReceiveFromWifiDongle(notification: Notification) {
         let notificationObject = notification.object as? [String: Any]
@@ -112,7 +112,7 @@ extension _TestViewController {
             }
         }
     }
-
+    
     func decodeStatus(_ status: Stream.Status) -> String {
         switch status {
         case .notOpen:
@@ -149,55 +149,57 @@ extension _TestViewController: StreamDelegate {
                 readAvailableBytes(stream: aStream as! InputStream)
             }
         case .endEncountered:
-            debug2("\(aStream) endEncountered")
+            debug("\(aStream) endEncountered")
         case .hasSpaceAvailable:
             // print("\(aStream) hasSpaceAvailable")
             if aStream == outputStream {
-//                print("ready")
-//                print("ready")
+                //                print("ready")
+                //                print("ready")
                 //   debug( "ready")
                 // tv.text += ("ready\n")
                 // tv.scrollToBottom()
             }
         case .errorOccurred:
-            debug2("\(aStream) errorOccurred \(aStream.streamError?.localizedDescription ?? "")")
+            debug("\(aStream) errorOccurred \(aStream.streamError?.localizedDescription ?? "")")
         case .openCompleted:
-            debug2("\(aStream) openCompleted")
+            debug("\(aStream) openCompleted")
         default:
-            debug2("\(aStream) unknown event \(eventCode.rawValue)")
+            debug("\(aStream) unknown event \(eventCode.rawValue)")
         }
     }
-
+    
     private func readAvailableBytes(stream: InputStream) {
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: maxReadLength)
         while stream.hasBytesAvailable {
             let numberOfBytesRead = inputStream.read(buffer, maxLength: maxReadLength)
             if numberOfBytesRead < 0, let error = stream.streamError {
-                debug2(error.localizedDescription)
+                debug(error.localizedDescription)
                 break
             }
-            if var string = String(bytesNoCopy: buffer, length: numberOfBytesRead, encoding: .utf8,
-                                   freeWhenDone: true), string.count > 0
-            {
-                print("< '\(string)' \(string.count)")
-                string = string.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
-                string = String(string.filter { !">\n\t\r".contains($0) })
-                if string.count > 0 {
-                    if string.subString(to: 1) == "1" { // multi frame, first frame
+            if let s = String(bytesNoCopy: buffer, length: numberOfBytesRead, encoding: .utf8, freeWhenDone: true), s.count > 0 {
+                debug("< '\(s)' (\(s.count))")
+                lastRxString += s
+                if lastRxString.last == ">" {
+                    var reply = lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
+                    reply = String(reply.filter { !"\n\t\r".contains($0) })
+                    
+                    if reply.subString(to: 1) == "1" { // multi frame
                         var finalReply = ""
-                        for i in 0 ..< string.count / 16 {
-                            let s1 = string.subString(from: i * 16 + 2, to: (i + 1) * 16)
+                        for i in 0 ..< reply.count / 16 {
+                            let s1 = reply.subString(from: i * 16 + 2, to: (i + 1) * 16)
                             finalReply.append(s1)
                         }
-                        string = finalReply.subString(from: 2)
+                        reply = finalReply.subString(from: 2)
                     }
-
-                    if string.subString(to: 1) == "0" {
-                        string = string.subString(from: 2)
+                    if reply.subString(to: 1) == "0" {
+                        reply = reply.subString(from: 2)
                     }
+                    
+                    let dic: [String: String] = ["reply": reply]
+                    NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
+                    
+                    lastRxString = ""
                 }
-                let dic: [String: String] = ["reply": string]
-                NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
             }
         }
     }

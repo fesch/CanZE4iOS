@@ -12,10 +12,10 @@ class NavigationController: UINavigationController, CBCentralManagerDelegate, CB
     override func viewDidLoad() {
         super.viewDidLoad()
         print("NavigationController")
-
+        
         // Do any additional setup after loading the view.
     }
-
+    
     func debug(_ s: String) {
         print(s)
         if Globals.shared.useSdCard {
@@ -50,7 +50,7 @@ extension NavigationController {
             debug("central.state is unknown")
         }
     }
-
+    
     // Peripheral
     // Peripheral
     // Peripheral
@@ -59,7 +59,7 @@ extension NavigationController {
         p.blePeripheral = peripheral
         p.rssi = RSSI
         Globals.shared.peripheralsDic[peripheral.identifier.uuidString] = p
-
+        
         if Globals.shared.blePhase == .DISCOVERED, Globals.shared.deviceBlePeripheralName == p.blePeripheral.name {
             if Globals.shared.timeoutTimerBle != nil {
                 if Globals.shared.timeoutTimerBle.isValid {
@@ -74,26 +74,26 @@ extension NavigationController {
             Globals.shared.centralManager.connect(Globals.shared.selectedPeripheral.blePeripheral)
         }
     }
-
+    
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         debug("didConnect \(peripheral.name ?? "?") \(peripheral.identifier.uuidString)")
         Globals.shared.servicesArray = []
         Globals.shared.pickerPhase = .SERVICES
         peripheral.discoverServices(nil)
     }
-
+    
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         debug("didFailToConnect \(peripheral) \(error?.localizedDescription ?? "")")
     }
-
+    
     func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
         debug("connectionEventDidOccur \(peripheral)")
     }
-
+    
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         debug("didDisconnectPeripheral \(peripheral.name ?? "")")
     }
-
+    
     func centralManager(_ central: CBCentralManager, didUpdateANCSAuthorizationFor peripheral: CBPeripheral) {}
 }
 
@@ -105,11 +105,11 @@ extension NavigationController {
     // Services
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if error != nil {
-            print(error?.localizedDescription as Any)
+            debug(error?.localizedDescription ?? "")
             return
         }
         Globals.shared.servicesArray.append(contentsOf: peripheral.services ?? [])
-
+        
         if Globals.shared.blePhase == .DISCOVERED {
             for s in Globals.shared.servicesArray {
                 if s.uuid.uuidString == Globals.shared.deviceBleServiceUuid {
@@ -122,35 +122,34 @@ extension NavigationController {
             }
         }
     }
-
+    
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Error?) {
         print("didUpdateValueFor \(descriptor.uuid) \(error?.localizedDescription ?? "")")
     }
-
+    
     func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
         print("peripheralDidUpdateName \(peripheral.name!)")
     }
-
+    
     func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
         print("peripheralIsReady toSendWriteWithoutResponse \(peripheral.name!)")
     }
-
+    
     func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {}
-
+    
     func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {}
-
+    
     func peripheral(_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?) {}
-
+    
     // Characteristics
     // Characteristics
     // Characteristics
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         if service.characteristics != nil, service.characteristics!.count > 0 {
             Globals.shared.characteristicArray.append(contentsOf: service.characteristics ?? [])
-
+            
             if Globals.shared.blePhase == .DISCOVERED {
                 for c in Globals.shared.characteristicArray {
-//                    print(c.uuid.uuidString)
                     if c.uuid.uuidString == Globals.shared.deviceBleWriteCharacteristicUuid {
                         Globals.shared.selectedWriteCharacteristic = c
                         debug("found selected write characteristic \(c.uuid)")
@@ -162,7 +161,7 @@ extension NavigationController {
                             Globals.shared.selectedPeripheral.blePeripheral.setNotifyValue(true, for: c)
                         }
                     }
-
+                    
                     if Globals.shared.selectedReadCharacteristic != nil, Globals.shared.selectedWriteCharacteristic != nil {
                         NotificationCenter.default.post(name: Notification.Name("connected"), object: nil)
                         Globals.shared.deviceIsConnected = true
@@ -175,28 +174,27 @@ extension NavigationController {
             peripheral.discoverCharacteristics(nil, for: service)
         }
     }
-
+    
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            print("error didWriteValueFor \(characteristic.uuid.uuidString) \(error!.localizedDescription)")
+            debug("error didWriteValueFor \(characteristic.uuid.uuidString) \(error!.localizedDescription)")
             return
         }
     }
-
+    
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            print(error?.localizedDescription as Any)
+            debug(error?.localizedDescription ?? "")
             return
         } else if characteristic.uuid.uuidString == Globals.shared.selectedReadCharacteristic.uuid.uuidString {
             let s = String(data: characteristic.value!, encoding: .utf8)
-
-            print("< '\(s!)' \(s!.count)")
+            debug("< '\(s!)' (\(s!.count))")
             if s?.last == ">" {
                 Globals.shared.lastRxString += s!
-
+                
                 var reply = Globals.shared.lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
                 reply = String(reply.filter { !"\n\t\r".contains($0) })
-
+                
                 if reply.subString(to: 1) == "1" { // multi frame
                     var finalReply = ""
                     for i in 0 ..< reply.count / 16 {
@@ -205,24 +203,24 @@ extension NavigationController {
                     }
                     reply = finalReply.subString(from: 2)
                 }
-
+                
                 if reply.subString(to: 1) == "0" {
                     reply = reply.subString(from: 2)
                 }
-
+                
                 let dic: [String: String] = ["reply": reply]
                 NotificationCenter.default.post(name: Notification.Name("received"), object: dic)
-
+                
                 Globals.shared.lastRxString = ""
-
+                
             } else {
                 Globals.shared.lastRxString += s ?? ""
             }
         } else {
-            print("received dati da char sconosciuta \(characteristic.uuid.uuidString)")
+            debug("received dati da char sconosciuta \(characteristic.uuid.uuidString)")
         }
     }
-
+    
     // Descriptors
     // Descriptors
     // Descriptors
@@ -235,9 +233,9 @@ extension NavigationController {
             debug("characteristic.descriptors \(characteristic.descriptors!)")
         }
     }
-
+    
     func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {}
-
+    
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
             debug("error didUpdateNotificationStateFor characteristic \(characteristic.uuid.uuidString): \(error?.localizedDescription as Any)")
@@ -272,46 +270,39 @@ extension NavigationController {
             debug("\(aStream) \(eventCode.rawValue)")
         }
     }
-
+    
     private func readAvailableBytes(stream: InputStream) {
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: Globals.shared.maxReadLength)
-
         while stream.hasBytesAvailable {
-            let numberOfBytesRead = stream.read(buffer, maxLength: Globals.shared.maxReadLength)
+            let numberOfBytesRead = Globals.shared.inputStream.read(buffer, maxLength: Globals.shared.maxReadLength)
             if numberOfBytesRead < 0, let error = stream.streamError {
                 debug(error.localizedDescription)
                 break
             }
-            if var string = String(bytesNoCopy: buffer, length: numberOfBytesRead, encoding: .utf8, freeWhenDone: true), string.count > 0 {
-                if Globals.shared.deviceType == .CANSEE {
-                    let a = string.components(separatedBy: ",")
-                    if a.count > 0 {
-                        string = a.last!
-                        let dic: [String: String] = ["reply": string]
-                        NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
-                        return
-                    }
-                }
-
-                print("< '\(string)' \(string.count)")
-                string = string.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
-                string = String(string.filter { !">\n\t\r".contains($0) })
-                if string.count > 0 {
-                    if string.subString(to: 1) == "1" { // multi frame, first frame
+            if let s = String(bytesNoCopy: buffer, length: numberOfBytesRead, encoding: .utf8, freeWhenDone: true), s.count > 0 {
+                debug("< '\(s)' (\(s.count))")
+                Globals.shared.lastRxString += s
+                if Globals.shared.lastRxString.last == ">" {
+                    var reply = Globals.shared.lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
+                    reply = String(reply.filter { !"\n\t\r".contains($0) })
+                    
+                    if reply.subString(to: 1) == "1" { // multi frame
                         var finalReply = ""
-                        for i in 0 ..< string.count / 16 {
-                            let s1 = string.subString(from: i * 16 + 2, to: (i + 1) * 16)
+                        for i in 0 ..< reply.count / 16 {
+                            let s1 = reply.subString(from: i * 16 + 2, to: (i + 1) * 16)
                             finalReply.append(s1)
                         }
-                        string = finalReply.subString(from: 2)
+                        reply = finalReply.subString(from: 2)
                     }
-
-                    if string.subString(to: 1) == "0" {
-                        string = string.subString(from: 2)
+                    if reply.subString(to: 1) == "0" {
+                        reply = reply.subString(from: 2)
                     }
+                    
+                    let dic: [String: String] = ["reply": reply]
+                    NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
+                    
+                    Globals.shared.lastRxString = ""
                 }
-                let dic: [String: String] = ["reply": string]
-                NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
             }
         }
     }

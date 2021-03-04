@@ -130,7 +130,7 @@ extension CanZeViewController {
                     debug("Error")
                     return
                 }
-                debug("> \(s)")
+                debug("> '\(s)'")
                 Globals.shared.outputStream.write(pointer, maxLength: data.count)
             }
         }

@@ -32,7 +32,7 @@ extension CanZeViewController {
         }
         Globals.shared.centralManager = CBCentralManager(delegate: navigationController as? CBCentralManagerDelegate, queue: nil)
     }
-
+    
     func disconnectBle() {
         if Globals.shared.selectedPeripheral != nil, Globals.shared.selectedPeripheral.blePeripheral != nil {
             if Globals.shared.centralManager != nil {
@@ -44,17 +44,17 @@ extension CanZeViewController {
             Globals.shared.selectedWriteCharacteristic = nil
         }
     }
-
+    
     func writeBle(s: String) {
         if Globals.shared.selectedWriteCharacteristic != nil {
             let ss = s.appending("\r")
             if let data = ss.data(using: .utf8) {
                 if Globals.shared.selectedWriteCharacteristic.properties.contains(.write) {
                     Globals.shared.selectedPeripheral.blePeripheral.writeValue(data, for: Globals.shared.selectedWriteCharacteristic, type: .withResponse)
-                    debug("> \(s)")
+                    debug("> '\(s)'")
                 } else if Globals.shared.selectedWriteCharacteristic.properties.contains(.writeWithoutResponse) {
                     Globals.shared.selectedPeripheral.blePeripheral.writeValue(data, for: Globals.shared.selectedWriteCharacteristic, type: .withoutResponse)
-                    debug("> \(s)")
+                    debug("> '\(s)'")
                 } else {
                     debug("can't write to characteristic")
                 }

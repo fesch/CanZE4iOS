@@ -89,41 +89,12 @@ class ChargingHistoryViewController: CanZeViewController {
         label_CountPartial.text = NSLocalizedString_("label_CountPartial", comment: "")
         textCountPartial.text = "-"
 
-        var s = ""
-        for i in 0 ..< 10 {
-            s += "\(String(format: "%.0f", km[i]))\n"
-        }
-        label_distance.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        s = ""
-        for i in 0 ..< 10 {
-            s += "\(charging_HistEnd[Int(end[i])])\n"
-        }
-        label_EndOfChargeStatus.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        s = ""
-        for i in 0 ..< 10 {
-            s += "\(charging_HistTyp[Int(typ[i])])\n"
-        }
-        label_TypeOfCharge.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        s = ""
-        for i in 0 ..< 10 {
-            s += "\(String(format: "%.0f", soc[i]))\n"
-        }
-        label_EndSoc.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        s = ""
-        for i in 0 ..< 10 {
-            s += "\(String(format: "%.0f", tmp[i]))\n"
-        }
-        label_EndBatteryTemp.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        s = ""
-        for i in 0 ..< 10 {
-            s += "\(String(format: "%.0f", dur[i]))\n"
-        }
-        label_HistDuration.text = s.trimmingCharacters(in: .whitespacesAndNewlines)
+        updateDistance()
+        updateEndOfChargeStatus()
+        updateTypeOfCharge()
+        updateEndSoc()
+        updateEndBatteryTemp()
+        updateDuration()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -211,6 +182,7 @@ class ChargingHistoryViewController: CanZeViewController {
                     for i in 0 ..< 10 {
                         s += "\(String(format: "%.0f", km[i]))\n"
                     }
+                    updateDistance()
                 case Sid.Preamble_END:
                     let indice = (104 - startBit!) / 8 - 1
                     end[indice] = (val!.isNaN ? 0 : val)!
@@ -223,6 +195,7 @@ class ChargingHistoryViewController: CanZeViewController {
                             s += "\n"
                         }
                     }
+                    updateEndOfChargeStatus()
                 case Sid.Preamble_TYP:
                     let indice = (104 - startBit!) / 8 - 1
                     typ[indice] = (val!.isNaN ? 0 : val)!
@@ -235,6 +208,7 @@ class ChargingHistoryViewController: CanZeViewController {
                             s += "\n"
                         }
                     }
+                    updateTypeOfCharge()
                 case Sid.Preamble_SOC:
                     let indice = (184 - startBit!) / 16 - 1
                     soc[indice] = (val!.isNaN ? 0 : val)!
@@ -242,6 +216,7 @@ class ChargingHistoryViewController: CanZeViewController {
                     for i in 0 ..< 10 {
                         s += "\(String(format: "%.0f", soc[i]))\n"
                     }
+                    updateEndSoc()
                 case Sid.Preamble_TMP:
                     let indice = (104 - startBit!) / 8 - 1
                     tmp[indice] = (val!.isNaN ? 0 : val)!
@@ -249,6 +224,7 @@ class ChargingHistoryViewController: CanZeViewController {
                     for i in 0 ..< 10 {
                         s += "\(String(format: "%.0f", tmp[i]))\n"
                     }
+                    updateEndBatteryTemp()
                 case Sid.Preamble_DUR:
                     let indice = (184 - startBit!) / 16 - 1
                     dur[indice] = (val!.isNaN ? 0 : val)!
@@ -256,6 +232,7 @@ class ChargingHistoryViewController: CanZeViewController {
                     for i in 0 ..< 10 {
                         s += "\(String(format: "%.0f", dur[i]))\n"
                     }
+                    updateDuration()
                 default:
                     switch sid {
                     case Sid.Total_kWh:
@@ -276,5 +253,79 @@ class ChargingHistoryViewController: CanZeViewController {
                 }
             }
         }
+    }
+
+    func updateDistance() {
+        var s = ""
+        for i in 0 ..< 10 {
+            s += "\(String(format: "%.0f", km[i]))\n"
+        }
+        if s.last == "\n" {
+            s = s.subString(to: s.count - 1)
+        }
+        label_distance.text = s
+    }
+
+    func updateEndOfChargeStatus() {
+        var s = ""
+        for i in 0 ..< 10 {
+            if Int(end[i]) < charging_HistEnd.count {
+                s += "\(charging_HistEnd[Int(end[i])])\n"
+            } else {
+                s += "\n"
+            }
+        }
+        if s.last == "\n" {
+            s = s.subString(to: s.count - 1)
+        }
+        label_EndOfChargeStatus.text = s
+    }
+
+    func updateTypeOfCharge() {
+        var s = ""
+        for i in 0 ..< 10 {
+            if Int(end[i]) < charging_HistTyp.count {
+                s += "\(charging_HistTyp[Int(typ[i])])\n"
+            } else {
+                s += "\n"
+            }
+        }
+        if s.last == "\n" {
+            s = s.subString(to: s.count - 1)
+        }
+        label_TypeOfCharge.text = s
+    }
+
+    func updateEndSoc() {
+        var s = ""
+        for i in 0 ..< 10 {
+            s += "\(String(format: "%.0f", soc[i]))\n"
+        }
+        if s.last == "\n" {
+            s = s.subString(to: s.count - 1)
+        }
+        label_EndSoc.text = s
+    }
+
+    func updateEndBatteryTemp() {
+        var s = ""
+        for i in 0 ..< 10 {
+            s += "\(String(format: "%.0f", tmp[i]))\n"
+        }
+        if s.last == "\n" {
+            s = s.subString(to: s.count - 1)
+        }
+        label_EndBatteryTemp.text = s
+    }
+
+    func updateDuration() {
+        var s = ""
+        for i in 0 ..< 10 {
+            s += "\(String(format: "%.0f", dur[i]))\n"
+        }
+        if s.last == "\n" {
+            s = s.subString(to: s.count - 1)
+        }
+        label_HistDuration.text = s
     }
 }

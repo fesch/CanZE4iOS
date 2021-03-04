@@ -42,15 +42,15 @@ extension _TestViewController {
             if let data = ss.data(using: .utf8) {
                 if selectedWriteCharacteristic.properties.contains(.write) {
                     selectedPeripheral.blePeripheral.writeValue(data, for: selectedWriteCharacteristic, type: .withResponse)
-                    debug2("> \(s)")
+                    debug("> '\(s)'")
                 } else if selectedWriteCharacteristic.properties.contains(.writeWithoutResponse) {
                     selectedPeripheral.blePeripheral.writeValue(data, for: selectedWriteCharacteristic, type: .withoutResponse)
-                    debug2("> \(s)")
+                    debug("> '\(s)'")
                 } else {
-                    debug2("can't write to characteristic")
+                    debug("can't write to characteristic")
                 }
             } else {
-                debug2("data is nil")
+                debug("data is nil")
             }
         }
     }
@@ -65,21 +65,21 @@ extension _TestViewController: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .unknown:
-            debug2("central.state is .unknown")
+            debug("central.state is .unknown")
         case .resetting:
-            debug2("central.state is .resetting")
+            debug("central.state is .resetting")
         case .unsupported:
-            debug2("central.state is .unsupported")
+            debug("central.state is .unsupported")
         case .unauthorized:
-            debug2("central.state is .unauthorized")
+            debug("central.state is .unauthorized")
         case .poweredOff:
-            debug2("central.state is .poweredOff")
+            debug("central.state is .poweredOff")
         case .poweredOn:
-            debug2("central.state is .poweredOn")
+            debug("central.state is .poweredOn")
             //            centralManager.scanForPeripherals(withServices: [serviceCBUUID])
             centralManager.scanForPeripherals(withServices: [])
         @unknown default:
-            debug2("central.state is unknown")
+            debug("central.state is unknown")
         }
     }
 
@@ -104,7 +104,7 @@ extension _TestViewController: CBCentralManagerDelegate {
                 }
             }
             if !trovato {
-                debug2("discovered \(peripheral.name ?? "?")")
+                debug("discovered \(peripheral.name ?? "?")")
                 peripheralsArray.append(p)
                 picker.reloadAllComponents()
             }
@@ -118,13 +118,13 @@ extension _TestViewController: CBCentralManagerDelegate {
             centralManager.stopScan()
             p.blePeripheral.delegate = self
             selectedPeripheral = p
-            debug2("found selected Peripheral \(selectedPeripheral.blePeripheral.name ?? "")")
+            debug("found selected Peripheral \(selectedPeripheral.blePeripheral.name ?? "")")
             centralManager.connect(selectedPeripheral.blePeripheral)
         }
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        debug2("didConnect \(peripheral.name ?? "?") \(peripheral.identifier.uuidString)")
+        debug("didConnect \(peripheral.name ?? "?") \(peripheral.identifier.uuidString)")
         servicesArray = []
         pickerPhase = .SERVICES
         tmpPickerIndex = 0
@@ -133,15 +133,15 @@ extension _TestViewController: CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        debug2("didFailToConnect \(peripheral) \(error?.localizedDescription ?? "")")
+        debug("didFailToConnect \(peripheral) \(error?.localizedDescription ?? "")")
     }
 
     func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
-        debug2("connectionEventDidOccur \(peripheral)")
+        debug("connectionEventDidOccur \(peripheral)")
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        debug2("didDisconnectPeripheral \(peripheral.name ?? "")")
+        debug("didDisconnectPeripheral \(peripheral.name ?? "")")
     }
 
     func centralManager(_ central: CBCentralManager, didUpdateANCSAuthorizationFor peripheral: CBPeripheral) {}
@@ -182,7 +182,7 @@ extension _TestViewController: CBPeripheralDelegate {
             for s in servicesArray {
                 if s.uuid.uuidString == Globals.shared.deviceBleServiceUuid {
                     selectedService = s
-                    debug2("found selected service \(selectedService.uuid)")
+                    debug("found selected service \(selectedService.uuid)")
                     characteristicArray = []
                     selectedPeripheral.blePeripheral.discoverCharacteristics([selectedService.uuid], for: selectedService)
                     break
@@ -257,12 +257,12 @@ extension _TestViewController: CBPeripheralDelegate {
 //                    print(c.uuid.uuidString)
                     if c.uuid.uuidString == Globals.shared.deviceBleWriteCharacteristicUuid {
                         selectedWriteCharacteristic = c
-                        debug2("found selected write characteristic \(c.uuid)")
+                        debug("found selected write characteristic \(c.uuid)")
                         // peripheral.discoverDescriptors(for: characteristics)
                     }
                     if c.uuid.uuidString == Globals.shared.deviceBleReadCharacteristicUuid {
                         selectedReadCharacteristic = c
-                        debug2("found selected notify characteristic \(c.uuid)")
+                        debug("found selected notify characteristic \(c.uuid)")
                         if c.properties.contains(.notify) {
 //                            for c in selectedService.characteristics! {
 //                              selectedPeripheral.blePeripheral.setNotifyValue(false, for: c)
@@ -273,7 +273,7 @@ extension _TestViewController: CBPeripheralDelegate {
                     }
 
                     if selectedReadCharacteristic != nil, selectedWriteCharacteristic != nil {
-                        debug2("trovati")
+                        debug("trovati")
                         break
                     }
                 }
@@ -300,7 +300,7 @@ extension _TestViewController: CBPeripheralDelegate {
             return
         } else if characteristic.uuid.uuidString == selectedReadCharacteristic.uuid.uuidString {
             let s = String(data: characteristic.value!, encoding: .utf8)
-            print("< '\(s!)' \(s!.count)")
+            debug("< '\(s!)' (\(s!.count))")
             if s?.last == ">" {
                 lastRxString += s!
                 var reply = lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
@@ -332,11 +332,11 @@ extension _TestViewController: CBPeripheralDelegate {
     // Descriptors
     func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            debug2(error!.localizedDescription)
+            debug(error!.localizedDescription)
         } else {
             let s = "didDiscoverDescriptorsFor \(characteristic.uuid)"
-            debug2(s)
-            debug2("characteristic.descriptors \(characteristic.descriptors!)")
+            debug(s)
+            debug("characteristic.descriptors \(characteristic.descriptors!)")
         }
     }
 
@@ -344,10 +344,10 @@ extension _TestViewController: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
-            debug2("error didUpdateNotificationStateFor characteristic \(characteristic.uuid.uuidString): \(error?.localizedDescription as Any)")
+            debug("error didUpdateNotificationStateFor characteristic \(characteristic.uuid.uuidString): \(error?.localizedDescription as Any)")
         } else {
             let s = "didUpdateNotificationStateFor \(characteristic.uuid)"
-            debug2(s)
+            debug(s)
             //   tv.text += "\n\(s)"
             //   tv.scrollToBottom()
         }

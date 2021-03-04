@@ -13,7 +13,7 @@ extension CanZeViewController {
         var request = URLRequest(url: URL(string: "\(Globals.shared.deviceHttpAddress)\(s)")!, timeoutInterval: 5)
         request.httpMethod = "GET"
 
-        debug("> \(s)")
+        debug("> '\(s)'")
 
         let task = URLSession.shared.dataTask(with: request) { data, _, error in
             if error != nil {
