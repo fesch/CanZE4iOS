@@ -47,7 +47,7 @@ extension CanZeViewController {
     
     func continueQueueInit() {
         if Globals.shared.queueInit.count > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [self] in
                 Globals.shared.queueInit.remove(at: 0)
                 processQueueInit()
             }

@@ -312,7 +312,11 @@ extension _TestViewController: CBPeripheralDelegate {
                         let s1 = reply.subString(from: i * 16 + 2, to: (i + 1) * 16)
                         finalReply.append(s1)
                     }
-                    reply = finalReply.subString(from: 2)
+                    reply = finalReply
+                }
+
+                if reply != "NO DATA" && reply != "CAN ERROR" && reply != "" && !reply.starts(with: "7F") {
+                    reply = reply.subString(from: 2)
                 }
 
                 let dic: [String: String] = ["reply": reply]

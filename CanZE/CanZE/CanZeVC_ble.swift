@@ -32,7 +32,7 @@ extension CanZeViewController {
         }
         Globals.shared.centralManager = CBCentralManager(delegate: navigationController as? CBCentralManagerDelegate, queue: nil)
     }
-    
+
     func disconnectBle() {
         if Globals.shared.selectedPeripheral != nil, Globals.shared.selectedPeripheral.blePeripheral != nil {
             if Globals.shared.centralManager != nil {
@@ -44,7 +44,7 @@ extension CanZeViewController {
             Globals.shared.selectedWriteCharacteristic = nil
         }
     }
-    
+
     func writeBle(s: String) {
         if Globals.shared.selectedWriteCharacteristic != nil {
             let ss = s.appending("\r")

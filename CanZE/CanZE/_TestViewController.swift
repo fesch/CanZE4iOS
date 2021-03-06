@@ -956,7 +956,7 @@ class _TestViewController: UIViewController {
     
     func continueQueue() {
         // next step, after delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in // Change n to the desired number of seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [self] in // Change n to the desired number of seconds
             if queue.count > 0 {
                 queue.remove(at: 0)
                 processQueue()
@@ -1008,7 +1008,7 @@ class _TestViewController: UIViewController {
     func continueQueue2() {
         // next step, after delay
         indiceCmd += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in // Change n to the desired number of seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [self] in // Change n to the desired number of seconds
             processQueue2()
         }
     }
@@ -1075,12 +1075,12 @@ class _TestViewController: UIViewController {
         } else if reply == "" {
             debug("empty")
         } else if field != nil {
-            if Globals.shared.deviceType == .ELM327 {
-                field?.strVal = decodeIsoTp(elmResponse: reply) // ""
-            } else {
+//            if Globals.shared.deviceType == .ELM327 {
+//                field?.strVal = decodeIsoTp(elmResponse: reply) // ""
+//            } else {
                 // http, cansee
                 field?.strVal = reply
-            }
+//            }
             
             //            print("\(field?.sid ?? "?") \(field?.name ?? "?")")
             //            tv.text += "\n\(field?.sid ?? "?") \(field?.name ?? "?")"

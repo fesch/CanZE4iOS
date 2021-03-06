@@ -216,20 +216,12 @@ extension CanZeViewController {
             }
         } else if Globals.shared.queue2.count > 0 {
             let notificationObject = notification.object as! [String: Any]
-            let reply = notificationObject["reply"] as! String
-            if reply == "", Globals.shared.deviceConnection == .WIFI { // prevent "empty" debug errors for wifi devices ?
-                // do nothing
-            } else {
                 NotificationCenter.default.post(name: Notification.Name("received2"), object: notificationObject)
-            }
+  
         } else {
             let notificationObject = notification.object as! [String: Any]
             let reply = notificationObject["reply"] as! String
-            if reply == "", Globals.shared.deviceConnection == .WIFI {
-                // do nothing
-            } else {
                 debug("< '\(reply)' (\(reply.count))")
-            }
         }
     }
 

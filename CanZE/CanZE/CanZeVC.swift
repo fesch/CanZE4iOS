@@ -8,11 +8,26 @@
 import UIKit
 
 class CanZeViewController: UIViewController {
-  
     override func viewDidLoad() {
         super.viewDidLoad()
         print("CanZeViewController")
 
+        Globals.shared.peripheralsDic = [:]
+
+        loadSettings()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if Globals.shared.deviceIsConnected {
+            deviceConnected()
+        } else {
+            deviceDisconnected()
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(deviceConnected), name: Notification.Name("deviceConnected"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(deviceDisconnected), name: Notification.Name("deviceDisconnected"), object: nil)
@@ -20,32 +35,16 @@ class CanZeViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(received(notification:)), name: Notification.Name("received"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(received2(notification:)), name: Notification.Name("received2"), object: nil)
 
-        Globals.shared.peripheralsDic = [:]
-
-        loadSettings()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if Globals.shared.deviceIsConnected {
-            deviceConnected()
-        } else {
-            deviceDisconnected()
-        }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
         if let vBG = view.viewWithTag(Globals.K_TAG_vBG) {
             vBG.removeFromSuperview()
         }
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         Globals.shared.queue2 = []
         Globals.shared.lastId = 0
-        
+
         if Globals.shared.timeoutTimer != nil {
             if Globals.shared.timeoutTimer.isValid {
                 Globals.shared.timeoutTimer.invalidate()
@@ -68,7 +67,7 @@ class CanZeViewController: UIViewController {
             //            disconnect(showToast: true)
         }
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self, name: Notification.Name("deviceConnected"), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("deviceDisconnected"), object: nil)
@@ -76,10 +75,6 @@ class CanZeViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: Notification.Name("received"), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name("received2"), object: nil)
     }
-
-    
-    
-    
 
     func loadSettings() {
         Globals.shared.car = AppSettings.CAR_NONE

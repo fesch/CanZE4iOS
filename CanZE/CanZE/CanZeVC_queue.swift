@@ -96,7 +96,7 @@ extension CanZeViewController {
  
     func continueQueue2() {
         Globals.shared.indiceCmd += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [self] in
             processQueue2()
         }
     }
