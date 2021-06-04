@@ -52,17 +52,56 @@ class ChargingGraphViewController: CanZeViewController {
 
         //
 
-        graph_PilotPower.text = NSLocalizedString_("graph_PilotPower", comment: "")
+        var s = NSLocalizedString_("graph_PilotPower", comment: "")
+        var s2 = s.components(separatedBy: ",")
+        if s2.count == 2 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2.first!.count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2.first!.count + 1, s2.last!.count))
+            graph_PilotPower.attributedText = mutableString
+        } else {
+            graph_PilotPower.text = s
+        }
         graph_PilotPower1.text = "-"
+        graph_PilotPower1.textColor = .red
         graph_PilotPower2.text = "-"
+        graph_PilotPower2.textColor = .blue
 
-        graph_MaxRealChPwr.text = NSLocalizedString_("graph_MaxRealChPwr", comment: "")
+        s = NSLocalizedString_("graph_MaxRealChPwr", comment: "")
+        s2 = s.components(separatedBy: "/")
+        if s2.count == 2 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2.first!.count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2.first!.count + 1, s2.last!.count))
+            graph_MaxRealChPwr.attributedText = mutableString
+        } else {
+            graph_MaxRealChPwr.text = s
+        }
         graph_MaxRealChPwr1.text = "-"
+        graph_MaxRealChPwr1.textColor = .red
         graph_MaxRealChPwr2.text = "-"
+        graph_MaxRealChPwr2.textColor = .blue
 
-        graph_EnergyTemperature.text = NSLocalizedString_("graph_EnergyTemperature", comment: "")
+        s = NSLocalizedString_("graph_EnergyTemperature", comment: "")
+        s2 = s.components(separatedBy: ",")
+        if s2.count == 2 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2.first!.count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2.first!.count + 1, s2.last!.count))
+            graph_EnergyTemperature.attributedText = mutableString
+        } else {
+            graph_EnergyTemperature.text = s
+        }
         graph_EnergyTemperature1.text = "-"
+        graph_EnergyTemperature1.textColor = .red
         graph_EnergyTemperature2.text = "-"
+        graph_EnergyTemperature2.textColor = .blue
 
         initPilotPowerChart()
         initMaxRealChPwrChart()
@@ -106,7 +145,7 @@ class ChargingGraphViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }
@@ -191,6 +230,8 @@ class ChargingGraphViewController: CanZeViewController {
         let yAxisLeft = pilotPowerView.leftAxis
         yAxisLeft.axisMinimum = 0
         yAxisLeft.axisMaximum = 64
+        yAxisLeft.axisLineWidth = 1.0
+        yAxisLeft.axisLineColor = .red
 
         pilotPowerChartLine1 = LineChartDataSet(entries: pilotPowerChartEntries1, label: nil)
         pilotPowerChartLine1.colors = [.red]
@@ -234,6 +275,8 @@ class ChargingGraphViewController: CanZeViewController {
         let yAxisLeft = maxRealChPwrView.leftAxis
         yAxisLeft.axisMinimum = 0
         yAxisLeft.axisMaximum = 50
+        yAxisLeft.axisLineWidth = 1.0
+        yAxisLeft.axisLineColor = .red
 
         maxRealChPwrChartLine1 = LineChartDataSet(entries: maxRealChPwrChartEntries1, label: nil)
         maxRealChPwrChartLine1.colors = [.red]
@@ -245,9 +288,9 @@ class ChargingGraphViewController: CanZeViewController {
         yAxisRight.axisMaximum = 50
         yAxisRight.axisLineColor = .blue
         yAxisRight.axisLineWidth = 1.0
-        //yAxisRight.gridColor = .blue
-        //yAxisRight.gridLineDashPhase = 1.0
-        //yAxisRight.gridLineDashLengths = [5.0, 2.5]
+        // yAxisRight.gridColor = .blue
+        // yAxisRight.gridLineDashPhase = 1.0
+        // yAxisRight.gridLineDashLengths = [5.0, 2.5]
 
         maxRealChPwrChartLine2 = LineChartDataSet(entries: maxRealChPwrChartEntries2, label: nil)
         maxRealChPwrChartLine2.axisDependency = .right
@@ -274,6 +317,8 @@ class ChargingGraphViewController: CanZeViewController {
         let yAxisLeft = energyTemperatureView.leftAxis
         yAxisLeft.axisMinimum = 0
         yAxisLeft.axisMaximum = 56
+        yAxisLeft.axisLineWidth = 1.0
+        yAxisLeft.axisLineColor = .red
 
         energyTemperatureChartLine1 = LineChartDataSet(entries: energyTemperatureChartEntries1, label: nil)
         // energyTemperatureChartLine1.colors = [.red]

@@ -218,6 +218,9 @@ class CanZeViewController: UIViewController {
 
     func NSLocalizedString_(_ key: String, comment: String) -> String {
         var v = NSLocalizedString(key, comment: "")
+        if v == key {
+            debug("manca traduzione ? \(key)")
+        }
         v = v.replacingOccurrences(of: "u0020", with: " ")
         while v.contains("\\'") {
             v = v.replacingOccurrences(of: "\\'", with: "'")

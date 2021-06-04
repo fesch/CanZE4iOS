@@ -24,7 +24,7 @@ extension CanZeViewController {
             vBG.removeFromSuperview()
         }
         
-        view.makeToast("connected and initialized")
+        view.makeToast(NSLocalizedString_("Connected and initialized", comment: ""))
     }
     
     func processQueueInit() {

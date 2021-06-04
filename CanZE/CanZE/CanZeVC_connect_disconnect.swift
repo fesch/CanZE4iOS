@@ -21,7 +21,7 @@ extension CanZeViewController {
     func connect() {
         if !deviceIsConnectable() {
             view.hideAllToasts()
-            view.makeToast("_please configure")
+            view.makeToast(NSLocalizedString_("Please configure", comment: ""))
             return
         }
 
@@ -69,7 +69,7 @@ extension CanZeViewController {
             s += "unknown\n"
         }
 
-        view.makeToast("_connecting, wait for initialize\n\(s)")
+        view.makeToast(NSLocalizedString_("Connecting, wait for initialize\n\(s)", comment: ""))
 
         if Globals.shared.deviceIsConnected {
             disconnect(showToast: false)
@@ -87,7 +87,7 @@ extension CanZeViewController {
                 vBG.removeFromSuperview()
             }
             view.hideAllToasts()
-            view.makeToast("connected")
+            view.makeToast(NSLocalizedString_("Connected", comment: ""))
             NotificationCenter.default.post(name: Notification.Name("autoInit"), object: nil)
         default:
             break
@@ -106,7 +106,7 @@ extension CanZeViewController {
                 vBG.removeFromSuperview()
             }
             view.hideAllToasts()
-            view.makeToast("connected")
+            view.makeToast(NSLocalizedString_("Connected", comment: ""))
             Globals.shared.deviceIsInitialized = true
             NotificationCenter.default.post(name: Notification.Name("autoInit"), object: nil)
         }
@@ -127,6 +127,7 @@ extension CanZeViewController {
         print("disconnecting")
         Globals.shared.queue2 = []
         Globals.shared.lastId = 0
+        Globals.shared.lastRxString = ""
 
         if Globals.shared.timeoutTimer != nil {
             if Globals.shared.timeoutTimer.isValid {
@@ -150,7 +151,7 @@ extension CanZeViewController {
         if showToast {
             DispatchQueue.main.async { [self] in
                 view.hideAllToasts()
-                view.makeToast("_disconnecting")
+                view.makeToast(NSLocalizedString_("Disconnecting", comment: ""))
             }
         }
         switch Globals.shared.deviceConnection {
@@ -201,6 +202,7 @@ extension CanZeViewController {
 
     func write(s: String) {
         Globals.shared.lastReply = ""
+        Globals.shared.lastRxString = ""
         switch Globals.shared.deviceConnection {
         case .BLE:
             writeBle(s: s)

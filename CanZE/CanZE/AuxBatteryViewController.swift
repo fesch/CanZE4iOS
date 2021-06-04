@@ -62,14 +62,14 @@ class AuxBatteryViewController: CanZeViewController {
         textDcLoad.text = "-"
         label_vehiclestate.text = NSLocalizedString_("label_vehiclestate", comment: "")
         text_vehicle_state.text = "-"
-        label_VoltageUnderLoad.text = NSLocalizedString_("label_VoltageLoad", comment: "")
+        label_VoltageUnderLoad.text = NSLocalizedString_("Voltage under load", comment: "")
         textVoltageUnderLoad.text = "-"
-        label_CurrentUnderLoad.text = NSLocalizedString_("label_CurrentUnderLoad", comment: "")
+        label_CurrentUnderLoad.text = NSLocalizedString_("Current under load", comment: "")
         textCurrentUnderLoad.text = "-"
         label_AuxStatus.text = NSLocalizedString_("label_AuxStatus", comment: "")
         textAuxStatus.text = "-"
 
-        lblGraphTitle.text = "_Voltage, Vehicle state"
+        lblGraphTitle.text = NSLocalizedString_("Voltage, Vehicle state", comment: "")
         lblVoltage.text = "-"
         lblVehicleState.text = "-"
 
@@ -113,7 +113,7 @@ class AuxBatteryViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }

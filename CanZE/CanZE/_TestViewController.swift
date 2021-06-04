@@ -367,26 +367,38 @@ class _TestViewController: UIViewController {
         //            addField(Sid.Counter_Full, intervalMs: 99999) //                   ff
         
         //        for i in 0 ..< 1 {
-        let i = 0
+//        let i = 0
         //            addField("\(Sid.Preamble_KM)\(240 - i * 24)", intervalMs: 6000)
         //            addField("\(Sid.Preamble_END)\(96 - i * 8)", intervalMs: 6000)
         //            addField("\(Sid.Preamble_TYP)\(96 - i * 8)", intervalMs: 6000)
         //            addField("\(Sid.Preamble_SOC)\(168 - i * 16)", intervalMs: 6000)
-        addField("\(Sid.Preamble_TMP)\(96 - i * 8)", intervalMs: 6000) // test multiple reply
+//        addField("\(Sid.Preamble_TMP)\(96 - i * 8)", intervalMs: 6000) // test multiple reply
         //      }
 
-        let ecu = Ecus.getInstance.getByMnemonic("LBC")
-        if ecu != nil {
-            if let frame = getFrame(fromId: ecu!.fromId, responseId: "62f18a") { // systemSupplierIdentifier
-                addFrame(frame: frame)
-            }
-        }
+//        let ecu = Ecus.getInstance.getByMnemonic("LBC")
+//        if ecu != nil {
+//            if let frame = getFrame(fromId: ecu!.fromId, responseId: "62f18a") { // systemSupplierIdentifier
+//                addFrame(frame: frame)
+//            }
+//        }
         
-        addField(Sid.BatterySerial, intervalMs: 99999) // 7bb.6162.16      2ff
+//        addField(Sid.BatterySerial, intervalMs: 99999) // 7bb.6162.16      2ff
 
-        addField(Sid.Total_kWh, intervalMs: 99999) // 7bb.6161.120         1ff
+//        addField(Sid.Total_kWh, intervalMs: 99999) // 7bb.6161.120         1ff
 
-        addField(Sid.Counter_Partial, intervalMs: 99999) //                ff
+//        addField(Sid.Counter_Partial, intervalMs: 99999) //                ff
+        
+       
+        var ecu = Ecus.getInstance.getByMnemonic("FCAM")
+        if let frame = getFrame(fromId: ecu!.fromId, responseId: "62f1a0") { // diagnosticVersion
+            addFrame(frame: frame)
+        }
+        ecu = Ecus.getInstance.getByMnemonic("DCM")
+        if let frame = getFrame(fromId: ecu!.fromId, responseId: "62f18a") { // systemSupplierIdentifier
+            addFrame(frame: frame)
+        }
+
+        
 
         startQueue2()
         
@@ -1078,14 +1090,14 @@ class _TestViewController: UIViewController {
 //            if Globals.shared.deviceType == .ELM327 {
 //                field?.strVal = decodeIsoTp(elmResponse: reply) // ""
 //            } else {
-                // http, cansee
-                field?.strVal = reply
+            // http, cansee
+            field?.strVal = reply
 //            }
             
             //            print("\(field?.sid ?? "?") \(field?.name ?? "?")")
             //            tv.text += "\n\(field?.sid ?? "?") \(field?.name ?? "?")"
             
-            if field!.strVal.hasPrefix("7f") {
+            if field!.strVal.lowercased().hasPrefix("7f") {
                 debug("error 7f")
             } else if field!.strVal == "" {
                 debug("empty")

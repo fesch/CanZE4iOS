@@ -134,7 +134,7 @@ class ChargingHistoryViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }

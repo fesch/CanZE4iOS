@@ -62,7 +62,19 @@ class RangeViewController: CanZeViewController {
 
         lossView.text = "%"
 
-        graph_DistanceEnergy.text = NSLocalizedString_("graph_DistanceEnergy", comment: "")
+        let s = NSLocalizedString_("graph_DistanceEnergy", comment: "")
+        let s2 = s.components(separatedBy: ",")
+        if s2.count == 2 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2.first!.count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2.first!.count + 1, s2.last!.count))
+            graph_DistanceEnergy.attributedText = mutableString
+        } else {
+            graph_DistanceEnergy.text = s
+        }
+
         text_DistanceEnergy1.text = "-"
         text_DistanceEnergy1.textColor = .red
         text_DistanceEnergy2.text = "-"
@@ -118,7 +130,7 @@ class RangeViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }
@@ -127,10 +139,10 @@ class RangeViewController: CanZeViewController {
         Globals.shared.lastId = 0
 
         addField_(Sid.RangeEstimate, intervalMs: 2000)
-        addField_(Sid.AvailableEnergy, intervalMs: 2000)
-        addField_(Sid.AverageConsumption, intervalMs: 2000)
-        addField_(Sid.WorstAverageConsumption, intervalMs: 8000)
-        addField_(Sid.BestAverageConsumption, intervalMs: 8000)
+//        addField_(Sid.AvailableEnergy, intervalMs: 2000)
+//        addField_(Sid.AverageConsumption, intervalMs: 2000)
+//        addField_(Sid.WorstAverageConsumption, intervalMs: 8000)
+//        addField_(Sid.BestAverageConsumption, intervalMs: 8000)
 
         startQueue2()
     }
@@ -198,6 +210,8 @@ class RangeViewController: CanZeViewController {
         let yAxis = distanceEnergyChartView.leftAxis
         yAxis.axisMinimum = 0
         yAxis.axisMaximum = 180
+        yAxis.axisLineColor = .red
+        yAxis.axisLineWidth = 1.0
 
         distanceEnergyLine1 = LineChartDataSet(entries: distanceEnergyEntries1, label: nil)
         distanceEnergyLine1.colors = [.red]
@@ -209,9 +223,9 @@ class RangeViewController: CanZeViewController {
         yAxisRight.axisMaximum = 30
         yAxisRight.axisLineColor = .blue
         yAxisRight.axisLineWidth = 1.0
-        //yAxisRight.gridColor = .blue
-        //yAxisRight.gridLineDashPhase = 1.0
-        //yAxisRight.gridLineDashLengths = [5.0, 2.5]
+        // yAxisRight.gridColor = .blue
+        // yAxisRight.gridLineDashPhase = 1.0
+        // yAxisRight.gridLineDashLengths = [5.0, 2.5]
 
         distanceEnergyLine2 = LineChartDataSet(entries: distanceEnergyEntries2, label: nil)
         distanceEnergyLine2.axisDependency = .right

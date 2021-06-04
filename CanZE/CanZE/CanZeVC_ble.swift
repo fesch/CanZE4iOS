@@ -25,7 +25,7 @@ extension CanZeViewController {
                     self.disconnect(showToast: false)
                     DispatchQueue.main.async { [self] in
                         view.hideAllToasts()
-                        view.makeToast("_can't connect to ble device: TIMEOUT")
+                        view.makeToast(NSLocalizedString_("Can't connect to ble device: TIMEOUT", comment: ""))
                     }
                 }
             })

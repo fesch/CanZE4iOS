@@ -76,19 +76,56 @@ class ConsumptionViewController: CanZeViewController {
         label_InstantConsumption.text = NSLocalizedString_("label_InstantConsumption", comment: "")
         text_instant_consumption_negative.text = "-"
 
-        lblGraphTitle1.text = NSLocalizedString_("graph_PowerSoc", comment: "")
+        var s = NSLocalizedString_("graph_PowerSoc", comment: "")
+        var s2 = s.components(separatedBy: ",")
+        if s2.count == 2 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2.first!.count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2.first!.count + 1, s2.last!.count))
+            lblGraphTitle1.attributedText = mutableString
+        } else {
+            lblGraphTitle1.text = s
+        }
         lblGraphValue1a.text = "-"
-        lblGraphValue1a.textColor = .purple
+        lblGraphValue1a.textColor = .red
         lblGraphValue1b.text = "-"
+        lblGraphValue1b.textColor = .blue
 
-        lblGraphTitle2.text = NSLocalizedString_("graph_SpeedConsumption", comment: "")
+        s = NSLocalizedString_("graph_EnergyTemperature", comment: "")
+        s2 = s.components(separatedBy: ",")
+        if s2.count == 2 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2.first!.count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2.first!.count + 1, s2.last!.count))
+            lblGraphTitle2.attributedText = mutableString
+        } else {
+            lblGraphTitle2.text = s
+        }
         lblGraphValue2a.text = "-"
-        lblGraphValue2a.textColor = UIColor(rgb: 0x008a1d)
+        lblGraphValue2a.textColor = .red
         lblGraphValue2b.text = "-"
+        lblGraphValue2b.textColor = .blue
 
-        lblGraphTitle3.text = NSLocalizedString_("_Delta with reality (km), Range (km)", comment: "")
+        s = NSLocalizedString_("Delta with reality (km), Range (km)", comment: "")
+        s2 = s.components(separatedBy: ",")
+        if s2.count == 2 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2.first!.count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2.first!.count + 1, s2.last!.count))
+            lblGraphTitle3.attributedText = mutableString
+        } else {
+            lblGraphTitle3.text = s
+        }
         lblGraphValue3a.text = "-"
+        lblGraphValue3a.textColor = .red
         lblGraphValue3b.text = "-"
+        lblGraphValue3b.textColor = .blue
 
         initChart1()
         initChart2()
@@ -187,7 +224,7 @@ class ConsumptionViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }
@@ -362,6 +399,8 @@ class ConsumptionViewController: CanZeViewController {
         let yAxisLeft = chartView1.leftAxis
         yAxisLeft.axisMinimum = -30
         yAxisLeft.axisMaximum = 70
+        yAxisLeft.axisLineColor = .red
+        yAxisLeft.axisLineWidth = 1.0
 
         line1a = LineChartDataSet(entries: chartEntries1a, label: nil)
         //        line1.lineWidth = 0
@@ -426,6 +465,8 @@ class ConsumptionViewController: CanZeViewController {
         let yAxisLeft = chartView2.leftAxis
         yAxisLeft.axisMinimum = 0
         yAxisLeft.axisMaximum = 160
+        yAxisLeft.axisLineColor = .red
+        yAxisLeft.axisLineWidth = 1.0
 
         line2a = LineChartDataSet(entries: chartEntries2a, label: nil)
 //        line3.lineWidth = 0
@@ -487,6 +528,8 @@ class ConsumptionViewController: CanZeViewController {
         let yAxisLeft = chartView3.leftAxis
         yAxisLeft.axisMinimum = -12
         yAxisLeft.axisMaximum = 12
+        yAxisLeft.axisLineColor = .red
+        yAxisLeft.axisLineWidth = 1.0
 
         line3a = LineChartDataSet(entries: chartEntries3a, label: nil)
         line3a.drawCirclesEnabled = false

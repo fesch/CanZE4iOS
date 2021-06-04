@@ -187,11 +187,10 @@ extension NavigationController {
             debug(error?.localizedDescription ?? "")
             return
         } else if characteristic.uuid.uuidString == Globals.shared.selectedReadCharacteristic.uuid.uuidString {
-            let s = String(data: characteristic.value!, encoding: .utf8)
-            debug("<< '\(s!)' (\(s!.count))")
-            if s?.last == ">" {
-                Globals.shared.lastRxString += s!
-
+            let s = String(data: characteristic.value!, encoding: .utf8)!
+            debug("<< '\(s)' (\(s.count))")
+            if s.last == ">" || s.last == "\0" || s.last == "\r" || s.last == "\n" {
+                Globals.shared.lastRxString += s
                 var reply = Globals.shared.lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
                 reply = String(reply.filter { !"\n\t\r".contains($0) })
 
@@ -204,20 +203,23 @@ extension NavigationController {
                     reply = finalReply
                 }
 
-                if reply != "NO DATA" && reply != "CAN ERROR" && reply != "" && !reply.starts(with: "7F") {
+                if reply != "NO DATA", reply != "CAN ERROR", reply != "", !reply.lowercased().starts(with: "7F") {
                     reply = reply.subString(from: 2)
                 }
 
-                let dic: [String: String] = ["reply": reply]
-                NotificationCenter.default.post(name: Notification.Name("received"), object: dic)
+                NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
 
                 Globals.shared.lastRxString = ""
 
+            } else if s.count > 4, s.subString(from: 2, to: 4) == "7F" {
+                let reply = s.subString(from: 2)
+                NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
+                Globals.shared.lastRxString = ""
             } else {
-                Globals.shared.lastRxString += s ?? ""
+                Globals.shared.lastRxString += s
             }
         } else {
-            debug("received dati da char sconosciuta \(characteristic.uuid.uuidString)")
+            debug("ricevuto dati da characteristic sconosciuta \(characteristic.uuid.uuidString)")
         }
     }
 
@@ -272,25 +274,30 @@ extension NavigationController {
     }
 
     private func readAvailableBytes(stream: InputStream) {
-        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: Globals.shared.maxReadLength)
+        let maxReadLength = Globals.shared.maxReadLength
+        let inputStream = Globals.shared.inputStream!
+        var lastRxString = Globals.shared.lastRxString
+
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: maxReadLength)
         while stream.hasBytesAvailable {
-            let numberOfBytesRead = Globals.shared.inputStream.read(buffer, maxLength: Globals.shared.maxReadLength)
+            let numberOfBytesRead = inputStream.read(buffer, maxLength: maxReadLength)
             if numberOfBytesRead < 0, let error = stream.streamError {
                 debug(error.localizedDescription)
                 break
             }
             if let s = String(bytesNoCopy: buffer, length: numberOfBytesRead, encoding: .utf8, freeWhenDone: true), s.count > 0 {
                 debug("<< '\(s)' (\(s.count))")
-                Globals.shared.lastRxString += s
-                if Globals.shared.lastRxString.last == ">" || Globals.shared.lastRxString.last == "\0" {
+                if s.last == ">" || s.last == "\0" || s.last == "\r" || s.last == "\n" {
+                    lastRxString += s
+
                     var reply = ""
-                    if Globals.shared.lastRxString.last == "\0" {
+                    if lastRxString.last == "\0" {
                         // cansee
                         let a = s.components(separatedBy: ",")
                         reply = a.last ?? s
                     } else {
                         // elm327
-                        reply = Globals.shared.lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
+                        reply = lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
                         reply = String(reply.filter { !"\n\t\r".contains($0) })
 
                         if reply.subString(to: 1) == "1" { // multi frame
@@ -302,15 +309,20 @@ extension NavigationController {
                             reply = finalReply
                         }
 
-                        if reply != "NO DATA" && reply != "CAN ERROR" && reply != "" && !reply.starts(with: "7F") {
+                        if reply != "NO DATA", reply != "CAN ERROR", reply != "", !reply.lowercased().starts(with: "7F") {
                             reply = reply.subString(from: 2)
                         }
                     }
 
-                    let dic: [String: String] = ["reply": reply]
-                    NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
+                    NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
 
-                    Globals.shared.lastRxString = ""
+                    lastRxString = ""
+                } else if s.count > 4, s.subString(from: 2, to: 4) == "7F" {
+                    let reply = s.subString(from: 2)
+                    NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
+                    lastRxString = ""
+                } else {
+                    lastRxString += s
                 }
             }
         }

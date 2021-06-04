@@ -33,6 +33,9 @@ class SettingsViewController: CanZeViewController {
 
         title = NSLocalizedString_("title_activity_settings", comment: "")
 
+        let b = navigationItem.rightBarButtonItems?.first
+        b?.title = NSLocalizedString_("Test dongle", comment: "")
+
         settingsTableView.delegate = self
         settingsTableView.dataSource = self
 
@@ -100,7 +103,7 @@ class SettingsViewController: CanZeViewController {
         case .ELM327:
             p["deviceType"] = "ELM327"
         case .CANSEE:
-            p["deviceType"] = "_CANSEE"
+            p["deviceType"] = "CANSEE"
         case .HTTP_GW:
             p["deviceType"] = "HTTP_GW"
         default:
@@ -183,9 +186,9 @@ class SettingsViewController: CanZeViewController {
         titolo = NSLocalizedString_("label_Settings_Device", comment: "")
 
         s = Setting(tag: AppSettings.SETTINGS_DEVICE_TYPE, type: .PICKER, title: NSLocalizedString_("label_DeviceType", comment: ""), listTitles: [
-            "ELM327",
-            "CanSee",
-            "Http Gateway",
+            NSLocalizedString_("ELM327", comment: ""),
+            NSLocalizedString_("CANSee", comment: ""),
+            NSLocalizedString_("Http Gateway", comment: ""),
         ], listValues: [
             AppSettings.DEVICE_TYPE.ELM327.rawValue,
             AppSettings.DEVICE_TYPE.CANSEE.rawValue,
@@ -193,10 +196,10 @@ class SettingsViewController: CanZeViewController {
         ], intValue: Globals.shared.deviceType.rawValue)
         settingsArray.append(s)
 
-        s = Setting(tag: AppSettings.SETTINGS_DEVICE_CONNECTION, type: .PICKER, title: "_connection", listTitles: [
-            "_BLE",
-            "_WiFi",
-            "_HTTP",
+        s = Setting(tag: AppSettings.SETTINGS_DEVICE_CONNECTION, type: .PICKER, title: NSLocalizedString_("Connection", comment: ""), listTitles: [
+            NSLocalizedString_("BLE", comment: ""),
+            NSLocalizedString_("WiFi", comment: ""),
+            NSLocalizedString_("HTTP", comment: ""),
         ], listValues: [
             AppSettings.DEVICE_CONNECTION.BLE.rawValue,
             AppSettings.DEVICE_CONNECTION.WIFI.rawValue,
@@ -211,11 +214,11 @@ class SettingsViewController: CanZeViewController {
             }
             s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString_("label_DeviceAddress", comment: ""), stringValue: Globals.shared.deviceWifiAddress, placeholder: placeHolder)
             settingsArray.append(s)
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_PORT, type: .TEXTFIELD, title: "_device port:", stringValue: Globals.shared.deviceWifiPort, placeholder: "35000")
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_WIFI_PORT, type: .TEXTFIELD, title: NSLocalizedString_("Device port", comment: ""), stringValue: Globals.shared.deviceWifiPort, placeholder: "35000")
             settingsArray.append(s)
 
         } else if Globals.shared.deviceConnection == .BLE {
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_BLE_NAME, type: .PICKER, title: "_name", listTitles: [
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_BLE_NAME, type: .PICKER, title: NSLocalizedString_("Name", comment: ""), listTitles: [
                 "Vgate iCar Pro",
                 "LELink",
             ], listValues: [
@@ -225,7 +228,7 @@ class SettingsViewController: CanZeViewController {
             settingsArray.append(s)
 
         } else if Globals.shared.deviceConnection == .HTTP {
-            s = Setting(tag: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS, type: .TEXTFIELD, title: "_http address", stringValue: Globals.shared.deviceHttpAddress)
+            s = Setting(tag: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString_("http address", comment: ""), stringValue: Globals.shared.deviceHttpAddress)
             settingsArray.append(s)
         }
 
@@ -238,12 +241,12 @@ class SettingsViewController: CanZeViewController {
 
         // debug
         settingsArray = []
-        titolo = NSLocalizedString_("label_SdCardLogging", comment: "")
+        titolo = NSLocalizedString_("Logs", comment: "")
 
-        s = Setting(tag: AppSettings.SETTING_LOGGING_USE_SD_CARD, type: .SWITCH, title: NSLocalizedString_("Log to sdcard1", comment: ""), boolValue: Globals.shared.useSdCard)
+        s = Setting(tag: AppSettings.SETTING_LOGGING_USE_SD_CARD, type: .SWITCH, title: NSLocalizedString_("Log to File App", comment: ""), boolValue: Globals.shared.useSdCard)
         settingsArray.append(s)
 
-        s = Setting(tag: AppSettings.SETTING_LOGGING_WRITE_FOR_EMULATOR, type: .SWITCH, title: NSLocalizedString_("Write for emulator", comment: ""), boolValue: Globals.shared.writeForEmulator)
+        s = Setting(tag: AppSettings.SETTING_LOGGING_WRITE_FOR_EMULATOR, type: .SWITCH, title: NSLocalizedString_("Log for emulator", comment: ""), boolValue: Globals.shared.writeForEmulator)
         settingsArray.append(s)
 
         settingsDic["\(settingsDic.count)\(titleSeparator)\(titolo)"] = settingsArray
@@ -267,11 +270,11 @@ class SettingsViewController: CanZeViewController {
 
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             view.hideAllToasts()
-            view.makeToast("_please connect")
+            view.makeToast(NSLocalizedString_("Please connect", comment: ""))
             return
         }
         view.hideAllToasts()
-        view.makeToast("_starting test")
+        view.makeToast(NSLocalizedString_("Starting test", comment: ""))
 
         NotificationCenter.default.addObserver(self, selector: #selector(endDongleTest), name: Notification.Name("endQueue2"), object: nil)
 
@@ -301,13 +304,13 @@ class SettingsViewController: CanZeViewController {
 //            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)", duration: 5.0, position: ToastPosition.center, title: nil, image: nil, style: ToastStyle(), completion: nil)
 //            view.makeToast("\(f1!.name ?? "?") \(v1 ?? 0.0)\n\(f2!.name ?? "?") \(v2!)")
             let msg = "User SoC \(String(format: "%.2f", v1!)) %\nSerial \(v2!)"
-            let ac = UIAlertController(title: "_Test dongle", message: msg, preferredStyle: .alert)
+            let ac = UIAlertController(title: NSLocalizedString_("Test dongle", comment: ""), message: msg, preferredStyle: .alert)
             let ac1 = UIAlertAction(title: NSLocalizedString_("default_Ok", comment: ""), style: .default, handler: nil)
             ac.addAction(ac1)
             present(ac, animated: true, completion: nil)
 
         } else {
-            let ac = UIAlertController(title: "_Test dongle", message: "_Test KO :-(", preferredStyle: .alert)
+            let ac = UIAlertController(title: NSLocalizedString_("Test dongle", comment: ""), message: NSLocalizedString_("Test KO", comment: ""), preferredStyle: .alert)
             let ac1 = UIAlertAction(title: NSLocalizedString_("default_Ok", comment: ""), style: .default, handler: nil)
             ac.addAction(ac1)
             present(ac, animated: true, completion: nil)

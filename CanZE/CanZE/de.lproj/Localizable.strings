@@ -5,6 +5,23 @@
   Created by Jeroen Meijer on 22/12/20.
 */
 
+"format_YMDHMSs" = "yyyyMMddHHmmssSSS";
+"format_YMDHM" = "yyyy-MM-dd HH:mm:ss";
+"format_YMDHMS" = "yyyy-MM-dd-HH-mm-ss";
+"unit_Nm" = "Nm";
+"unit_Km" = "\u0020km";
+"unit_Mi" = "\u0020mi";
+"unit_SpeedKm" = "\u0020km/h";
+"unit_SpeedMi" = "\u0020mi/h";
+"unit_ConsumptionKm" = "\u0020kWh/100km";
+"unit_ConsumptionMiAlt" = "\u0020mi/kWh";
+"unit_Celsius" = "°C";
+"default_Zero" = "0";
+"default_Dash" = "-";
+"default_Slash" = "/";
+"default_DoubleSpace" = "\u0020\u0020";
+"default_NotOk" = "Not OK";
+
 "app_name" = "CanZE";
 "action_settings" = "Einstellungen";
 "default_Yes" = "Ja";
@@ -299,3 +316,50 @@
 "menu_Custom" = "Benutzerdefiniert";
 "button_speedcontrol" = "Durchschn. Geschw.";
 "title_activity_settingscustom" = "Benutzerdefinierte button Einstellungen";
+"label_CarModel" = "Model";
+"label_DistanceUnit" = "Distance unit";
+"label_Kilometers" = "Kilometers";
+"label_Settings_Device" = "Device";
+"label_Info" = "Info";
+
+//
+
+"Please configure" = "Please configure";
+"Please connect" = "Please connect";
+"Connecting, wait for initialize" = "Connecting, wait for initialize";
+"Connected and initialized" = "Connected and initialized";
+"Device not connected" = "Device not connected";
+"Disconnecting" = "Disconnecting";
+"Connected" = "Connected";
+"Can't connect to ble device: TIMEOUT" = "Can't connect to ble device: TIMEOUT";
+"Starting test" = "Starting test";
+"Test dongle" = "Test dongle";
+"Test KO" = "Test KO";
+"TIMEOUT" = "TIMEOUT";
+"Serial" = "Serial";
+"End" = "End";
+
+// settings
+"Connection" = "Connection";
+"Device port" = "Device port";
+"Name" = "Name";
+"http address" = "http address";
+"Logs" = "Logs";
+"Log to File App" = "Log to File App";
+"Log for emulator" = "Log for emulator";
+"BLE" = "BLE";
+"WiFi" = "WiFi";
+"HTTP" = "HTTP";
+"ELM327" = "ELM327";
+"CANSee" = "CANSee";
+"Http Gateway" = "Http Gateway";
+
+// consumption
+"Delta with reality (km), Range (km)" = "Delta with reality (km), Range (km)";
+
+// aux battery
+"Voltage, Vehicle state" = "Voltage, Vehicle state";
+"Voltage under load" = "Voltage under load";
+"Current under load" = "Current under load";
+
+"prompt_DisclaimerText" = "<html>CanZE (“the software”) is provided as is. Use the software at your own risk. The authors make no warranties as to performance or fitness for a particular purpose, or any other warranties whether expressed or implied. No oral or written communication from or information provided by the authors shall create a warranty. Under no circumstances shall the authors be liable for direct, indirect, special, incidental, or consequential damages resulting from the use, misuse, or inability to use the software, even if the author has been advised of the possibility of such damages. These exclusions and limitations may not apply in all jurisdictions. You may have additional rights and some of these limitations may not apply to you. This software is only intended for scientific usage.<br><br><b>By using this software you are interfering with your car and doing that with hardware and software beyond your control, created by a loose team of interested amateurs in this field. Any car is a possibly lethal piece of machinery and you might hurt or kill yourself or others using it, or even paying attention to the displays instead of watching the road.</b></html></string>";

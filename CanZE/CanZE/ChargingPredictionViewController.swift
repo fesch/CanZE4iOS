@@ -13,10 +13,15 @@ class ChargingPredictionViewController: CanZeViewController {
     //
 
     @IBOutlet var label_ChargingPrediction: UILabel!
+
     @IBOutlet var label_Duration: UILabel!
     @IBOutlet var label_Soc: UILabel!
     @IBOutlet var label_Range: UILabel!
     @IBOutlet var label_DcPower: UILabel!
+    @IBOutlet var label_Duration_: UILabel!
+    @IBOutlet var label_Soc_: UILabel!
+    @IBOutlet var label_Range_: UILabel!
+    @IBOutlet var label_DcPower_: UILabel!
 
     @IBOutlet var HeaderDC: UILabel!
     @IBOutlet var label_BatteryTemperature: UILabel!
@@ -54,10 +59,11 @@ class ChargingPredictionViewController: CanZeViewController {
         ///
 
         label_ChargingPrediction.text = NSLocalizedString_("label_ChargingPrediction", comment: "")
-        label_Duration.text = NSLocalizedString_("label_Duration", comment: "")
-        label_Soc.text = NSLocalizedString_("label_Soc", comment: "")
-        label_Range.text = NSLocalizedString_("label_Range", comment: "")
-        label_DcPower.text = NSLocalizedString_("label_DcPower", comment: "")
+
+        label_Duration_.text = NSLocalizedString_("label_Duration", comment: "")
+        label_Soc_.text = NSLocalizedString_("label_Soc", comment: "")
+        label_Range_.text = NSLocalizedString_("label_Range", comment: "")
+        label_DcPower_.text = NSLocalizedString_("label_DcPower", comment: "")
 
         HeaderDC.text = NSLocalizedString_("label_StateAtThisMoment", comment: "")
         label_BatteryTemperature.text = NSLocalizedString_("label_BatteryTemperature", comment: "")
@@ -121,7 +127,7 @@ class ChargingPredictionViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }
@@ -280,10 +286,10 @@ class ChargingPredictionViewController: CanZeViewController {
     }
 
     func updatePrediction() {
-        var tim = "\(NSLocalizedString_("label_Duration", comment: ""))\n"
-        var soc = "\(NSLocalizedString_("label_Soc", comment: ""))\n"
-        var ran = "\(NSLocalizedString_("label_Range", comment: ""))\n"
-        var pow = "\(NSLocalizedString_("label_DcPower", comment: ""))\n"
+        var tim = ""
+        var soc = ""
+        var ran = ""
+        var pow = ""
 
         for t in 0 ..< 10 {
             tim.append("\(tim_[t])\n")

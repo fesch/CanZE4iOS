@@ -347,3 +347,43 @@
 "hello_blank_fragment" = "Hello blank fragment";
 "menu_Custom" = "Custom";
 "title_activity_ZE50Test" = "ZE50 test";
+
+//
+
+"Please configure" = "Please configure";
+"Please connect" = "Please connect";
+"Connecting, wait for initialize" = "Connecting, wait for initialize";
+"Connected and initialized" = "Connected and initialized";
+"Device not connected" = "Device not connected";
+"Disconnecting" = "Disconnecting";
+"Connected" = "Connected";
+"Can't connect to ble device: TIMEOUT" = "Can't connect to ble device: TIMEOUT";
+"Starting test" = "Starting test";
+"Test dongle" = "Test dongle";
+"Test KO" = "Test KO";
+"TIMEOUT" = "TIMEOUT";
+"Serial" = "Serial";
+"End" = "End";
+
+// settings
+"Connection" = "Connection";
+"Device port" = "Device port";
+"Name" = "Name";
+"http address" = "http address";
+"Logs" = "Logs";
+"Log to File App" = "Log to File App";
+"Log for emulator" = "Log for emulator";
+"BLE" = "BLE";
+"WiFi" = "WiFi";
+"HTTP" = "HTTP";
+"ELM327" = "ELM327";
+"CANSee" = "CANSee";
+"Http Gateway" = "Http Gateway";
+
+// consumption
+"Delta with reality (km), Range (km)" = "Delta with reality (km), Range (km)";
+
+// aux battery
+"Voltage, Vehicle state" = "Voltage, Vehicle state";
+"Voltage under load" = "Voltage under load";
+"Current under load" = "Current under load";

@@ -15,7 +15,7 @@ extension _TestViewController {
 
         if Globals.shared.deviceWifiAddress == "" || Globals.shared.deviceWifiPort == "" {
             view.hideAllToasts()
-            view.makeToast("_Please configure")
+            view.makeToast(NSLocalizedString("Please configure", comment: ""))
             return
         }
 
@@ -178,8 +178,9 @@ extension _TestViewController: StreamDelegate {
             }
             if let s = String(bytesNoCopy: buffer, length: numberOfBytesRead, encoding: .utf8, freeWhenDone: true), s.count > 0 {
                 debug("<< '\(s)' (\(s.count))")
-                lastRxString += s
-                if lastRxString.last == ">" || lastRxString.last == "\0" {
+                if s.last == ">" || s.last == "\0" || s.last == "\r" || s.last == "\n" {
+                    lastRxString += s
+
                     var reply = ""
                     if lastRxString.last == "\0" {
                         // cansee
@@ -199,15 +200,20 @@ extension _TestViewController: StreamDelegate {
                             reply = finalReply
                         }
 
-                        if reply != "NO DATA" && reply != "CAN ERROR" && reply != "" && !reply.starts(with: "7F") {
+                        if reply != "NO DATA", reply != "CAN ERROR", reply != "", !reply.lowercased().starts(with: "7F") {
                             reply = reply.subString(from: 2)
                         }
                     }
 
-                    let dic: [String: String] = ["reply": reply]
-                    NotificationCenter.default.post(name: Notification.Name("didReceiveFromWifiDongle"), object: dic)
+                    NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
 
                     lastRxString = ""
+                } else if s.count > 4, s.subString(from: 2, to: 4) == "7F" {
+                    let reply = s.subString(from: 2)
+                    NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
+                    lastRxString = ""
+                } else {
+                    lastRxString += s
                 }
             }
         }

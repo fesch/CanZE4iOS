@@ -87,20 +87,49 @@ class ClimateViewController: CanZeViewController {
         label_ClimaLoopMode.text = NSLocalizedString_("label_ClimaLoopMode", comment: "")
         text_CLM.text = "-"
 
-        label_IH_ClimCompPWRStatus.text = NSLocalizedString_("label_IH_ClimCompPWRStatus", comment: "")
+        var s = NSLocalizedString_("label_IH_ClimCompPWRStatus", comment: "")
+        var s2 = s.components(separatedBy: ",")
+        if s2.count == 2 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2[0].count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2[0].count + 1, s2[1].count))
+            label_IH_ClimCompPWRStatus.attributedText = mutableString
+        } else {
+            label_IH_ClimCompPWRStatus.text = s
+        }
         label_IH_ClimCompPWRStatus1.text = "-"
+        label_IH_ClimCompPWRStatus1.textColor = .red
         label_IH_ClimCompPWRStatus2.text = "-"
+        label_IH_ClimCompPWRStatus2.textColor = .blue
 
         label_Temperatures.text = NSLocalizedString_("label_Temperatures", comment: "")
-        graph_Climatech.text = NSLocalizedString_("graph_Climatech", comment: "")
+
+        s = NSLocalizedString_("graph_Climatech", comment: "")
+        s2 = s.components(separatedBy: ",")
+        if s2.count == 4 {
+            let red = [NSAttributedString.Key.foregroundColor: UIColor.red]
+            let blue = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+            let green = [NSAttributedString.Key.foregroundColor: UIColor.green]
+            let brown = [NSAttributedString.Key.foregroundColor: UIColor.brown]
+            let mutableString = NSMutableAttributedString(string: s, attributes: nil)
+            mutableString.addAttributes(red, range: NSMakeRange(0, s2[0].count))
+            mutableString.addAttributes(blue, range: NSMakeRange(s2[0].count + 1, s2[1].count))
+            mutableString.addAttributes(green, range: NSMakeRange(s2[0].count + 1 + s2[1].count + 1, s2[2].count))
+            mutableString.addAttributes(brown, range: NSMakeRange(s2[0].count + 1 + s2[1].count + 1 + s2[2].count + 1, s2[3].count))
+            graph_Climatech.attributedText = mutableString
+        } else {
+            graph_Climatech.text = s
+        }
         graph_Climatech1.text = "-"
         graph_Climatech1.textColor = .red
         graph_Climatech2.text = "-"
-        graph_Climatech1.textColor = .blue
+        graph_Climatech2.textColor = .blue
         graph_Climatech3.text = "-"
-        graph_Climatech1.textColor = .green
+        graph_Climatech3.textColor = .green
         graph_Climatech4.text = "-"
-        graph_Climatech1.textColor = .brown
+        graph_Climatech4.textColor = .brown
 
         initCompChart()
         initTempChart()
@@ -143,7 +172,7 @@ class ClimateViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }
@@ -290,6 +319,8 @@ class ClimateViewController: CanZeViewController {
         let yAxis = compChartView.leftAxis
         yAxis.axisMinimum = 0
         yAxis.axisMaximum = 7000
+        yAxis.axisLineWidth = 1.0
+        yAxis.axisLineColor = .red
 
         compChartLine1 = LineChartDataSet(entries: compChartEntries1, label: nil)
         compChartLine1.colors = [.red]
@@ -301,6 +332,8 @@ class ClimateViewController: CanZeViewController {
         yAxisRight.axisMaximum = 1
         yAxisRight.granularity = 1
         yAxisRight.valueFormatter = IntFormatter()
+        yAxisRight.axisLineWidth = 1.0
+        yAxisRight.axisLineColor = .blue
 
         compChartLine2 = LineChartDataSet(entries: compChartEntries2, label: nil)
         compChartLine2.axisDependency = .right
@@ -330,6 +363,8 @@ class ClimateViewController: CanZeViewController {
         // yAxis.drawLabelsEnabled = true
         yAxis.axisMinimum = -10
         yAxis.axisMaximum = 40
+        yAxis.axisLineWidth = 1.0
+        yAxis.axisLineColor = .black
 
         tempChartLine1 = LineChartDataSet(entries: tempChartEntries1, label: nil)
         tempChartLine1.drawCirclesEnabled = false

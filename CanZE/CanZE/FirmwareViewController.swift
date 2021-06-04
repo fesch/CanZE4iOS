@@ -135,7 +135,7 @@ class FirmwareViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }
@@ -147,7 +147,7 @@ class FirmwareViewController: CanZeViewController {
             if let v = view.viewWithTag(Globals.K_TAG_vBG) {
                 v.removeFromSuperview()
             }
-            view.makeToast("_end")
+            view.makeToast(NSLocalizedString_("End", comment: ""))
             multi = false
         }
     }
@@ -267,8 +267,6 @@ class FirmwareViewController: CanZeViewController {
     }
 
     @IBAction func btnDownload() {
-        // TODO:
-
         logger = AllFirmwaresLogger()
         logger.add("ECU, Version Type, Version data")
 
@@ -280,7 +278,7 @@ class FirmwareViewController: CanZeViewController {
 
         for ecu in arrayEcu {
             // see if we need to stop right now
-            keepAlive()
+            // keepAlive()   // disabled for test
             if ecu.sessionRequired {
                 if let frame = getFrame(fromId: ecu.fromId, responseId: ecu.startDiag) { // open the ecu, as the poller is stopped
                     queryFrame(frame)

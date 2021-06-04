@@ -72,7 +72,7 @@ extension CanZeViewController {
                 DispatchQueue.main.async { [self] in
                     disconnect(showToast: false)
                     view.hideAllToasts()
-                    view.makeToast("TIMEOUT")
+                    view.makeToast(NSLocalizedString_("TIMEOUT", comment: ""))
                 }
                 Globals.shared.deviceIsConnected = false
                 deviceDisconnected()

@@ -67,7 +67,7 @@ class BatteryViewController: CanZeViewController {
         lblGraph_CellVoltages_title.text = NSLocalizedString_("graph_CellVoltages", comment: "")
         lblGraph_ModuleTemperatures_title.text = NSLocalizedString_("graph_ModuleTemperatures", comment: "")
 
-        lblBatterySerial.text = "Serial:"
+        lblBatterySerial.text = "\(NSLocalizedString_("Serial", comment: "")):"
 
         initSocChart()
         initVoltChart()
@@ -146,7 +146,7 @@ class BatteryViewController: CanZeViewController {
     override func startQueue() {
         if !Globals.shared.deviceIsConnected || !Globals.shared.deviceIsInitialized {
             DispatchQueue.main.async { [self] in
-                view.makeToast("_device not connected")
+                view.makeToast(NSLocalizedString_("Device not connected", comment: ""))
             }
             return
         }
@@ -217,7 +217,7 @@ class BatteryViewController: CanZeViewController {
                 }
             case Sid.BatterySerial:
                 if strVal != nil {
-                    lblBatterySerial.text = "Serial: \(strVal!)"
+                    lblBatterySerial.text = "\(NSLocalizedString_("Serial", comment: "")): \(strVal!)"
                 }
             default:
                 if let f = Fields.getInstance.fieldsBySid[sid!] {

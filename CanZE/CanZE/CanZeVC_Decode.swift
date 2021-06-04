@@ -216,12 +216,12 @@ extension CanZeViewController {
             }
         } else if Globals.shared.queue2.count > 0 {
             let notificationObject = notification.object as! [String: Any]
-                NotificationCenter.default.post(name: Notification.Name("received2"), object: notificationObject)
-  
+            NotificationCenter.default.post(name: Notification.Name("received2"), object: notificationObject)
+
         } else {
             let notificationObject = notification.object as! [String: Any]
             let reply = notificationObject["reply"] as! String
-                debug("< '\(reply)' (\(reply.count))")
+            debug("< '\(reply)' (\(reply.count))")
         }
     }
 
@@ -249,7 +249,10 @@ extension CanZeViewController {
                             debug(error)
                         } else if reply == "OK" {
                             // do nothing
-                        } else if reply == "NO DATA" {
+                        } else if reply.lowercased().hasPrefix("7f") {
+                            error = "ERROR 7F"
+                            debug(error)
+                        } else if reply == "NO DATA" || reply == "STOPPED" {
                             error = reply
                             debug(error)
                         } else if reply == "" {
@@ -262,7 +265,7 @@ extension CanZeViewController {
 //                            if Globals.shared.deviceType == .ELM327 {
 //                                field.strVal = decodeIsoTp(reply)
 //                            } else { // http, cansee
-                                field.strVal = reply
+                            field.strVal = reply
 //                            }
                             let binString = getAsBinaryString(data: field.strVal)
                             debug("\(binString) (\(binString.count))")
@@ -308,10 +311,11 @@ extension CanZeViewController {
                         if reply.contains("ERROR") {
                             error = "ERROR"
                             debug(error)
-                        } else if reply == "OK" {
-                            // do nothing
-                        } else if reply == "NO DATA" {
+                        } else if reply == "NO DATA" || reply == "STOPPED" {
                             error = reply
+                            debug(error)
+                        } else if reply.lowercased().hasPrefix("7f") {
+                            error = "ERROR 7F"
                             debug(error)
                         } else if reply == "" {
                             error = "EMPTY"
@@ -319,329 +323,313 @@ extension CanZeViewController {
                         } else if reply.contains("not found") { // http
                             error = "NOT FOUND"
                             debug(error)
+                        } else if reply == "OK" {
+                            // do nothing
                         } else {
-//                            if Globals.shared.deviceType == .ELM327 {
-//                                field.strVal = decodeIsoTp(reply) // ""
-//                            } else { // http, cansee
-                                field.strVal = reply
-//                            }
-                            if field.strVal.hasPrefix("7f") {
-                                error = "ERROR 7F"
-                                debug(error)
-                            } else if field.strVal == "" {
-                                error = "EMPTY"
-                                debug(error)
-                            } else if field.strVal.contains("not found"), !field.virtual {
-                                error = "NOT FOUND"
-                                debug(error)
-                            } else {
-                                let binString = getAsBinaryString(data: field.strVal)
-                                debug("\(binString) (\(binString.count))")
+                            field.strVal = reply
+                            let binString = getAsBinaryString(data: field.strVal)
+                            debug("\(binString) (\(binString.count))")
 
-                                for f in field.frame.getAllFields() {
-                                    onMessageCompleteEventField(binString_: binString, field: f)
+                            for f in field.frame.getAllFields() {
+                                onMessageCompleteEventField(binString_: binString, field: f)
 
-                                    if f.isString() || f.isHexString() {
-                                        //                            debug( "\(field!.strVal)")
-                                        Globals.shared.fieldResultsString[f.sid] = f.strVal
-                                        Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: nil, stringValue: f.strVal)
-                                    } else if sid == Sid.BatterySerial, f.strVal.count > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
-                                        f.strVal = f.strVal.subString(from: f.strVal.count - 6)
-                                        f.strVal = "F" + f.strVal
-                                        Globals.shared.fieldResultsString[f.sid] = f.strVal
-                                        Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: nil, stringValue: f.strVal)
-                                        //                            debug( "\(field!.strVal)")
-                                    } else {
-                                        //                            debug( "\(field?.name ?? "?") \(String(format: "%.\(field!.decimals!)f", field!.getValue()))\n")
-                                        Globals.shared.fieldResultsDouble[f.sid] = f.getValue()
-                                        Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: f.getValue(), stringValue: nil)
+                                if f.isString() || f.isHexString() {
+                                    Globals.shared.fieldResultsString[f.sid] = f.strVal
+                                    Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: nil, stringValue: f.strVal)
+                                } else if sid == Sid.BatterySerial, f.strVal.count > 6, Globals.shared.car == AppSettings.CAR_ZOE_Q210 {
+                                    f.strVal = f.strVal.subString(from: f.strVal.count - 6)
+                                    f.strVal = "F" + f.strVal
+                                    Globals.shared.fieldResultsString[f.sid] = f.strVal
+                                    Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: nil, stringValue: f.strVal)
+                                } else {
+                                    Globals.shared.fieldResultsDouble[f.sid] = f.getValue()
+                                    Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: f.getValue(), stringValue: nil)
+                                }
+
+                                let debugMessage = "Debug \(f.sid ?? "?") \(error) \(f.isString() ? f.strVal : String(format: "%.2f", f.getValue()))"
+                                if debugMessage != Globals.shared.lastDebugMessage {
+                                    let dic = ["debug": debugMessage]
+                                    Globals.shared.lastDebugMessage = debugMessage
+                                    NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
+                                }
+                                if error == "ok" {
+                                    if Globals.shared.writeForEmulator {
+                                        let key = "\(f.frame.getFromIdHex()).\(f.frame.responseId!)"
+                                        if !Globals.shared.sidFatti.contains(key) {
+                                            Globals.shared.loggerEmulator.add("case \"\(key)\": // \(f.name ?? "")")
+                                            Globals.shared.loggerEmulator.add("$RES = \"\(reply)\";")
+                                            Globals.shared.loggerEmulator.add("break;")
+                                            Globals.shared.sidFatti.append(key)
+                                        }
+                                    }
+                                }
+
+                                // notify real field
+                                // var notificationObject = notification.object as! [String: String]
+                                // notificationObject["sid"] = f.sid
+                                // NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
+
+                                if seq.sidVirtual != nil {
+                                    var result = Double.nan
+                                    switch seq.sidVirtual {
+                                    case Sid.Instant_Consumption: // 800.6100.24
+                                        // get real speed
+                                        if let realSpeed = Globals.shared.fieldResultsDouble[Sid.RealSpeed] {
+                                            if realSpeed < 0 || realSpeed > 150 {
+                                                break
+                                            }
+                                            if realSpeed < 5 {
+                                                result = 0
+                                                break
+                                            }
+                                            // get voltage
+                                            if let dcVolt = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] {
+                                                // get current
+                                                if let dcCur = Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] {
+                                                    if dcVolt < 300 || dcVolt > 450 || dcCur < -200 || dcCur > 100 {
+                                                        break
+                                                    }
+                                                    // power in kW
+                                                    let dcPwr = dcVolt * dcCur / 1000.0
+                                                    let usage = -(round(1000.0 * dcPwr / realSpeed) / 10.0)
+                                                    if usage < -150 {
+                                                        result = -150
+                                                    } else if usage > 150 {
+                                                        result = 150
+                                                    } else {
+                                                        result = usage
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    case Sid.FrictionTorque:
+                                        if let val = Globals.shared.fieldResultsDouble[Sid.HydraulicTorqueRequest] {
+                                            result = -val
+                                        }
+                                    case Sid.DcPowerIn:
+                                        if Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
+                                            result = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]! * Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
+                                        }
+                                    case Sid.DcPowerOut:
+                                        if Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
+                                            result = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]! * Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
+                                        }
+                                    case Sid.ElecBrakeTorque:
+                                        if Globals.shared.useIsoTpFields || Utils.isPh2() {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
+                                                let electricTorque = val * Globals.reduction
+                                                result = electricTorque <= 0 ? -electricTorque : 0
+                                            }
+                                        } else {
+                                            if let val1 = Globals.shared.fieldResultsDouble[Sid.ElecBrakeWheelsTorqueApplied] {
+                                                let electricTorque = val1
+                                                if let val2 = Globals.shared.fieldResultsDouble[Sid.Coasting_Torque] {
+                                                    result = electricTorque + val2 * Globals.reduction
+                                                }
+                                            }
+                                        }
+                                    case Sid.TotalPositiveTorque:
+                                        if Globals.shared.useIsoTpFields || Utils.isPh2() {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
+                                                result = val >= 0 ? val * Globals.reduction : 0
+                                            }
+                                        } else {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.MeanEffectiveTorque] {
+                                                result = val * Globals.reduction
+                                            }
+                                        }
+                                    case Sid.TotalNegativeTorque:
+                                        if Globals.shared.useIsoTpFields || Utils.isPh2() {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.HydraulicTorqueRequest] {
+                                                let hydraulicTorqueRequest = val
+                                                if let val2 = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
+                                                    let pebTorque = val2
+                                                    result = pebTorque <= 0 ? -hydraulicTorqueRequest - pebTorque * Globals.reduction : -hydraulicTorqueRequest
+                                                }
+                                            }
+                                        } else {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.DriverBrakeWheel_Torque_Request] {
+                                                result = val
+                                            }
+                                        }
+                                    case Sid.ACPilot:
+                                        if Globals.shared.useIsoTpFields || Utils.isPh2() {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.ACPilotDutyCycle] {
+                                                let dutyCycle = val
+                                                result = dutyCycle < 80.0 ? dutyCycle * 0.6 : (dutyCycle - 64.0) * 2.5
+                                            }
+                                        } else {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.ACPilotAmps] {
+                                                result = val
+                                            }
+                                        }
+                                    case "800.6104.24": //  SID_VirtualUsage
+                                        let SID_VirtualUsage = "800.6100.24"
+                                        if let value = Globals.shared.fieldResultsDouble[SID_VirtualUsage] {
+                                            // if !value.isNaN {
+                                            let now = Date().timeIntervalSince1970
+                                            var since = now - Fields.getInstance.start
+                                            if since > 1000 {
+                                                since = 1000 // use a maximim of 1 second
+                                            }
+                                            Fields.getInstance.start = now
+                                            let factor = since * 0.00005 // 0.05 per second
+                                            Fields.getInstance.runningUsage = Fields.getInstance.runningUsage * (1 - factor) + value * factor
+                                            // }
+                                            result = Fields.getInstance.runningUsage
+                                        }
+                                    case "800.6102.24": // FrictionPower
+                                        let SID_DriverBrakeWheel_Torque_Request = "130.44" // UBP braking wheel torque the driver wants
+                                        let SID_ElecBrakeWheelsTorqueApplied = "1f8.28" // 10ms
+                                        let SID_ElecEngineRPM = "1f8.40" // 10ms
+                                        if let val = Globals.shared.fieldResultsDouble[SID_DriverBrakeWheel_Torque_Request] {
+                                            var torque = val
+                                            if let val2 = Globals.shared.fieldResultsDouble[SID_ElecBrakeWheelsTorqueApplied] {
+                                                torque -= val2
+                                                if let val3 = Globals.shared.fieldResultsDouble[SID_ElecEngineRPM] {
+                                                    result = torque * val3 / Globals.reduction
+                                                }
+                                            }
+                                        }
+                                    case "800.6105.24": // HeaterSetpoint
+                                        if Utils.isPh2() {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.OH_ClimTempDisplay] {
+                                                if val == 0 {
+                                                } else if val == 4 {
+                                                    result = -10.0
+                                                } else if val == 5 {
+                                                    result = 40.0
+                                                }
+                                                result = val
+                                            }
+                                        } else if Globals.shared.useIsoTpFields {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.OH_ClimTempDisplay] {
+                                                let value = val / 2
+                                                if value == 0 {
+                                                } else if value == 4 {
+                                                    result = -10.0
+                                                } else if value == 5 {
+                                                    result = 40.0
+                                                }
+                                                result = value
+                                            }
+                                        } else {
+                                            if let val = Globals.shared.fieldResultsDouble[Sid.HeaterSetpoint] {
+                                                if val == 0 {
+                                                } else if val == 4 {
+                                                    result = -10.0
+                                                } else if val == 5 {
+                                                    result = 40.0
+                                                }
+                                                result = val
+                                            }
+                                        }
+                                    case "800.6106.24": // RealRange
+                                        if let odo = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
+                                            if let gom = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
+                                                // timestamp of last inserted dot in MILLISECONDS
+                                                if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
+                                                    if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference.isNaN { // timeout of 15 minutes
+                                                        if !gom.isNaN && !odo.isNaN {
+                                                            Fields.getInstance.realRangeReference = odo + gom
+                                                            Fields.getInstance.realRangeReference2 = odo + gom
+                                                        }
+                                                    }
+                                                }
+                                                if Fields.getInstance.realRangeReference.isNaN {
+                                                    result = 0.0 // Double.NaN
+                                                }
+                                                /*
+                                                 double delta = realRangeReference - odo - gom;
+                                                 if (delta > 12.0 || delta < -12.0) {
+                                                 realRangeReference = odo + gom;
+                                                 } */
+                                                result = Fields.getInstance.realRangeReference - odo
+                                            }
+                                        }
+                                    case "800.6107.24": // RealDelta
+                                        if let val1 = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
+                                            let odo = val1
+                                            if let val2 = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
+                                                let gom = val2
+                                                // MainActivity.debug("realRange ODO: "+odo);
+                                                // MainActivity.debug("realRange GOM: "+gom);
+                                                // timestamp of last inserted dot in MILLISECONDS
+                                                if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
+                                                    if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference.isNaN { // timeout of 15 minutes
+                                                        if !gom.isNaN && !odo.isNaN {
+                                                            Fields.getInstance.realRangeReference = odo + gom
+                                                        }
+                                                    }
+                                                    if Fields.getInstance.realRangeReference.isNaN {
+                                                        // return Double.NaN;
+                                                        break
+                                                    }
+                                                    var delta = Fields.getInstance.realRangeReference - odo - gom
+                                                    if delta > 12.0 || delta < -12.0 {
+                                                        Fields.getInstance.realRangeReference = odo + gom
+                                                        delta = 0.0
+                                                    }
+                                                    result = delta
+                                                }
+                                            }
+                                        }
+                                    case "800.6108.24": // RealDeltaNoReset
+                                        if let odo = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
+                                            if let gom = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
+                                                // MainActivity.debug("realRange ODO: "+odo);
+                                                // MainActivity.debug("realRange GOM: "+gom);
+
+                                                // timestamp of last inserted dot in MILLISECONDS
+                                                if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
+                                                    if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference2.isNaN { // timeout of 15 minutes
+                                                        if !gom.isNaN && !odo.isNaN {
+                                                            Fields.getInstance.realRangeReference2 = odo + gom
+                                                        }
+                                                    }
+                                                    if Fields.getInstance.realRangeReference2.isNaN {
+                                                        //                                             return Double.NaN;
+                                                        break
+                                                    }
+                                                    var delta = Fields.getInstance.realRangeReference2 - odo - gom
+                                                    if delta > 500.0 || delta < -500.0 {
+                                                        Fields.getInstance.realRangeReference2 = odo + gom
+                                                        delta = 0.0
+                                                    }
+                                                    result = delta
+                                                }
+                                            }
+                                        }
+                                    default:
+                                        print("unknown virtual sid \(seq.sidVirtual!)")
                                     }
 
+                                    if result != Double.nan {
+                                        Globals.shared.fieldResultsDouble[seq.sidVirtual!] = result
+                                        Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: f.getValue(), stringValue: nil)
+                                    }
                                     let debugMessage = "Debug \(f.sid ?? "?") \(error) \(f.isString() ? f.strVal : String(format: "%.2f", f.getValue()))"
                                     if debugMessage != Globals.shared.lastDebugMessage {
                                         let dic = ["debug": debugMessage]
                                         Globals.shared.lastDebugMessage = debugMessage
                                         NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
                                     }
-                                    if error == "ok" {
-                                        if Globals.shared.writeForEmulator {
-                                            let key = "\(f.frame.getFromIdHex()).\(f.frame.responseId!)"
-                                            if !Globals.shared.sidFatti.contains(key) {
-                                                Globals.shared.loggerEmulator.add("case \"\(key)\": // \(f.name ?? "")")
-                                                Globals.shared.loggerEmulator.add("$RES = \"\(reply)\";")
-                                                Globals.shared.loggerEmulator.add("break;")
-                                                Globals.shared.sidFatti.append(key)
-                                            }
-                                        }
-                                    }
 
                                     // notify real field
-                                    // var notificationObject = notification.object as! [String: String]
-                                    // notificationObject["sid"] = f.sid
-                                    // NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
+                                    var notificationObject = notification.object as! [String: String]
+                                    notificationObject["sid"] = f.sid
+                                    NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
 
+                                    // notify virtual
                                     if seq.sidVirtual != nil {
-                                        var result = Double.nan
-                                        switch seq.sidVirtual {
-                                        case Sid.Instant_Consumption: // 800.6100.24
-                                            // get real speed
-                                            if let realSpeed = Globals.shared.fieldResultsDouble[Sid.RealSpeed] {
-                                                if realSpeed < 0 || realSpeed > 150 {
-                                                    break
-                                                }
-                                                if realSpeed < 5 {
-                                                    result = 0
-                                                    break
-                                                }
-                                                // get voltage
-                                                if let dcVolt = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] {
-                                                    // get current
-                                                    if let dcCur = Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] {
-                                                        if dcVolt < 300 || dcVolt > 450 || dcCur < -200 || dcCur > 100 {
-                                                            break
-                                                        }
-                                                        // power in kW
-                                                        let dcPwr = dcVolt * dcCur / 1000.0
-                                                        let usage = -(round(1000.0 * dcPwr / realSpeed) / 10.0)
-                                                        if usage < -150 {
-                                                            result = -150
-                                                        } else if usage > 150 {
-                                                            result = 150
-                                                        } else {
-                                                            result = usage
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        case Sid.FrictionTorque:
-                                            if let val = Globals.shared.fieldResultsDouble[Sid.HydraulicTorqueRequest] {
-                                                result = -val
-                                            }
-                                        case Sid.DcPowerIn:
-                                            if Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]!.isNaN, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
-                                                result = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]! * Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]! / 1000.0
-                                            }
-                                        case Sid.DcPowerOut:
-                                            if Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage] != nil, Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent] != nil, !Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]!.isNaN {
-                                                result = Globals.shared.fieldResultsDouble[Sid.TractionBatteryVoltage]! * Globals.shared.fieldResultsDouble[Sid.TractionBatteryCurrent]! / -1000.0
-                                            }
-                                        case Sid.ElecBrakeTorque:
-                                            if Globals.shared.useIsoTpFields || Utils.isPh2() {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
-                                                    let electricTorque = val * Globals.reduction
-                                                    result = electricTorque <= 0 ? -electricTorque : 0
-                                                }
-                                            } else {
-                                                if let val1 = Globals.shared.fieldResultsDouble[Sid.ElecBrakeWheelsTorqueApplied] {
-                                                    let electricTorque = val1
-                                                    if let val2 = Globals.shared.fieldResultsDouble[Sid.Coasting_Torque] {
-                                                        result = electricTorque + val2 * Globals.reduction
-                                                    }
-                                                }
-                                            }
-                                        case Sid.TotalPositiveTorque:
-                                            if Globals.shared.useIsoTpFields || Utils.isPh2() {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
-                                                    result = val >= 0 ? val * Globals.reduction : 0
-                                                }
-                                            } else {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.MeanEffectiveTorque] {
-                                                    result = val * Globals.reduction
-                                                }
-                                            }
-                                        case Sid.TotalNegativeTorque:
-                                            if Globals.shared.useIsoTpFields || Utils.isPh2() {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.HydraulicTorqueRequest] {
-                                                    let hydraulicTorqueRequest = val
-                                                    if let val2 = Globals.shared.fieldResultsDouble[Sid.PEBTorque] {
-                                                        let pebTorque = val2
-                                                        result = pebTorque <= 0 ? -hydraulicTorqueRequest - pebTorque * Globals.reduction : -hydraulicTorqueRequest
-                                                    }
-                                                }
-                                            } else {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.DriverBrakeWheel_Torque_Request] {
-                                                    result = val
-                                                }
-                                            }
-                                        case Sid.ACPilot:
-                                            if Globals.shared.useIsoTpFields || Utils.isPh2() {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.ACPilotDutyCycle] {
-                                                    let dutyCycle = val
-                                                    result = dutyCycle < 80.0 ? dutyCycle * 0.6 : (dutyCycle - 64.0) * 2.5
-                                                }
-                                            } else {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.ACPilotAmps] {
-                                                    result = val
-                                                }
-                                            }
-                                        case "800.6104.24": //  SID_VirtualUsage
-                                            let SID_VirtualUsage = "800.6100.24"
-                                            if let value = Globals.shared.fieldResultsDouble[SID_VirtualUsage] {
-                                                // if !value.isNaN {
-                                                let now = Date().timeIntervalSince1970
-                                                var since = now - Fields.getInstance.start
-                                                if since > 1000 {
-                                                    since = 1000 // use a maximim of 1 second
-                                                }
-                                                Fields.getInstance.start = now
-                                                let factor = since * 0.00005 // 0.05 per second
-                                                Fields.getInstance.runningUsage = Fields.getInstance.runningUsage * (1 - factor) + value * factor
-                                                // }
-                                                result = Fields.getInstance.runningUsage
-                                            }
-                                        case "800.6102.24": // FrictionPower
-                                            let SID_DriverBrakeWheel_Torque_Request = "130.44" // UBP braking wheel torque the driver wants
-                                            let SID_ElecBrakeWheelsTorqueApplied = "1f8.28" // 10ms
-                                            let SID_ElecEngineRPM = "1f8.40" // 10ms
-                                            if let val = Globals.shared.fieldResultsDouble[SID_DriverBrakeWheel_Torque_Request] {
-                                                var torque = val
-                                                if let val2 = Globals.shared.fieldResultsDouble[SID_ElecBrakeWheelsTorqueApplied] {
-                                                    torque -= val2
-                                                    if let val3 = Globals.shared.fieldResultsDouble[SID_ElecEngineRPM] {
-                                                        result = torque * val3 / Globals.reduction
-                                                    }
-                                                }
-                                            }
-                                        case "800.6105.24": // HeaterSetpoint
-                                            if Utils.isPh2() {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.OH_ClimTempDisplay] {
-                                                    if val == 0 {
-                                                    } else if val == 4 {
-                                                        result = -10.0
-                                                    } else if val == 5 {
-                                                        result = 40.0
-                                                    }
-                                                    result = val
-                                                }
-                                            } else if Globals.shared.useIsoTpFields {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.OH_ClimTempDisplay] {
-                                                    let value = val / 2
-                                                    if value == 0 {
-                                                    } else if value == 4 {
-                                                        result = -10.0
-                                                    } else if value == 5 {
-                                                        result = 40.0
-                                                    }
-                                                    result = value
-                                                }
-                                            } else {
-                                                if let val = Globals.shared.fieldResultsDouble[Sid.HeaterSetpoint] {
-                                                    if val == 0 {
-                                                    } else if val == 4 {
-                                                        result = -10.0
-                                                    } else if val == 5 {
-                                                        result = 40.0
-                                                    }
-                                                    result = val
-                                                }
-                                            }
-                                        case "800.6106.24": // RealRange
-                                            if let odo = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
-                                                if let gom = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
-                                                    // timestamp of last inserted dot in MILLISECONDS
-                                                    if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
-                                                        if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference.isNaN { // timeout of 15 minutes
-                                                            if !gom.isNaN && !odo.isNaN {
-                                                                Fields.getInstance.realRangeReference = odo + gom
-                                                                Fields.getInstance.realRangeReference2 = odo + gom
-                                                            }
-                                                        }
-                                                    }
-                                                    if Fields.getInstance.realRangeReference.isNaN {
-                                                        result = 0.0 // Double.NaN
-                                                    }
-                                                    /*
-                                                     double delta = realRangeReference - odo - gom;
-                                                     if (delta > 12.0 || delta < -12.0) {
-                                                     realRangeReference = odo + gom;
-                                                     } */
-                                                    result = Fields.getInstance.realRangeReference - odo
-                                                }
-                                            }
-                                        case "800.6107.24": // RealDelta
-                                            if let val1 = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
-                                                let odo = val1
-                                                if let val2 = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
-                                                    let gom = val2
-                                                    // MainActivity.debug("realRange ODO: "+odo);
-                                                    // MainActivity.debug("realRange GOM: "+gom);
-                                                    // timestamp of last inserted dot in MILLISECONDS
-                                                    if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
-                                                        if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference.isNaN { // timeout of 15 minutes
-                                                            if !gom.isNaN && !odo.isNaN {
-                                                                Fields.getInstance.realRangeReference = odo + gom
-                                                            }
-                                                        }
-                                                        if Fields.getInstance.realRangeReference.isNaN {
-                                                            // return Double.NaN;
-                                                            break
-                                                        }
-                                                        var delta = Fields.getInstance.realRangeReference - odo - gom
-                                                        if delta > 12.0 || delta < -12.0 {
-                                                            Fields.getInstance.realRangeReference = odo + gom
-                                                            delta = 0.0
-                                                        }
-                                                        result = delta
-                                                    }
-                                                }
-                                            }
-                                        case "800.6108.24": // RealDeltaNoReset
-                                            if let odo = Globals.shared.fieldResultsDouble[Sid.EVC_Odometer] {
-                                                if let gom = Globals.shared.fieldResultsDouble[Sid.RangeEstimate] {
-                                                    // MainActivity.debug("realRange ODO: "+odo);
-                                                    // MainActivity.debug("realRange GOM: "+gom);
+                                        notificationObject["sid"] = seq.sidVirtual
+                                        NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
 
-                                                    // timestamp of last inserted dot in MILLISECONDS
-                                                    if let lastInsertedTime = Globals.shared.lastTime[Sid.RangeEstimate] {
-                                                        if Date().timeIntervalSince1970 * 1000 - lastInsertedTime > 15 * 60 * 1000 || Fields.getInstance.realRangeReference2.isNaN { // timeout of 15 minutes
-                                                            if !gom.isNaN && !odo.isNaN {
-                                                                Fields.getInstance.realRangeReference2 = odo + gom
-                                                            }
-                                                        }
-                                                        if Fields.getInstance.realRangeReference2.isNaN {
-                                                            //                                             return Double.NaN;
-                                                            break
-                                                        }
-                                                        var delta = Fields.getInstance.realRangeReference2 - odo - gom
-                                                        if delta > 500.0 || delta < -500.0 {
-                                                            Fields.getInstance.realRangeReference2 = odo + gom
-                                                            delta = 0.0
-                                                        }
-                                                        result = delta
-                                                    }
-                                                }
-                                            }
-                                        default:
-                                            print("unknown virtual sid \(seq.sidVirtual!)")
-                                        }
-
-                                        if result != Double.nan {
-                                            Globals.shared.fieldResultsDouble[seq.sidVirtual!] = result
-                                            Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: f.getValue(), stringValue: nil)
-                                        }
-                                        let debugMessage = "Debug \(f.sid ?? "?") \(error) \(f.isString() ? f.strVal : String(format: "%.2f", f.getValue()))"
+                                        let debugMessage = "Debug \(seq.sidVirtual ?? "")"
                                         if debugMessage != Globals.shared.lastDebugMessage {
                                             let dic = ["debug": debugMessage]
                                             Globals.shared.lastDebugMessage = debugMessage
                                             NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
-                                        }
-
-                                        // notify real field
-                                        var notificationObject = notification.object as! [String: String]
-                                        notificationObject["sid"] = f.sid
-                                        NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
-
-                                        // notify virtual
-                                        if seq.sidVirtual != nil {
-                                            notificationObject["sid"] = seq.sidVirtual
-                                            NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
-
-                                            let debugMessage = "Debug \(seq.sidVirtual ?? "")"
-                                            if debugMessage != Globals.shared.lastDebugMessage {
-                                                let dic = ["debug": debugMessage]
-                                                Globals.shared.lastDebugMessage = debugMessage
-                                                NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
-                                            }
                                         }
                                     }
                                 }

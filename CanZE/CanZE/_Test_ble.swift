@@ -299,10 +299,10 @@ extension _TestViewController: CBPeripheralDelegate {
             print(error?.localizedDescription as Any)
             return
         } else if characteristic.uuid.uuidString == selectedReadCharacteristic.uuid.uuidString {
-            let s = String(data: characteristic.value!, encoding: .utf8)
-            debug("< '\(s!)' (\(s!.count))")
-            if s?.last == ">" {
-                lastRxString += s!
+            let s = String(data: characteristic.value!, encoding: .utf8)!
+            debug("< '\(s)' (\(s.count))")
+            if s.last == ">" || s.last == "\0" || s.last == "\r" || s.last == "\n" {
+                lastRxString += s
                 var reply = lastRxString.trimmingCharacters(in: NSCharacterSet.alphanumerics.inverted)
                 reply = String(reply.filter { !"\n\t\r".contains($0) })
 
@@ -315,19 +315,22 @@ extension _TestViewController: CBPeripheralDelegate {
                     reply = finalReply
                 }
 
-                if reply != "NO DATA" && reply != "CAN ERROR" && reply != "" && !reply.starts(with: "7F") {
+                if reply != "NO DATA", reply != "CAN ERROR", reply != "", !reply.lowercased().starts(with: "7F") {
                     reply = reply.subString(from: 2)
                 }
 
-                let dic: [String: String] = ["reply": reply]
-                NotificationCenter.default.post(name: Notification.Name("received"), object: dic)
+                NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
 
                 lastRxString = ""
+            } else if s.count > 4, s.subString(from: 2, to: 4) == "7F" {
+                let reply = s.subString(from: 2)
+                NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
+                lastRxString = ""
             } else {
-                lastRxString += s ?? ""
+                lastRxString += s
             }
         } else {
-            print("received dati da char sconosciuta \(characteristic.uuid.uuidString)")
+            print("ricevuto dati da char sconosciuta \(characteristic.uuid.uuidString)")
         }
     }
 
