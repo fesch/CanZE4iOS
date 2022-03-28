@@ -15,14 +15,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
-        #if DEBUG
-        #else
+//        #if DEBUG
+//            print("analytics disabled in debug mode")
+//        #else
             FirebaseApp.configure()
-        #endif
+//        #endif
 
         #if DEBUG
             Bundle(path: "/Applications/InjectionIII.app/Contents/Resources/iOSInjection.bundle")?.load()
-            // for tvOS:
+            // for tvOS:empty
             //Bundle(path: "/Applications/InjectionIII.app/Contents/Resources/tvOSInjection.bundle")?.load()
             // Or for macOS:
             //Bundle(path: "/Applications/InjectionIII.app/Contents/Resources/macOSInjection.bundle")?.load()

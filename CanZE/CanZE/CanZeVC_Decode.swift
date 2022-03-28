@@ -604,7 +604,7 @@ extension CanZeViewController {
                                         print("unknown virtual sid \(seq.sidVirtual!)")
                                     }
 
-                                    if result != Double.nan {
+                                    if !result.isNaN {
                                         Globals.shared.fieldResultsDouble[seq.sidVirtual!] = result
                                         Globals.shared.resultsBySid[f.sid] = FieldResult(doubleValue: f.getValue(), stringValue: nil)
                                     }
@@ -643,15 +643,17 @@ extension CanZeViewController {
                             NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
                         }
 
-                        // notify real field
                         var notificationObject = notification.object as! [String: String]
-                        notificationObject["sid"] = field.sid
-                        NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
 
-                        // notify virtual
-                        if seq.sidVirtual != nil {
-                            notificationObject["sid"] = seq.sidVirtual
+                        // notify real field
+                        if error == "ok" {
+                            notificationObject["sid"] = field.sid
                             NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
+                            // notify virtual
+                            if seq.sidVirtual != nil {
+                                notificationObject["sid"] = seq.sidVirtual
+                                NotificationCenter.default.post(name: Notification.Name("decoded"), object: notificationObject)
+                            }
                         }
                     }
                 }

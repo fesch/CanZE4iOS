@@ -55,8 +55,6 @@ class SettingsViewController: CanZeViewController {
         super.viewDidDisappear(animated)
 //        NotificationCenter.default.removeObserver(self, name: Notification.Name("reloadPicker"), object: nil)
 
-        var p: [String: Any] = [:]
-
         var car = ""
 
         switch Globals.shared.car {
@@ -77,40 +75,47 @@ class SettingsViewController: CanZeViewController {
         default:
             car = "unknown"
         }
-        p["car"] = car
 
+        var deviceConnection = ""
+        var deviceBleName = ""
         switch Globals.shared.deviceConnection {
         case .WIFI:
-            p["deviceConnection"] = "WIFI"
+            deviceConnection = "WIFI"
         case .BLE:
-            p["deviceConnection"] = "BLE"
-
+            deviceConnection = "BLE"
             switch Globals.shared.deviceBleName {
             case .VGATE:
-                p["deviceBleName"] = "VGATE"
+                deviceBleName = "VGATE"
             case .LELINK:
-                p["deviceBleName"] = "LELINK"
+                deviceBleName = "LELINK"
             default:
-                p["deviceBleName"] = "unknown"
+                deviceBleName = "unknown"
             }
         case .HTTP:
-            p["deviceConnection"] = "HTTP"
+            deviceConnection = "HTTP"
         default:
-            p["deviceConnection"] = "unknown"
+            deviceConnection = "unknown"
         }
 
+        var deviceType = ""
         switch Globals.shared.deviceType {
         case .ELM327:
-            p["deviceType"] = "ELM327"
+            deviceType = "ELM327"
         case .CANSEE:
-            p["deviceType"] = "CANSEE"
+            deviceType = "CANSEE"
         case .HTTP_GW:
-            p["deviceType"] = "HTTP_GW"
+            deviceType = "HTTP_GW"
         default:
-            p["deviceType"] = "unknown"
+            deviceType = "unknown"
         }
 
-        Analytics.logEvent("settings", parameters: p)
+        Analytics.logEvent("settings", parameters: [
+            "car": car as NSObject,
+            "deviceConnection": deviceConnection as NSObject,
+            "deviceBleName": deviceBleName as NSObject,
+            "deviceType": deviceType as NSObject,
+            ]
+        )
     }
 
 //    @objc func reloadPicker(notification: Notification) {

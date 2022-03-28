@@ -15,7 +15,7 @@ extension CanZeViewController {
         Globals.shared.lastId = -1
         processQueue2()
     }
- 
+
     func processQueue2() {
         if Globals.shared.queue2.count == 0 {
             print("END queue2")
@@ -23,9 +23,9 @@ extension CanZeViewController {
             NotificationCenter.default.post(name: Notification.Name("endQueue2"), object: nil)
             return
         }
-     
+
         let seq = Globals.shared.queue2.first! as Sequence
-     
+
         if Globals.shared.indiceCmd >= seq.cmd.count {
             //            if seq.frame != nil {
             //                seq.frame.lastRequest = Date().timeIntervalSince1970
@@ -43,22 +43,22 @@ extension CanZeViewController {
             NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
             // debug("Debug \(seq.field?.sid ?? "")")
         }
-     
+
         /*
          // cached ?
          if seq.field != nil {
          if let res = Globals.shared.resultsBySid[(seq.field.sid)!] {
          if Date().timeIntervalSince1970 - res.lastTimestamp < 1 { // TEST CACHED
          debug("cached")
-      
+
          let dic = ["debug": "Debug \(seq.field.sid ?? "?") cached"]
          NotificationCenter.default.post(name: Notification.Name("updateDebugLabel"), object: dic)
-      
+
          // notify real field
          var n: [String: String] = [:]
          n["sid"] = seq.field.sid
          NotificationCenter.default.post(name: Notification.Name("decoded"), object: n)
-      
+
          lastId = -1
          queue2.removeFirst()
          startQueue2()
@@ -67,15 +67,15 @@ extension CanZeViewController {
          }
          }
          */
-     
+
         let cmd = seq.cmd[Globals.shared.indiceCmd]
         write(s: cmd)
-     
+
         if Globals.shared.timeoutTimer != nil, Globals.shared.timeoutTimer.isValid {
             Globals.shared.timeoutTimer.invalidate()
             Globals.shared.timeoutTimer = nil
         }
-     
+
         var contatore = 10
         Globals.shared.timeoutTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             contatore -= 1
@@ -93,14 +93,14 @@ extension CanZeViewController {
         }
         Globals.shared.timeoutTimer.fire()
     }
- 
+
     func continueQueue2() {
         Globals.shared.indiceCmd += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + (Globals.shared.car == AppSettings.CAR_X10PH2 ? 0.05 : 0.1)) { [self] in
             processQueue2()
         }
     }
-    
+
     @objc func startQueue() {
         // stub
     }

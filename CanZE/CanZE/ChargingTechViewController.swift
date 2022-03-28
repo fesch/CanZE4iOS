@@ -492,7 +492,7 @@ class ChargingTechViewController: CanZeViewController {
                     lbl_textVolt.text = String(format: "%.2f", dcVolt)
                 case Sid.TractionBatteryCurrent:
                     let current = val!
-                    if current != Double.nan {
+                    if !current.isNaN {
                         let dcPwr = dcVolt * current / 1000.0
                         lbl_textDcPwr.text = String(format: "%.1f", dcPwr)
                         lbl_textAmps.text = String(format: "%.2f", current)

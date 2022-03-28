@@ -79,6 +79,7 @@ PODS:
 DEPENDENCIES:
   - Charts
   - Firebase/Analytics
+  - Firebase/Core
   - Firebase/Crashlytics
   - Toast-Swift (~> 5.0.1)
 
@@ -113,6 +114,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
 
-PODFILE CHECKSUM: 18e7adc0825322507c8a3dcca7a9e69eb53dd4d7
+PODFILE CHECKSUM: 187da74bfce2f3574eeb215a9c5f113b1b789afc
 
 COCOAPODS: 1.10.1
