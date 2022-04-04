@@ -24,9 +24,13 @@ Download CanZE4iOS code https://github.com/fesch/CanZE4iOS and Unzip (if needed)
 You will need to add your own GoogleService-Info.plist in CanZE/CanZE folder, to support Firebase Analytics https://firebase.google.com/
 
 ---
+
 IF YOU DON'T WANT TO USE THE PODS ON THE REPOSITORY:
+
 Install CocoaPods https://cocoapods.org/
+
 Open macOS 'Terminal' in CanZE folder and execute 'pod install' command.
+
 ----
 
 Open the project file 'CanZE.xcworkspace' in Xcode.
