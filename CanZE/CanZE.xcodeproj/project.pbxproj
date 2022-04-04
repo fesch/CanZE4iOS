@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		464E2FFC27F4BE5F003AB786 /* SliderWithParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464E2FFB27F4BE5F003AB786 /* SliderWithParameters.swift */; };
+		46D6298A27F48B01005C7624 /* SettingsSliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D6298927F48B01005C7624 /* SettingsSliderTableViewCell.swift */; };
 		46FC578625E25C3B00587E46 /* CanZeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FC578525E25C3B00587E46 /* CanZeVC.swift */; };
 		6210A8B425E3F0E500098B54 /* CanZEicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6210A8B325E3F0E500098B54 /* CanZEicon.png */; };
 		621AC0E425C7F673004A293C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AC0E325C7F673004A293C /* Logger.swift */; };
@@ -108,6 +110,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		464E2FFB27F4BE5F003AB786 /* SliderWithParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderWithParameters.swift; sourceTree = "<group>"; };
+		46D6298927F48B01005C7624 /* SettingsSliderTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSliderTableViewCell.swift; sourceTree = "<group>"; };
 		46FC578525E25C3B00587E46 /* CanZeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanZeVC.swift; sourceTree = "<group>"; };
 		6210A8B325E3F0E500098B54 /* CanZEicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CanZEicon.png; sourceTree = "<group>"; };
 		621AC0E325C7F673004A293C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -292,6 +296,7 @@
 				62D2649C25B5BE9200421F14 /* DisclaimerViewController.swift */,
 				62D3F9722593461E002CB6C7 /* SettingsViewController.swift */,
 				62DA73F02594AF880068CDF8 /* SettingsSwitchTableViewCell.swift */,
+				46D6298927F48B01005C7624 /* SettingsSliderTableViewCell.swift */,
 				62E4920A25A8CA2B00AA45CE /* SettingsTableViewCell.swift */,
 				62B1DFC425A9BA3C006454EE /* BatteryViewController.swift */,
 				62D2649F25B5C0E600421F14 /* ChargingViewController.swift */,
@@ -389,6 +394,7 @@
 				625DF0F725D5871000AE2AAA /* FieldResult.swift */,
 				622A16A425B89567001D704E /* Sequence.swift */,
 				62DA73EC259493AD0068CDF8 /* Setting.swift */,
+				464E2FFB27F4BE5F003AB786 /* SliderWithParameters.swift */,
 			);
 			path = _model;
 			sourceTree = "<group>";
@@ -569,6 +575,7 @@
 				62FAC76725D3E0C800BA3AFD /* TiresViewController.swift in Sources */,
 				62D3F96125932F4B002CB6C7 /* Sid.swift in Sources */,
 				62DB50B525DA6B62002FE369 /* UIImage.swift in Sources */,
+				464E2FFC27F4BE5F003AB786 /* SliderWithParameters.swift in Sources */,
 				62D3F98225936032002CB6C7 /* None.swift in Sources */,
 				625DF0F825D5871000AE2AAA /* FieldResult.swift in Sources */,
 				62DFAB6025924CF300B00C5C /* BlePeripheral.swift in Sources */,
@@ -612,6 +619,7 @@
 				621AC0EC25C81B2C004A293C /* FirmwareViewController.swift in Sources */,
 				62D3F94925932BF5002CB6C7 /* Globals.swift in Sources */,
 				626C004025B9B44000121456 /* UITextView.swift in Sources */,
+				46D6298A27F48B01005C7624 /* SettingsSliderTableViewCell.swift in Sources */,
 				62D3F970259339EE002CB6C7 /* ELM327.swift in Sources */,
 				62D3F96D2593380A002CB6C7 /* Device.swift in Sources */,
 				62D3F94025926FBC002CB6C7 /* Fields.swift in Sources */,
@@ -826,7 +834,7 @@
 				CODE_SIGN_ENTITLEMENTS = CanZE/CanZE.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = USQU9Q295J;
 				INFOPLIST_FILE = "$(SRCROOT)/CanZE/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -850,7 +858,7 @@
 				CODE_SIGN_ENTITLEMENTS = CanZE/CanZE.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = USQU9Q295J;
 				INFOPLIST_FILE = "$(SRCROOT)/CanZE/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (

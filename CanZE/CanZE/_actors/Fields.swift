@@ -102,7 +102,7 @@ struct Fields {
                 if frameId! < 0x800 || frameId! > 0x8ff {
                     let options = Int(tokens[FIELD_OPTIONS].trim(), radix: 16)
                     // ensure this field matches the selected car
-                    if (options! & Globals.shared.car) != 0, !tokens[FIELD_RESPONSE_ID].trim().starts(with: "7") || tokens[FIELD_RESPONSE_ID].trim().lowercased().starts(with: "7e") {
+                    if (options! & Globals.shared.car) != 0, !tokens[FIELD_RESPONSE_ID].trim().hasPrefix("7") || tokens[FIELD_RESPONSE_ID].trim().lowercased().hasPrefix("7e") {
                         // Create a new field object and fill his  data
                         // MainActivity.debug(tokens[FIELD_SID] + " " + tokens[FIELD_ID] + "." + tokens[FIELD_FROM] + "." + tokens[FIELD_RESPONSE_ID])
 

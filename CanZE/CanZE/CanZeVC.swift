@@ -112,6 +112,12 @@ class CanZeViewController: UIViewController {
         Globals.shared.deviceBleServiceUuid = Globals.shared.ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID) ?? ""
         Globals.shared.deviceBleReadCharacteristicUuid = Globals.shared.ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID) ?? ""
         Globals.shared.deviceBleWriteCharacteristicUuid = Globals.shared.ud.string(forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID) ?? ""
+        Globals.shared.deviceDelay = Globals.shared.ud.double(forKey: AppSettings.SETTINGS_DEVICE_DELAY)
+        if Globals.shared.deviceDelay == 0 {
+            Globals.shared.deviceDelay = 0.2
+            Globals.shared.ud.set(Globals.shared.deviceDelay, forKey: AppSettings.SETTINGS_DEVICE_DELAY)
+            Globals.shared.ud.synchronize()
+        }
 
         Globals.shared.deviceHttpAddress = Globals.shared.ud.string(forKey: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS) ?? ""
 
@@ -128,6 +134,8 @@ class CanZeViewController: UIViewController {
                 print("VGATE")
             case .LELINK:
                 print("LELINK")
+            case .OBDII:
+                print("OBDII")
             default:
                 print("unknown")
             }

@@ -19,11 +19,18 @@ An Apple developer subscription is needed if you want to install app on real dev
 
 Download and install Xcode from App Store https://apps.apple.com/it/app/xcode/id497799835?mt=12
 
-Install CocoaPods https://cocoapods.org/
-
-Download CanZE4iOS code https://github.com/fesch/CanZE4iOS
+Download CanZE4iOS code https://github.com/fesch/CanZE4iOS and Unzip (if needed)
 
 You will need to add your own GoogleService-Info.plist in CanZE/CanZE folder, to support Firebase Analytics https://firebase.google.com/
+
+---
+IF YOU DON'T WANT TO USE THE PODS ON THE REPOSITORY:
+Install CocoaPods https://cocoapods.org/
+Open macOS 'Terminal' in CanZE folder and execute 'pod install' command.
+----
+
+Open the project file 'CanZE.xcworkspace' in Xcode.
+Do NOT open 'CanZE.xcodeproj' as it will miss the required Pods and will fail to compile.
 
 ---
 

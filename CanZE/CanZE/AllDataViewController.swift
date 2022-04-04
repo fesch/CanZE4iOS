@@ -168,7 +168,7 @@ class AllDataViewController: CanZeViewController {
           */
 
         for frame in Frames.getInstance.getAllFrames() {
-            if frame.responseId != nil, !frame.responseId.starts(with: "5") { // ship dtc commands and mode controls
+            if frame.responseId != nil, !frame.responseId.hasPrefix("5") { // ship dtc commands and mode controls
 //                          testerKeepalive(ecu); // may need to set a keepalive/session
                 if frame.containingFrame != nil || ecu.fromId == 0x801 { // only use subframes and free frames
                     // query the Frame

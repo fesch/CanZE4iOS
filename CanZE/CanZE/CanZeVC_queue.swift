@@ -96,7 +96,7 @@ extension CanZeViewController {
 
     func continueQueue2() {
         Globals.shared.indiceCmd += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + (Globals.shared.car == AppSettings.CAR_X10PH2 ? 0.05 : 0.1)) { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + Globals.shared.deviceDelay) { [self] in
             processQueue2()
         }
     }

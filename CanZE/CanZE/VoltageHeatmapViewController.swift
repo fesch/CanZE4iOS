@@ -125,16 +125,16 @@ class VoltageHeatmapViewController: CanZeViewController {
 
         let fieldId = sid!
         var cell = 0
-        if fieldId.starts(with: Sid.Preamble_CellVoltages1) {
-            cell = Int(fieldId.components(separatedBy: ".")[2])!/16 // cell is 1-based
-        } else if fieldId.starts(with: Sid.Preamble_CellVoltages2) {
-            cell = Int(fieldId.components(separatedBy: ".")[2])!/16+62 // cell is 1-based
+        if fieldId.hasPrefix(Sid.Preamble_CellVoltages1) {
+            cell = Int(fieldId.components(separatedBy: ".")[2])! / 16 // cell is 1-based
+        } else if fieldId.hasPrefix(Sid.Preamble_CellVoltages2) {
+            cell = Int(fieldId.components(separatedBy: ".")[2])! / 16 + 62 // cell is 1-based
         }
         if cell > 0, cell <= lastCell {
             let value = field?.getValue()
 
             DispatchQueue.main.async { [self] in
-                if let tv = view.viewWithTag(cell+1000) {
+                if let tv = view.viewWithTag(cell + 1000) {
                     let tv2 = tv as! UILabel
                     tv2.text = String(format: "%.3f", value!)
                 }
@@ -146,7 +146,7 @@ class VoltageHeatmapViewController: CanZeViewController {
                 lowest = 5
                 highest = 3
                 // lastVoltage[20] = 3.5; fake for test
-                for i in 1 ..< lastCell+1 {
+                for i in 1 ..< lastCell + 1 {
                     mean += lastVoltage[i]
                     if lastVoltage[i] < lowest {
                         lowest = lastVoltage[i]
@@ -160,16 +160,18 @@ class VoltageHeatmapViewController: CanZeViewController {
 
                 // the update has to be done in a separate thread
                 // otherwise the UI will not be repainted
-                for i in 1 ..< lastCell+1 {
+                for i in 1 ..< lastCell + 1 {
                     DispatchQueue.main.async { [self] in
-                        if let tv = view.viewWithTag(i+1000) {
+                        if let tv = view.viewWithTag(i + 1000) {
                             let tv2 = tv as! UILabel
                             // tv.setText(String.format("%.3f", lastVoltage[i]));
 //                            if i < lastVoltage.count, lastVoltage[i] != Double.nan {
 //                                tv2.text = String(format: "%.3f", lastVoltage[i])
 //                            }
-                            let delta = Int(10000 * (lastVoltage[i] - mean)) // color is temp minus mean. 1mV difference is 5 color ticks
-                            tv2.backgroundColor = makeColor(delta)
+                            if !lastVoltage[i].isNaN {
+                                let delta = Int(10000 * (lastVoltage[i] - mean)) // color is temp minus mean. 1mV difference is 5 color ticks
+                                tv2.backgroundColor = makeColor(delta)
+                            }
                         }
                     }
                 }
@@ -197,15 +199,15 @@ class VoltageHeatmapViewController: CanZeViewController {
 
         if delta > 0 {
             var c = baseColor.rgba
-            c.green -= CGFloat(delta)/224.0
-            c.blue -= CGFloat(delta)/224.0
+            c.green -= CGFloat(delta) / 224.0
+            c.blue -= CGFloat(delta) / 224.0
             let color = UIColor(red: c.red, green: c.green, blue: c.blue, alpha: c.alpha)
             return color
             // return baseColor - (delta * 0x000101) // one tick is one red
         } else {
             var c = baseColor.rgba
-            c.red += CGFloat(delta)/224.0
-            c.green += CGFloat(delta)/224.0
+            c.red += CGFloat(delta) / 224.0
+            c.green += CGFloat(delta) / 224.0
             let color = UIColor(red: c.red, green: c.green, blue: c.blue, alpha: c.alpha)
             return color
             // return baseColor+(delta * 0x010100) // one degree below is a 16th blue added

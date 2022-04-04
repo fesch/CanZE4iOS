@@ -37,6 +37,7 @@ class Globals: NSObject {
     var deviceBleServiceUuid = ""
     var deviceBleReadCharacteristicUuid = ""
     var deviceBleWriteCharacteristicUuid = ""
+    var deviceDelay = 0.2
 
     // HTTP
     var deviceHttpAddress = ""

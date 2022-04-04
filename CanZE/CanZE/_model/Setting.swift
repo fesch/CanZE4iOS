@@ -13,6 +13,7 @@ enum SettingType: String {
     case TEXTFIELD_READONLY
     case PICKER
     case SWITCH
+    case SLIDER
 }
 
 var Type: SettingType = .NONE
@@ -26,11 +27,11 @@ struct Setting {
     var listTitles: [String]? = []
     var listValues: [Any]? = []
     var intValue: Int? = -1
+    var doubleValue: Double? = 0.0
     var stringValue: String?
     var placeholder: String?
 
     mutating func switchBool() {
         boolValue = !boolValue
     }
-    
 }

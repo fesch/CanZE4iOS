@@ -315,14 +315,14 @@ extension _TestViewController: CBPeripheralDelegate {
                     reply = finalReply
                 }
 
-                if reply != "NO DATA", reply != "CAN ERROR", reply != "", !reply.lowercased().starts(with: "7F") {
+                if reply != "NO DATA", reply != "CAN ERROR", reply != "", !reply.lowercased().hasPrefix("7f") {
                     reply = reply.subString(from: 2)
                 }
 
                 NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
 
                 lastRxString = ""
-            } else if s.count > 4, s.subString(from: 2, to: 4) == "7F" {
+            } else if s.count > 4, s.subString(from: 2, to: 4).lowercased() == "7f" {
                 let reply = s.subString(from: 2)
                 NotificationCenter.default.post(name: Notification.Name("received"), object: ["reply": reply])
                 lastRxString = ""

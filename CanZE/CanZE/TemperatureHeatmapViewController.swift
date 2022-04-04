@@ -104,7 +104,7 @@ class TemperatureHeatmapViewController: CanZeViewController {
 
         let fieldId = sid!
         var cell = 0
-        if fieldId.starts(with: Sid.Preamble_CompartmentTemperatures) {
+        if fieldId.hasPrefix(Sid.Preamble_CompartmentTemperatures) {
             cell = (Int(fieldId.components(separatedBy: ".")[2])! - 8)/24 // cell is 1-based
             let value = field?.getValue()
             if value != nil, !value!.isNaN {

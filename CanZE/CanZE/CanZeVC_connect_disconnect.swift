@@ -55,6 +55,8 @@ extension CanZeViewController {
                 s += "VGATE\n"
             case .LELINK:
                 s += "LELINK\n"
+            case .OBDII:
+                s += "OBDII\n"
             default:
                 s += "unknown\n"
             }

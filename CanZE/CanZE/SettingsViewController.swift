@@ -88,6 +88,8 @@ class SettingsViewController: CanZeViewController {
                 deviceBleName = "VGATE"
             case .LELINK:
                 deviceBleName = "LELINK"
+            case .OBDII:
+                deviceBleName = "OBDII"
             default:
                 deviceBleName = "unknown"
             }
@@ -114,7 +116,7 @@ class SettingsViewController: CanZeViewController {
             "deviceConnection": deviceConnection as NSObject,
             "deviceBleName": deviceBleName as NSObject,
             "deviceType": deviceType as NSObject,
-            ]
+        ]
         )
     }
 
@@ -226,9 +228,11 @@ class SettingsViewController: CanZeViewController {
             s = Setting(tag: AppSettings.SETTINGS_DEVICE_BLE_NAME, type: .PICKER, title: NSLocalizedString_("Name", comment: ""), listTitles: [
                 "Vgate iCar Pro",
                 "LELink",
+                "OBDII (experimental)",
             ], listValues: [
                 AppSettings.DEVICE_BLE_NAME.VGATE.rawValue,
                 AppSettings.DEVICE_BLE_NAME.LELINK.rawValue,
+                AppSettings.DEVICE_BLE_NAME.OBDII.rawValue,
             ], intValue: Globals.shared.deviceBleName.rawValue)
             settingsArray.append(s)
 
@@ -236,6 +240,9 @@ class SettingsViewController: CanZeViewController {
             s = Setting(tag: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS, type: .TEXTFIELD, title: NSLocalizedString_("http address", comment: ""), stringValue: Globals.shared.deviceHttpAddress)
             settingsArray.append(s)
         }
+
+        s = Setting(tag: AppSettings.SETTINGS_DEVICE_DELAY, type: .SLIDER, title: NSLocalizedString_("Delay", comment: ""), doubleValue: Globals.shared.deviceDelay, placeholder: nil)
+        settingsArray.append(s)
 
         if Globals.shared.car != AppSettings.CAR_X10PH2 {
             s = Setting(tag: AppSettings.SETTINGS_DEVICE_USE_ISOTP_FIELDS, type: .SWITCH, title: NSLocalizedString_("label_AltFields", comment: ""), boolValue: Globals.shared.useIsoTpFields)
@@ -389,6 +396,12 @@ class SettingsViewController: CanZeViewController {
                 Globals.shared.ud.setValue("FFE0", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
                 Globals.shared.ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
                 Globals.shared.ud.setValue("FFE1", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
+            } else if Globals.shared.deviceBleName == .OBDII {
+                Globals.shared.ud.setValue("OBDII", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_NAME)
+                Globals.shared.ud.setValue("6464A14D-1E38-8FF0-1ED1-FB4ABFB024F7", forKey: AppSettings.SETTINGS_DEVICE_BLE_PERIPHERAL_UUID)
+                Globals.shared.ud.setValue("FFF0", forKey: AppSettings.SETTINGS_DEVICE_BLE_SERVICE_UUID)
+                Globals.shared.ud.setValue("FFF2", forKey: AppSettings.SETTINGS_DEVICE_BLE_WRITE_CHARACTERISTIC_UUID)
+                Globals.shared.ud.setValue("FFF1", forKey: AppSettings.SETTINGS_DEVICE_BLE_READ_CHARACTERISTIC_UUID)
             } else {
                 print("unknown ble device")
             }
@@ -468,6 +481,54 @@ class SettingsViewController: CanZeViewController {
         // print("cancel")
         textFieldView.alpha = 0.0
         textField.text = ""
+        let vBG = view.viewWithTag(Globals.K_TAG_vBG)
+        vBG?.removeFromSuperview()
+    }
+
+    @IBAction func btnSliderDone_() {
+        let vBG = view.viewWithTag(Globals.K_TAG_vBG)
+        vBG?.removeFromSuperview()
+
+        /*
+         let sortedKeys = Array(settingsDic.keys).sorted(by: <)
+                let myKey = sortedKeys[lastSelectedIndexPath.section]
+                let arraySettings = settingsDic[myKey]
+                let setting = arraySettings?[lastSelectedIndexPath.row]
+
+                let value = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                Globals.shared.ud.setValue(value, forKey: setting!.tag!)
+                Globals.shared.ud.synchronize()
+
+                /*
+                 switch setting?.tag {
+                 case AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS:
+                     Globals.shared.ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_WIFI_ADDRESS)
+                     Globals.shared.ud.synchronize()
+                 case AppSettings.SETTINGS_DEVICE_WIFI_PORT:
+                     Globals.shared.ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_WIFI_PORT)
+                     Globals.shared.ud.synchronize()
+                 case AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS:
+                     Globals.shared.ud.setValue(value, forKey: AppSettings.SETTINGS_DEVICE_HTTP_ADDRESS)
+                     Globals.shared.ud.synchronize()
+                 default:
+                     break
+                 }
+                 */
+
+                textField.text = ""
+                disconnect(showToast: false)
+                Globals.shared.deviceIsConnected = false
+                Globals.shared.deviceIsInitialized = false
+                NotificationCenter.default.post(name: Notification.Name("deviceDisconnected"), object: nil)
+         */
+
+        loadSettings()
+        organizeSettings()
+        settingsTableView.reloadData()
+    }
+
+    @IBAction func btnSliderCancel_() {
         let vBG = view.viewWithTag(Globals.K_TAG_vBG)
         vBG?.removeFromSuperview()
     }
@@ -577,12 +638,47 @@ extension SettingsViewController: UITableViewDataSource {
             }
             cell.titleLabel?.text = setting?.title
             return cell
+        case .SLIDER:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cellSlider")! as! SettingsSliderTableViewCell
+            cell.titleLabel.text = setting?.title
+            cell.valueLabel.text = String(format: "%.2f", (setting?.doubleValue!)! as Double)
+            cell.valueLabel.textColor = .black
+            cell.valueLabel.tag = indexPath.section * 2000 + indexPath.row
+            cell.contentView.backgroundColor = .clear
+            cell.slider.value = Float((setting?.doubleValue)!)
+            cell.slider.minimumValue = 0.01
+            cell.slider.maximumValue = 1.0
+            cell.slider.isContinuous = true
+            let slider = cell.slider as! SliderWithParameters
+            slider.params = ["indexPath": indexPath]
+            slider.addTarget(self, action: #selector(sliderValueChanged(slider:)), for: .valueChanged)
+            return cell
         case .none:
             break
         case .NONE:
             break
         }
         return UITableViewCell()
+    }
+
+    @objc func sliderValueChanged(slider: SliderWithParameters) {
+        let i = slider.params["indexPath"] as! IndexPath
+        let label = settingsTableView.viewWithTag(i.section * 2000 + i.row) as! UILabel
+        label.text = String(format: "%.2f", slider.value)
+
+        let sortedKeys = Array(settingsDic.keys).sorted(by: <)
+        let myKey = sortedKeys[i.section]
+        let arraySettings = settingsDic[myKey]
+        let setting = arraySettings?[i.row]
+
+        switch setting?.tag {
+        case AppSettings.SETTINGS_DEVICE_DELAY:
+            Globals.shared.ud.set(slider.value, forKey: AppSettings.SETTINGS_DEVICE_DELAY)
+            Globals.shared.ud.synchronize()
+            break
+        default:
+            break
+        }
     }
 }
 
@@ -669,6 +765,9 @@ extension SettingsViewController: UITableViewDelegate {
             tableView.reloadData()
 
         case .TEXTFIELD_READONLY:
+            // non fare niente
+            break
+        case .SLIDER:
             // non fare niente
             break
         case .none:
